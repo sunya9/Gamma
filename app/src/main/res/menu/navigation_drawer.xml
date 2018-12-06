@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/homeGroup"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:checked="true"
+            android:title="@string/home" />
+    </group>
+    <group
+        android:id="@+id/messageGroup"
+        android:menuCategory="secondary"
+        android:orderInCategory="200">
+        <item
+            android:id="@+id/privateMessage"
+            android:icon="@drawable/ic_mail_black_24dp"
+            android:title="@string/private_message" />
+        <item
+            android:id="@+id/chatRoom"
+            android:icon="@drawable/ic_chat_black_24dp"
+            android:title="@string/chat_room" />
+    </group>
+    <group
+        android:id="@+id/explore"
+        android:checkableBehavior="single"
+        android:menuCategory="secondary"
+        android:orderInCategory="100">
+        <item
+            android:id="@+id/conversations"
+            android:icon="@drawable/ic_forum_black_24dp"
+            android:title="@string/conversations" />
+        <item
+            android:id="@+id/missedConversations"
+            android:icon="@drawable/ic_chat_bubble_black_24dp"
+            android:title="@string/missed_conversations" />
+        <item
+            android:id="@+id/newcomers"
+            android:icon="@drawable/ic_person_add_black_24dp"
+            android:title="@string/newcomers" />
+        <item
+            android:id="@+id/photos"
+            android:icon="@drawable/ic_photo_camera_black_24dp"
+            android:title="@string/photos" />
+        <item
+            android:id="@+id/trending"
+            android:icon="@drawable/ic_trending_up_black_24dp"
+            android:title="@string/trending" />
+        <item
+            android:id="@+id/global"
+            android:icon="@drawable/ic_public_black_24dp"
+            android:title="@string/global" />
+    </group>
+    <group
+        android:id="@+id/fileGroup"
+        android:menuCategory="secondary"
+        android:orderInCategory="250">
+        <item
+            android:id="@+id/file"
+            android:icon="@drawable/ic_cloud_black_24dp"
+            android:title="@string/files" />
+    </group>
+    <group
+        android:id="@+id/other"
+        android:menuCategory="system">
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/settings" />
+    </group>
+</menu>

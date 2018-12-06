@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="viewModel" type="net.unsweets.gamma.activity.MainActivity.MainActivityViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> viewModel.openMyProfile()}"
+            android:foreground="?attr/selectableItemBackground"
+        >
+        <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                android:id="@+id/navigationDrawerHeaderImageView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:foreground="@color/colorNavigationDrawerHeaderBackgroundTint"
+                app:glideSrc="@{viewModel.loginUser.content.coverImage.link}"
+                android:scaleType="centerCrop"
+                android:elevation="-10dp"
+        />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="28dp" android:id="@+id/navigationDrawerHandleNameTextView"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                tools:text="YourHandleName"
+                android:text="@{viewModel.loginUser.name}"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toTopOf="@+id/navigationDrawerScreenNameTextView"
+                app:layout_constraintStart_toStartOf="@+id/navigationDrawerScreenNameTextView"
+        />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/navigationDrawerScreenNameTextView"
+                tools:text="\@screen_name"
+                android:text="@{`@` + viewModel.loginUser.username}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp" android:layout_marginBottom="16dp"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="@dimen/navigation_drawer_icon_size"
+                android:layout_height="@dimen/navigation_drawer_icon_size"
+                app:glideSrc="@{viewModel.loginUser.content.avatarImage.link}"
+                tools:src="@tools:sample/avatars" android:cropToPadding="false"
+                android:id="@+id/navigationDrawerAvatarImageView"
+                app:layout_constraintBottom_toTopOf="@+id/navigationDrawerHandleNameTextView"
+                app:layout_constraintStart_toStartOf="@+id/navigationDrawerScreenNameTextView"
+                android:layout_marginBottom="16dp"
+
+                android:layout_marginTop="48dp"
+                android:elevation="4dp"
+                app:layout_constraintTop_toTopOf="@+id/navigationDrawerHeaderImageView"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
