@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_logout_account_key">Account:RemoveAccount</string>
+    <string name="pref_logout_account_title">Logout</string>
+
+</resources>
