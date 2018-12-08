@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="net.unsweets.gamma.fragment.ProfileFragment.ProfileViewModel" />
+    </data>
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:id="@+id/swipeRefreshLayout"
+        tools:context=".activity.ProfileActivity">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:id="@+id/coordinatorLayout"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:clipToPadding="false"
+                android:fitsSystemWindows="true"
+                app:liftOnScroll="true">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:statusBarScrim="@color/colorGray"
+                    app:contentScrim="@color/colorGray"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlwaysCollapsed|enterAlways"
+                    app:titleEnabled="false"
+                    app:title="@{viewModel.user.name}"
+                    android:id="@+id/toolbarLayout"
+                    android:fitsSystemWindows="true"
+                    android:clipToPadding="false"
+                    tools:title="\@ScreenName">
+
+                    <ImageView
+                        android:id="@+id/coverImageView"
+                        glideSrc="@{viewModel.user.content.coverImage.link}"
+                        android:layout_width="match_parent"
+                        android:layout_height="340dp"
+                        android:foreground="@drawable/profile_cover_shadow"
+                        android:scaleType="centerCrop"
+                        android:fitsSystemWindows="true"
+                        tools:ignore="ContentDescription"
+                        app:layout_collapseParallaxMultiplier="0.2"
+                        app:layout_collapseMode="parallax"
+                        tools:srcCompat="@tools:sample/backgrounds/scenic[1]" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        app:layout_anchor="@+id/appBar"
+                        app:layout_anchorGravity="center"
+                        app:layout_collapseMode="none"
+                        android:layout_marginBottom="24dp">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/circleImageView"
+                            glideSrc="@{viewModel.user.content.avatarImage.link}"
+                            android:layout_width="@dimen/profile_avatar_size"
+                            android:layout_height="@dimen/profile_avatar_size"
+                            android:layout_marginTop="64dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:src="@tools:sample/avatars" />
+
+                        <TextView
+                            android:id="@+id/handleNameTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.user.name}"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                            android:textColor="@android:color/white"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintTop_toBottomOf="@+id/circleImageView"
+                            tools:text="HandleName" />
+
+                        <TextView
+                            android:id="@+id/screenNameTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.usernameWithAt}"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                            android:textColor="@color/colorGrayLighter"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/handleNameTextView"
+                            tools:text="\@screen_name" />
+
+                        <Space
+                            android:id="@+id/negativePosition"
+                            android:layout_width="0dp"
+                            android:layout_marginTop="36dp"
+                            android:layout_height="0dp"
+                            app:layout_constraintTop_toBottomOf="@+id/screenNameTextView" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/editProfileButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/edit_profile"
+                            android:visibility="@{safeUnbox(viewModel.me) == true ? View.VISIBLE : View.GONE }"
+                            app:layout_constraintBottom_toTopOf="@+id/profileCardView"
+                            app:layout_constraintEnd_toEndOf="@+id/profileCardView"
+                            app:layout_constraintStart_toStartOf="@+id/profileCardView"
+                            app:layout_constraintTop_toTopOf="@+id/profileCardView" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/followButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/follow"
+                            android:visibility="@{safeUnbox(viewModel.me) == false ? View.VISIBLE : View.GONE }"
+                            app:layout_constraintBottom_toTopOf="@+id/profileCardView"
+                            app:layout_constraintEnd_toEndOf="@+id/profileCardView"
+                            app:layout_constraintStart_toStartOf="@+id/profileCardView"
+                            app:layout_constraintTop_toTopOf="@+id/profileCardView" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/profileCardView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                            android:clipToPadding="false"
+                            android:clipChildren="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginBottom="16dp"
+                            app:layout_constraintTop_toTopOf="@+id/negativePosition">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:divider="@drawable/profile_card_divider"
+                                    android:orientation="horizontal"
+                                    android:layout_marginTop="16dp"
+                                    android:showDividers="middle">
+
+                                    <androidx.appcompat.widget.AppCompatButton
+                                        android:id="@+id/followingCountButton"
+                                        style="@style/BorderlessButton"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@{@plurals/following(viewModel.user.counts.following, viewModel.user.counts.following)}"
+                                        android:onClick="@{() -> viewModel.openFollowingList()}"
+                                        tools:text="100\nFollowing" />
+
+                                    <androidx.appcompat.widget.AppCompatButton
+                                        android:id="@+id/followerCountButton"
+                                        style="@style/BorderlessButton"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@{@plurals/follower(viewModel.user.counts.followers, viewModel.user.counts.followers)}"
+                                        android:onClick="@{() -> viewModel.openFollowerList()}"
+                                        tools:text="100\nFollowers" />
+
+                                    <androidx.appcompat.widget.AppCompatButton
+                                        android:id="@+id/starredCountButton"
+                                        style="@style/BorderlessButton"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="@{@plurals/starred(viewModel.user.counts.bookmarks, viewModel.user.counts.bookmarks)}"
+                                        tools:text="100\nStarred" />
+                                </LinearLayout>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="16dp"
+                                    android:text="@{viewModel.user.content.text}"
+                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                                    tools:text="@tools:sample/lorem" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/relationTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginTop="8dp"
+                            app:layout_constraintTop_toBottomOf="@+id/profileCardView"
+                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            app:textId="@{viewModel.relation}"
+                            tools:text="It's me!" />
+
+                        <TextView
+                            android:id="@+id/sinceTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/relationTextView"
+                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                            android:text="@{@string/since(viewModel.since)}"
+                            tools:text="Since: 2018/1/1" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="@{viewModel.toolbarBgColor}"
+                        android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
+                        app:layout_collapseParallaxMultiplier="1"
+                        app:layout_collapseMode="parallax"
+                        app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+                        app:subtitle="@{`@` + viewModel.user.username}"
+                        app:subtitleTextColor="@{safeUnbox(viewModel.toolbarTextColor)}"
+                        app:title="@{viewModel.user.name}"
+                        app:titleTextColor="@{safeUnbox(viewModel.toolbarTextColor)}" />
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.AppBarLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/fragment_post_item" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</layout>
