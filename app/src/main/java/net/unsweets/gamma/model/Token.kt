@@ -22,7 +22,7 @@ class Token (
         @Json(name = "email") EMAIL
     }
 
-    data class Storage(val available: Int, val total: Int)
+    data class Storage(val available: Long, val total: Long)
 }
 
 
