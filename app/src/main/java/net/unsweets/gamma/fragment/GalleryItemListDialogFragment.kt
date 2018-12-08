@@ -47,28 +47,6 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
         list.adapter = adapter
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setOnShowListener {
-            val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet.setBackgroundColor(
-                ResourcesCompat.getColor(
-                    resources,
-                    android.R.color.transparent,
-                    context?.theme
-                )
-            )
-            val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {}
-
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    toolbar.alpha = slideOffset
-                }
-            })
-        }
-        return dialog
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
