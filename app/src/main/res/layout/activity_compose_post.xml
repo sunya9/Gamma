@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.ComposePostActivity">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="net.unsweets.gamma.activity.ComposePostActivity.ComposePostViewModel" />
+
+        <import type="net.unsweets.gamma.util.BindingUtil" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:title="@string/compose_a_post">
+
+            <TextView
+                android:id="@+id/counterTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:gravity="end"
+                android:text="@{viewModel.counterStr}" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/composeTextInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            app:layout_constraintBottom_toTopOf="@id/bottomToolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@android:color/transparent"
+            app:helperTextEnabled="false"
+            app:hintEnabled="false"
+            app:counterEnabled="false"
+            app:errorEnabled="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/composeTextEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:background="@android:color/transparent"
+                android:text="@={viewModel.text}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/bottomToolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:clipToPadding="false"
+            android:background="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:contentInsetStart="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                >
+                <HorizontalScrollView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:clipToPadding="false"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/AttachPictureButton"
+                            style="@style/BorderlessButton.ComposeBottomIcon"
+                            android:layout_height="match_parent"
+                            android:layout_width="?attr/actionBarSize"
+                            android:onClick="@{() -> viewModel.attachPicture() }"
+                            android:src="@drawable/ic_photo_library_black_24dp"
+                            android:tint="@color/colorPrimary"
+                            android:text="@string/post"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/sendButton"
+                    style="@style/BorderlessButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:onClick="@{() -> viewModel.sendPost() }"
+                    android:src="@drawable/ic_send_black_24dp"
+                    android:enabled="@{viewModel.enableSendButton}"
+                    android:text="@string/post"/>
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
