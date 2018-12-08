@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="0dp"
+    app:contentPadding="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatarImageView"
+            android:layout_width="@dimen/post_item_avatar_size"
+            android:layout_height="@dimen/post_item_avatar_size"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/screenNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/first_names" />
+
+        <TextView
+            android:id="@+id/bodyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+            app:layout_constraintTop_toBottomOf="@+id/screenNameTextView"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@+id/handleNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/screenNameTextView"
+            app:layout_constraintStart_toEndOf="@+id/screenNameTextView"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/relativeTimeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/handleNameTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="5s" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
