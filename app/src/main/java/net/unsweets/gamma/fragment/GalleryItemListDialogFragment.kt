@@ -1,53 +1,78 @@
 package net.unsweets.gamma.fragment
 
+import android.app.Dialog
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import net.unsweets.gamma.R;
-import kotlinx.android.synthetic.main.fragment_galleryitem_list_dialog.*
-import kotlinx.android.synthetic.main.fragment_galleryitem_list_dialog_item.view.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.core.content.ContentResolverCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.fragment_gallery_item_list_dialog.*
+import kotlinx.android.synthetic.main.fragment_gallery_item_list_dialog_item.view.*
+import net.unsweets.gamma.R
 
-// TODO: Customize parameter argument names
-const val ARG_ITEM_COUNT = "item_count"
-
-/**
- *
- * A fragment that shows a list of items as a modal bottom sheet.
- *
- * You can show this modal bottom sheet from your activity like this:
- * <pre>
- *    GalleryItemListDialogFragment.newInstance(30).show(supportFragmentManager, "dialog")
- * </pre>
- *
- * You activity (or fragment) needs to implement [GalleryItemListDialogFragment.Listener].
- */
 class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
     private var mListener: Listener? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_galleryitem_list_dialog, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_gallery_item_list_dialog, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        list.layoutManager = GridLayoutManager(context, 3)
-        list.adapter = GalleryItemAdapter(arguments?.getInt(ARG_ITEM_COUNT))
+    private val galleryItemList: ArrayList<GalleryItem> = ArrayList()
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val adapter = GalleryItemAdapter(galleryItemList)
+        Thread(Runnable {
+            galleryItemList.addAll(getImages())
+            list.post { adapter.notifyDataSetChanged() }
+        }).start()
+        toolbar.setTitle(R.string.gallery)
+        list.adapter = adapter
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet.setBackgroundColor(
+                ResourcesCompat.getColor(
+                    resources,
+                    android.R.color.transparent,
+                    context?.theme
+                )
+            )
+            val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
+            sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {}
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    toolbar.alpha = slideOffset
+                }
+            })
+        }
+        return dialog
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val parent = parentFragment
-        if (parent != null) {
-            mListener = parent as Listener
-        } else {
-            mListener = context as Listener
-        }
+        mListener = (parentFragment ?: context) as Listener
     }
 
     override fun onDetach() {
@@ -56,48 +81,87 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
     }
 
     interface Listener {
-        fun onGalleryItemClicked(position: Int)
+        fun onGalleryItemClicked(position: String)
     }
 
-    private inner class ViewHolder internal constructor(inflater: LayoutInflater, parent: ViewGroup)
-        : RecyclerView.ViewHolder(inflater.inflate(R.layout.fragment_galleryitem_list_dialog_item, parent, false)) {
+    private inner class ViewHolder internal constructor(inflater: LayoutInflater, parent: ViewGroup) :
+        RecyclerView.ViewHolder(inflater.inflate(R.layout.fragment_gallery_item_list_dialog_item, parent, false)) {
 
-        internal val text: TextView = itemView.text
+        internal val imageView: ImageView = itemView.imageView
 
         init {
-            text.setOnClickListener {
-                mListener?.let {
-                    it.onGalleryItemClicked(adapterPosition)
+            imageView.setOnClickListener {
+                mListener?.let { listener ->
+                    listener.onGalleryItemClicked(galleryItemList.get(adapterPosition).path)
                     dismiss()
                 }
             }
         }
     }
 
-    private inner class GalleryItemAdapter internal constructor(private val mItemCount: Int) : RecyclerView.Adapter<ViewHolder>() {
+    private fun getImages(): ArrayList<GalleryItem> {
+        val res = ArrayList<GalleryItem>()
+        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(MediaStore.MediaColumns.DATA)
+        val order = "${MediaStore.Images.ImageColumns.DATE_ADDED} DESC"
+        val resolver = context?.contentResolver
+        val cursor = ContentResolverCompat.query(resolver, uri, projection, null, null, order, null)
+        while (cursor.moveToNext()) {
+            val pathIdx = cursor.getColumnIndex(MediaStore.MediaColumns.DATA)
+            val path = cursor.getString(pathIdx)
+            res.add(GalleryItem(path))
+        }
+        cursor.close()
+        return res
+    }
+
+    data class GalleryItem(val path: String)
+
+    private inner class GalleryItemAdapter internal constructor(val items: ArrayList<GalleryItem>) :
+        RecyclerView.Adapter<ViewHolder>() {
+        private inner class ErrorHandling(
+            val position: Int
+        ) : RequestListener<Drawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                items.removeAt(position)
+                this@GalleryItemAdapter.notifyItemRemoved(position)
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                return false
+            }
+
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(LayoutInflater.from(parent.context), parent)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.text.text = position.toString()
+            val item = items[position]
+            Glide.with(holder.itemView)
+                .load(item.path)
+                .thumbnail(.1f)
+                .listener(ErrorHandling(position))
+                .into(holder.imageView)
         }
 
-        override fun getItemCount(): Int {
-            return mItemCount
-        }
+        override fun getItemCount(): Int = items.size
     }
 
     companion object {
-
-        // TODO: Customize parameters
-        fun newInstance(itemCount: Int): GalleryItemListDialogFragment =
-                GalleryItemListDialogFragment().apply {
-                    arguments = Bundle().apply {
-                        putInt(ARG_ITEM_COUNT, itemCount)
-                    }
-                }
-
+        fun newInstance(): GalleryItemListDialogFragment = GalleryItemListDialogFragment()
     }
 }
