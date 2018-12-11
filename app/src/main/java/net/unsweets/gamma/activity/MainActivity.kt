@@ -1,6 +1,5 @@
 package net.unsweets.gamma.activity
 
-import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Intent
 import android.content.res.Configuration
@@ -93,8 +92,6 @@ class MainActivity : BaseActivity() {
     private fun showBottomMenu() {
     }
 
-
-    @SuppressLint("RestrictedApi")
     private fun showComposePostActivity() {
         val fab = binding.fab
         val pos = IntArray(2)
