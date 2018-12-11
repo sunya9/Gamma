@@ -15,7 +15,7 @@ data class User(
     @Json(name = "follows_you") val followsYou: Boolean,
     val id: String,
     val locale: String,
-    val name: String,
+    val name: String?,
     val timezone: String,
     val type: AccountType,
     val username: String,
@@ -28,10 +28,10 @@ data class User(
     data class UserContent(
         @Json(name = "avatar_image") val avatarImage: Avatar,
         @Json(name = "cover_image") val coverImage: Cover,
-        override val entities: Entities,
-        override val html: String,
+        override val entities: Entities?,
+        override val html: String?,
         val markdownText: String?,
-        override val text: String
+        override val text: String?
     ): HaveEntities
 
     data class UserCount(

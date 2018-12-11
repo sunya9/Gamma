@@ -17,9 +17,9 @@ data class Message private constructor(
     val content: MessageContent?
 ) {
     data class MessageContent(
-        override val entities: Entities,
-        override val html: String,
-        override val text: String
+        override val entities: Entities?,
+        override val html: String?,
+        override val text: String?
     ) : HaveEntities
 }
 

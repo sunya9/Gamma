@@ -16,16 +16,16 @@ data class Post(
     val user: User,
     @Json(name = "thread_id") val threadId: String,
     @Json(name = "reply_to") val replyTo: String?,
-    @Json(name = "repost_of") val repostOf: String?,
+    @Json(name = "repost_of") val repostOf: Post?,
     val counts: PostCount,
     val content: PostContent?,
-    @Json(name = "you_bookmarked") val youBookmarked: Boolean,
-    @Json(name = "you_reposted") val youReposted: Boolean
+    @Json(name = "you_bookmarked") val youBookmarked: Boolean?,
+    @Json(name = "you_reposted") val youReposted: Boolean?
 ) {
     data class PostContent(
-        override val text: String,
-        override val html: String,
-        override val entities: Entities,
+        override val text: String?,
+        override val html: String?,
+        override val entities: Entities?,
         @Json(name = "link_not_parsed") val linksNotParsed: Boolean?
     ) : HaveEntities
 

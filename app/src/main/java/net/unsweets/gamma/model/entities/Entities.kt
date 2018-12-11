@@ -2,7 +2,7 @@ package net.unsweets.gamma.model.entities
 
 import com.squareup.moshi.Json
 
-class Entities(
+data class Entities(
     val links: List<LinkEntities>,
     val mentions: List<MentionEntities>,
     val tags: List<TagEntities>
@@ -21,7 +21,7 @@ class Entities(
         override val len: Int,
         override val pos: Int,
         val id: String,
-        @Json(name = "is_leading") val isLeading: Boolean,
+        @Json(name = "is_leading") val isLeading: Boolean?,
         @Json(name ="is_copy") val isCopy: Boolean?
     ) : BaseEntities
 
