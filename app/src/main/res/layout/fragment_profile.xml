@@ -237,12 +237,12 @@
                         app:titleTextColor="@{safeUnbox(viewModel.toolbarTextColor)}" />
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
-            <androidx.recyclerview.widget.RecyclerView
+
+            <FrameLayout
                 android:id="@+id/list"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:listitem="@layout/fragment_post_item" />
+                android:layout_height="match_parent" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

@@ -12,32 +12,26 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
-import kotlinx.android.synthetic.main.fragment_profile.*
-
 import net.unsweets.gamma.R
-import net.unsweets.gamma.adapter.PostItemRecyclerViewAdapter
 import net.unsweets.gamma.databinding.FragmentProfileBinding
-import net.unsweets.gamma.model.Post
 import net.unsweets.gamma.model.User
-import net.unsweets.gamma.util.PrefManager
 import net.unsweets.gamma.util.Store
 import net.unsweets.gamma.util.then
 import java.util.*
 
-class ProfileFragment : BaseFragment() {
+class ProfileFragment : BaseFragment(), BaseListFragment.OnBaseListListener {
     private enum class ProfileArgKey {
         ID
     }
 
     private lateinit var viewModel: ProfileViewModel
-    private var items: ArrayList<Post> = ArrayList()
 
     private lateinit var mId: String
 
@@ -55,25 +49,29 @@ class ProfileFragment : BaseFragment() {
 
         binding.toolbar.setNavigationOnClickListener { backToPrevFragment() }
 
-        arguments?.let {bundle ->
+        arguments?.let { bundle ->
             val id = bundle.getString(ProfileArgKey.ID.name) ?: return@let
             mId = id
             getUserData(id)
         } ?: backToPrevFragment()
         binding.swipeRefreshLayout.setOnRefreshListener {
-            val id = viewModel.user.value?.id ?: return@setOnRefreshListener
             getUserData(mId)
         }
+        fragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.list, PostItemFragment.getUserPostInstance(mId))
+            ?.commit()
+        binding.list
 
         toolbarSetup(binding.appBar, binding.swipeRefreshLayout)
-        setupList(binding.list)
 
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activity?.findViewById<View>(android.R.id.content)?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        activity?.findViewById<View>(android.R.id.content)
+            ?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         activity?.window?.let {
             it.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             it.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -81,12 +79,13 @@ class ProfileFragment : BaseFragment() {
 
     }
 
+    override fun onRefreshed() {
+        binding.swipeRefreshLayout.isRefreshing = false
+
+    }
+
     private fun getUserData(id: String) {
         pnut.getUser(id).then { viewModel.user.postValue(it.data) }
-        pnut.getPosts(id).then {
-            viewModel.posts.postValue(ArrayList(it.data))
-            binding.swipeRefreshLayout.isRefreshing = false
-        }
         viewModel.me.value = prefManager.getDefaultAccountID() == id
     }
 
@@ -103,28 +102,6 @@ class ProfileFragment : BaseFragment() {
 
     }
 
-    private fun setupList(list: RecyclerView) {
-        items = viewModel.posts.value!!
-        val adapter = PostItemRecyclerViewAdapter(context!!, items,
-            object : PostItemFragment.OnListFragmentInteractionListener {
-                override fun onListFragmentInteraction(item: Post?) {
-                }
-            }
-        )
-        val linear = LinearLayoutManager(context)
-        val dividerItemDecoration = DividerItemDecoration(context, linear.orientation)
-        val divider = resources.getDrawable(R.drawable.post_list_divider, context?.theme)
-        dividerItemDecoration.setDrawable(divider)
-        list.addItemDecoration(dividerItemDecoration)
-        list.layoutManager = linear
-        list.adapter = adapter
-
-        viewModel.posts.observe(this, Observer {
-            items.addAll(it)
-            adapter.notifyDataSetChanged()
-        })
-    }
-
     private fun openFollowerList() {
         val user = viewModel.user.value ?: return
         val fragment = UserListFragment.newInstance(UserListFragment.UserListMode.FOLLOWERS, user)
@@ -138,7 +115,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun eventHandling(it: Event?) {
-        when(it) {
+        when (it) {
             Event.FOLLOWING_LIST -> openFollowingList()
             Event.FOLLOWER_LIST -> openFollowerList()
         }
@@ -146,18 +123,17 @@ class ProfileFragment : BaseFragment() {
 
     class ProfileViewModel : Store<Event>() {
         val user = MutableLiveData<User>()
-        val posts = MutableLiveData<ArrayList<Post>>().apply { value = ArrayList() }
-        val usernameWithAt: LiveData<String> = Transformations.map(user) { "@${it.username}"}
+        val usernameWithAt: LiveData<String> = Transformations.map(user) { "@${it.username}" }
         val since: LiveData<CharSequence> = Transformations.map(user) {
             val calendar = Calendar.getInstance()
             calendar.time = it.createdAt
             DateFormat.format("yyyy/MM/dd", calendar)
         }
         val relation: LiveData<Int> = Transformations.map(user) {
-            if(it.youFollow && it.followsYou && !it.youCanFollow) {
+            if (it.youFollow && it.followsYou && !it.youCanFollow) {
                 // it's me!
                 R.string.its_me
-            } else if(it.followsYou) {
+            } else if (it.followsYou) {
                 R.string.follows_you
             } else {
                 0
