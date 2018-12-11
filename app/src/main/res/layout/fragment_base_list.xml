@@ -5,14 +5,11 @@
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="net.unsweets.gamma.fragment.PostItemFragment.PostItemViewModel" />
     </data>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
-        android:name="net.unsweets.gamma.fragment.PostItemFragment"
+        android:name="net.unsweets.gamma.fragment.BaseListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
