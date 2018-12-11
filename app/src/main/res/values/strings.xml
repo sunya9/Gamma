@@ -1,3 +1,54 @@
 <resources>
-  <string name="app_name">Gamma</string>
+    <string name="app_name">Gamma</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="home">Home</string>
+    <string name="interactions">Interactions</string>
+    <string name="mentions">Mentions</string>
+    <string name="stars">Stars</string>
+    <string name="settings">Settings</string>
+    <string name="conversations">Conversations</string>
+    <string name="private_message">Private Message</string>
+    <string name="chat_room">Chat Room</string>
+    <string name="missed_conversations">Missed Conversations</string>
+    <string name="newcomers">Newcomers</string>
+    <string name="photos">Photos</string>
+    <string name="trending">Trending</string>
+    <string name="global">Global</string>
+    <string name="compose_a_post">Compose a post</string>
+    <string name="post">Post</string>
+    <string name="app_description">pnut.io client for android.</string>
+    <string name="login_with_pnut">Login</string>
+    <string name="loading_now">Loading…</string>
+    <string name="files">Files</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="follow">Follow</string>
+    <string name="following_with_name">\@%1$s\'s following</string>
+    <string name="since">Since: %s</string>
+    <string name="follows_you">Follows you</string>
+    <string name="its_me">It\'s me!</string>
+    <plurals name="following">
+        <item quantity="zero">%d\nFollowing</item>
+        <item quantity="other">%d\nFollowing</item>
+    </plurals>
+    <plurals name="follower">
+        <item quantity="zero">%d\nFollowers</item>
+        <item quantity="other">%d\nFollowers</item>
+    </plurals>
+    <plurals name="starred">
+        <item quantity="zero">%d\nStarred</item>
+        <item quantity="other">%d\nStarred</item>
+    </plurals>
+    <plurals name="user">
+        <item quantity="zero">%d users</item>
+        <item quantity="one">%d user</item>
+        <item quantity="other">%d users</item>
+    </plurals>
+    <string name="title_activity_settings">Settings</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="pref_header_account">Account</string>
+    <string name="sign_up">Sign up</string>
+    <string name="gallery">Gallery</string>
 </resources>
