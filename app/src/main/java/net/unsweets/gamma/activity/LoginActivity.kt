@@ -36,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         loginButton.setOnClickListener { launchLoginBrowserActivity() }
+        signUpButton.setOnClickListener { launchSignUpBrowserActivity() }
         intent?.let {
             val hasError = it.getBooleanExtra(IntentKey.ERROR.name, false)
             if(!hasError) return
@@ -53,6 +54,11 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
         finish()
+    }
+
+    private fun launchSignUpBrowserActivity() {
+        Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.sign_up_url)))
+        startActivity(intent)
     }
 
     private fun createLoginURL(): String {
