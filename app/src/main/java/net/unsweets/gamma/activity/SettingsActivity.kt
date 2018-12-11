@@ -3,20 +3,17 @@ package net.unsweets.gamma.activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Bundle
 import android.preference.ListPreference
 import android.preference.PreferenceActivity
 import android.preference.PreferenceManager
 import android.view.MenuItem
 import androidx.annotation.StringRes
-import androidx.appcompat.app.ActionBar
 import androidx.core.app.NavUtils
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragment
 import net.unsweets.gamma.R
-import androidx.appcompat.app.AppCompatDelegate
-
+import net.unsweets.gamma.util.PrefManager
 
 
 class SettingsActivity : PreferenceActivity() {
@@ -67,7 +64,7 @@ class SettingsActivity : PreferenceActivity() {
             return super.onOptionsItemSelected(item)
         }
 
-        fun findPreference(@StringRes id: Int) = findPreference(getString(id))
+        fun findPreference(@StringRes id: Int): Preference? = findPreference(getString(id))
     }
 
     class AccountPreferenceFragment : BasePreferenceFragment() {
@@ -75,6 +72,17 @@ class SettingsActivity : PreferenceActivity() {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_account)
             setHasOptionsMenu(true)
+            findPreference(R.string.pref_logout_account_key)?.apply {
+                setOnPreferenceClickListener { logout() }
+            }
+        }
+
+        private fun logout(): Boolean {
+            PrefManager(activity).removeDefaultAccountIDAndToken()
+            activity.finish()
+            val intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
+            return true
         }
     }
 
