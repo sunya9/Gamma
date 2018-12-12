@@ -31,15 +31,15 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewPager.adapter = StreamViewPagerAdapter(childFragmentManager, context)
-
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
     }
 
     class StreamViewPagerAdapter(fm: FragmentManager, val context: Context?) : FragmentPagerAdapter(fm) {
-        val items = listOf(
-            Item(PostItemFragment.newInstance(), R.string.home),
-            Item(PostItemFragment.newInstance(), R.string.mentions),
-            Item(PostItemFragment.newInstance(), R.string.interactions),
-            Item(PostItemFragment.newInstance(), R.string.stars)
+        private val items = listOf(
+            Item(PostItemFragment.getHomeStreamInstance(), R.string.home),
+            Item(PostItemFragment.getMentionStreamInstance(), R.string.mentions),
+            Item(PostItemFragment.getHomeStreamInstance(), R.string.interactions),
+            Item(PostItemFragment.getStarInstance(), R.string.stars)
         )
 
         data class Item(val fragment: Fragment, @StringRes val title: Int)
