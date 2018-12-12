@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="client_id">WYEwPba2HqCw0g3ygspd2CSNfxAGlMyS</string>
+    <string name="authenticate_url">https://pnut.io/oauth/authorize?client_id=%1$s&amp;redirect_uri=gamma://authenticate&amp;scope=%2$s&amp;response_type=token&amp;simple_login=1</string>
+    <string name="sign_up_url">https://pnut.io/join</string>
+</resources>
