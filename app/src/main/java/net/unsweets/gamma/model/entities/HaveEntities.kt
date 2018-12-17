@@ -1,13 +1,17 @@
 package net.unsweets.gamma.model.entities
 
+import android.app.PendingIntent
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.view.View
+import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.res.ResourcesCompat
 import net.unsweets.gamma.R
+import net.unsweets.gamma.activity.ComposePostActivity
 import net.unsweets.gamma.fragment.ProfileFragment
 import net.unsweets.gamma.util.FragmentHelper
 import net.unsweets.gamma.util.TouchableSpan
@@ -37,7 +41,7 @@ interface HaveEntities {
 
     private fun clickedEntity(context: Context, entity: Entities.SealedEntity) {
         when (entity) {
-            is Entities.SealedEntity.LinkEntities -> openLink(context, entity.link)
+            is Entities.SealedEntity.LinkEntities -> openLink(context, entity)
             is Entities.SealedEntity.MentionEntities -> openProfile(context, entity.id)
             is Entities.SealedEntity.TagEntities -> showTaggedPosts(context, entity.text)
         }
@@ -54,8 +58,26 @@ interface HaveEntities {
             FragmentHelper.addFragment(context, fragment, id)
         }
 
-        private fun openLink(context: Context, url: String) {
-            CustomTabsIntent.Builder().build().launchUrl(context, Uri.parse(url))
+        private fun openLink(context: Context, entity: Entities.SealedEntity.LinkEntities) {
+            val link = entity.link
+            val text = entity.text
+            val menuLabel = context.getString(R.string.post)
+            val packageName = CustomTabsClient.getPackageName(context, arrayListOf(context.packageName))
+
+            val pendingIntent = ComposePostActivity.shareUrlIntent(context, null, link).run {
+                PendingIntent.getActivity(context, 0, this, 0)
+            }
+            val icon = BitmapFactory.decodeResource(context.resources, R.drawable.ic_create_black_24dp)
+            CustomTabsIntent
+                .Builder()
+                .setShowTitle(true)
+                .setActionButton(icon, menuLabel, pendingIntent, false)
+                .addDefaultShareMenuItem()
+                .enableUrlBarHiding()
+                .build()
+                .also { it.intent.`package` = packageName }
+                .launchUrl(context, Uri.parse(link))
+
         }
     }
 }
