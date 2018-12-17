@@ -2,11 +2,13 @@ package net.unsweets.gamma.api
 
 import android.content.Context
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import net.unsweets.gamma.api.model.*
 import net.unsweets.gamma.model.*
 import net.unsweets.gamma.util.PrefManager
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -17,19 +19,33 @@ import java.util.*
 
 class PnutService {
     companion object {
+        private const val cacheSize = (10 * 1024 * 1024).toLong() // 10 MB
         private const val API_BASE_URL = "https://api.pnut.io/v0/"
         private val moshi = Moshi.Builder()
             .add(Date::class.java, Rfc3339DateJsonAdapter().nullSafe())
+            .add(
+                PolymorphicJsonAdapterFactory.of(Interaction::class.java, "action")
+                    .withSubtype(Interaction.Repost::class.java, "repost")
+                    .withSubtype(Interaction.PollResponse::class.java, "poll_response")
+                    .withSubtype(Interaction.Reply::class.java, "reply")
+                    .withSubtype(Interaction.Follow::class.java, "follow")
+                    .withSubtype(Interaction.Bookmark::class.java, "bookmark")
+            )
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        fun getService(token: String?): IPnutService {
+        fun getService(token: String?): IPnutService = getService(null, token)
+        fun getService(context: Context?, token: String?): IPnutService {
             val client = OkHttpClient.Builder()
-            token?.let {
+            token?.let { _token ->
                 client.addInterceptor {
-                    val request = it.request().newBuilder().addHeader("Authorization", "Bearer $token").build()
+                    val request = it.request().newBuilder().addHeader("Authorization", "Bearer $_token").build()
                     it.proceed(request)
                 }
+            }
+            if (context != null) {
+                val cache = Cache(context.cacheDir, cacheSize)
+                client.cache(cache)
             }
             return Retrofit.Builder()
                 .baseUrl(API_BASE_URL)
@@ -175,7 +191,7 @@ class PnutService {
         fun pnutService(context: Context): IPnutService {
             val manager = PrefManager(context)
             val token = manager.getDefaultAccountToken()
-            return PnutService.getService(token)
+            return PnutService.getService(context, token)
         }
     }
 

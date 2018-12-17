@@ -4,46 +4,52 @@ import com.squareup.moshi.Json
 import net.unsweets.gamma.model.raw.PollNotice
 import java.util.*
 
-object Interaction {
+sealed class Interaction(
+    @Json(name = "pagination_id")
+    open val paginationId: String,
+    @Json(name = "event_date")
+    open val eventDate: Date,
+    open val action: Action,
+    open val users: List<User>
+) {
     data class Repost(
-        @Json(name = "pagination_id") override val paginationId: String,
-        @Json(name = "event_date") override val eventDate: Date,
+        override val paginationId: String,
+        override val eventDate: Date,
         override val action: Action,
         override val users: List<User>,
         val objects: List<Post>
-    ) : IInteraction
-
+    ) : Interaction(paginationId, eventDate, action, users)
     data class Bookmark(
-        @Json(name = "pagination_id") override val paginationId: String,
-        @Json(name = "event_date") override val eventDate: Date,
+        override val paginationId: String,
+        override val eventDate: Date,
         override val action: Action,
         override val users: List<User>,
         val objects: List<Post>
-    ) : IInteraction
+    ) : Interaction(paginationId, eventDate, action, users)
 
     data class Reply(
-        @Json(name = "pagination_id") override val paginationId: String,
-        @Json(name = "event_date") override val eventDate: Date,
+        override val paginationId: String,
+        override val eventDate: Date,
         override val action: Action,
         override val users: List<User>,
         val objects: List<Post>
-    ) : IInteraction
+    ) : Interaction(paginationId, eventDate, action, users)
 
     data class Follow(
-        @Json(name = "pagination_id") override val paginationId: String,
-        @Json(name = "event_date") override val eventDate: Date,
+        override val paginationId: String,
+        override val eventDate: Date,
         override val action: Action,
         override val users: List<User>,
         val objects: List<User>
-    ) : IInteraction
+    ) : Interaction(paginationId, eventDate, action, users)
 
     data class PollResponse(
-        @Json(name = "pagination_id") override val paginationId: String,
-        @Json(name = "event_date") override val eventDate: Date,
+        override val paginationId: String,
+        override val eventDate: Date,
         override val action: Action,
         override val users: List<User>,
         val objects: List<PollNotice>
-    ) : IInteraction
+    ) : Interaction(paginationId, eventDate, action, users)
 
     enum class Action {
         @Json(name = "repost")
@@ -58,12 +64,4 @@ object Interaction {
         PollResponse
     }
 
-    interface IInteraction {
-        @Json(name = "pagination_id")
-        val paginationId: String
-        @Json(name = "event_date")
-        val eventDate: Date
-        val action: Action
-        val users: List<User>
-    }
 }
