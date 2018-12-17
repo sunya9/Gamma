@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#d36854</color>
+    <color name="colorPrimaryDarker">#9d3a2b</color>
+    <color name="colorPrimaryLighter">#ff9881</color>
     <color name="colorPrimaryDark">@color/colorGray</color>
     <color name="colorAccent">#4a484c</color>
+    <color name="colorAttention">#d44646</color>
     <color name="colorStatusBar">@color/colorAccent</color>
     <color name="colorNavigationDrawerHeaderBackgroundTint">#9000</color>
     <color name="colorWindowBackground">#f9f9f9</color>
