@@ -54,6 +54,7 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
 
     kapt 'com.android.databinding:compiler:3.1.4'
+    kapt "android.arch.lifecycle:compiler:1.1.1"
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.27.0-eap13"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.27.0-eap13"
