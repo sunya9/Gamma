@@ -12,6 +12,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.res.ResourcesCompat
 import net.unsweets.gamma.R
 import net.unsweets.gamma.activity.ComposePostActivity
+import net.unsweets.gamma.fragment.PostItemFragment
 import net.unsweets.gamma.fragment.ProfileFragment
 import net.unsweets.gamma.util.FragmentHelper
 import net.unsweets.gamma.util.TouchableSpan
@@ -21,7 +22,7 @@ interface HaveEntities {
     val html: String?
     val text: String?
     fun getSpannableStringBuilder(context: Context): SpannableStringBuilder {
-        val builder = SpannableStringBuilder(text)
+        val builder = SpannableStringBuilder(text ?: "")
         val normalColor = ResourcesCompat.getColor(context.resources, R.color.colorPrimary, context.theme)
         val pressedColor = ResourcesCompat.getColor(context.resources, R.color.colorPrimaryDarker, context.theme)
         if (entities == null || text == null) return builder
@@ -49,7 +50,7 @@ interface HaveEntities {
 
     companion object {
         private fun showTaggedPosts(context: Context, tag: String) {
-            val fragment = ProfileFragment.newInstance(tag)
+            val fragment = PostItemFragment.getTaggedStreamInstance(tag)
             FragmentHelper.addFragment(context, fragment, tag)
         }
 
