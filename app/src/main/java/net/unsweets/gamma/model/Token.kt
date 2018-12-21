@@ -1,13 +1,16 @@
 package net.unsweets.gamma.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
-class Token (
+@Parcelize
+data class Token (
     val app: Client,
     val scopes: List<Scope>,
     val user: User,
     val storage: Storage
-) {
+) : Parcelable {
     enum class Scope {
         @Json(name = "basic") BASIC,
         @Json(name = "stream") STREAM,
@@ -22,7 +25,8 @@ class Token (
         @Json(name = "email") EMAIL
     }
 
-    data class Storage(val available: Long, val total: Long)
+    @Parcelize
+    data class Storage(val available: Long, val total: Long) : Parcelable
 }
 
 

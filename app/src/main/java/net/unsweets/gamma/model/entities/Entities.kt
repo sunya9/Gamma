@@ -1,13 +1,17 @@
 package net.unsweets.gamma.model.entities
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Entities(
     val links: List<SealedEntity.LinkEntities>,
     val mentions: List<SealedEntity.MentionEntities>,
     val tags: List<SealedEntity.TagEntities>
-) {
-    sealed class SealedEntity : BaseEntities {
+) : Parcelable {
+    sealed class SealedEntity : BaseEntities, Parcelable {
+        @Parcelize
         data class LinkEntities(
             override val text: String,
             override val len: Int,
@@ -17,6 +21,7 @@ data class Entities(
             val description: String?
         ) : SealedEntity()
 
+        @Parcelize
         data class MentionEntities(
             override val text: String,
             override val len: Int,
@@ -26,7 +31,7 @@ data class Entities(
             @Json(name = "is_copy") val isCopy: Boolean?
         ) : SealedEntity()
 
-
+        @Parcelize
         data class TagEntities(
             override val len: Int,
             override val pos: Int,

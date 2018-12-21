@@ -1,3 +1,7 @@
 package net.unsweets.gamma.model
 
-data class Client(val name: String, val link: String, val id: String)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Client(val name: String, val link: String, val id: String): Parcelable

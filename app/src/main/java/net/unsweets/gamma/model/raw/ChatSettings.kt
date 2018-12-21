@@ -1,13 +1,18 @@
 package net.unsweets.gamma.model.raw
 
-data class ChatSettings(override val value: ChatSettingsValue) : Raw.IRaw {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class ChatSettings(override val value: ChatSettingsValue) : Raw.IRaw, Parcelable {
     override val type: String = "io.pnut.core.chat-settings"
 
+    @Parcelize
     data class ChatSettingsValue(
         val name: String,
         val description: String,
         val categories: List<Categories>?
-    ) : Raw.RawValue {
+    ) : Raw.RawValue, Parcelable {
         enum class Categories(val value: String) {
             FUN("fun"),
             LIFESTYLE("lifestyle"),

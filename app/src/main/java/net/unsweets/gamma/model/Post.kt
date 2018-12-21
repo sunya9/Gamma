@@ -1,10 +1,13 @@
 package net.unsweets.gamma.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.model.entities.Entities
 import net.unsweets.gamma.model.entities.HaveEntities
 import java.util.*
 
+@Parcelize
 data class Post(
     @Json(name = "created_at") val createdAt: Date,
     val id: String,
@@ -21,18 +24,20 @@ data class Post(
     val content: PostContent?,
     @Json(name = "you_bookmarked") val youBookmarked: Boolean?,
     @Json(name = "you_reposted") val youReposted: Boolean?
-) {
+): Parcelable {
+    @Parcelize
     data class PostContent(
         override val text: String?,
         override val html: String?,
         override val entities: Entities?,
         @Json(name = "link_not_parsed") val linksNotParsed: Boolean?
-    ) : HaveEntities
+    ) : HaveEntities, Parcelable
 
+    @Parcelize
     data class PostCount(
         val bookmarks: Int,
         val replies: Int,
         val reposts: Int,
         val threads: Int
-    )
+    ) : Parcelable
 }

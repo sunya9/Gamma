@@ -1,7 +1,12 @@
 package net.unsweets.gamma.model.raw
 
-data class Language(override val value: LanguageValue) : Raw.IRaw {
-    data class LanguageValue(val language: String) : Raw.RawValue
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Language(override val value: LanguageValue) : Raw.IRaw, Parcelable {
+    @Parcelize
+    data class LanguageValue(val language: String) : Raw.RawValue, Parcelable
 
     override val type = "io.pnut.core.language"
 }

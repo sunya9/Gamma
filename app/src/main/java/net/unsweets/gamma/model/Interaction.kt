@@ -1,9 +1,11 @@
 package net.unsweets.gamma.model
 
 import android.content.Context
+import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.R
 import net.unsweets.gamma.model.raw.PollNotice
 import java.util.*
@@ -13,7 +15,8 @@ sealed class Interaction(
     open val eventDate: Date,
     open val action: Action,
     open val users: List<User>
-) {
+) : Parcelable {
+    @Parcelize
     data class Repost(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -23,6 +26,7 @@ sealed class Interaction(
         override val users: List<User>,
         val objects: List<Post>
     ) : Interaction(paginationId, eventDate, action, users)
+    @Parcelize
     data class Bookmark(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -33,6 +37,7 @@ sealed class Interaction(
         val objects: List<Post>
     ) : Interaction(paginationId, eventDate, action, users)
 
+    @Parcelize
     data class Reply(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -43,6 +48,7 @@ sealed class Interaction(
         val objects: List<Post>
     ) : Interaction(paginationId, eventDate, action, users)
 
+    @Parcelize
     data class Follow(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -53,6 +59,7 @@ sealed class Interaction(
         val objects: List<User>
     ) : Interaction(paginationId, eventDate, action, users)
 
+    @Parcelize
     data class PollResponse(
         @Json(name = "pagination_id")
         override val paginationId: String,

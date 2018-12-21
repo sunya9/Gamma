@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.View
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
@@ -26,15 +27,24 @@ interface HaveEntities {
         val normalColor = ResourcesCompat.getColor(context.resources, R.color.colorPrimary, context.theme)
         val pressedColor = ResourcesCompat.getColor(context.resources, R.color.colorPrimaryDarker, context.theme)
         if (entities == null || text == null) return builder
+        var offset = 0
         entities?.let {
             arrayListOf(it.links, it.mentions, it.tags)
                 .flatten()
+                .sortedBy { entity -> entity.pos }
                 .forEach { entity ->
+                    val zwj = entity.text.count { char ->  char == '\u200d' }
+                    val surrogate = entity.text.count { char -> Character.isSurrogate(char) }
+                    val diff = zwj + surrogate / 2
+                    val startPos = entity.pos + offset
+                    val endPos = startPos + entity.len + diff
                     builder.setSpan(object : TouchableSpan(normalColor, pressedColor) {
                         override fun onClick(widget: View) {
                             clickedEntity(context, entity)
                         }
-                    }, entity.pos, entity.pos + entity.len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }, startPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    offset += diff
+
                 }
         }
         return builder

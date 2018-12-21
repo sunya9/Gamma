@@ -1,8 +1,11 @@
 package net.unsweets.gamma.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+@Parcelize
 class File(
     @Json(name = "audio_info") val audioInfo: AudioInfo?,
     @Json(name = "created_at") val createdAt: Date,
@@ -26,19 +29,22 @@ class File(
 //    TODO: implement derivativeFiles
 //    val derivativeFiles: List<DerivativeFiles>,
     val user: User?
-) {
-    data class UploadParameters(val method: String, val url: String)
+) : Parcelable {
+    @Parcelize
+    data class UploadParameters(val method: String, val url: String) : Parcelable
 
     enum class FileKind {
         AUDIO, IMAGE, OTHER
     }
 
-    data class ImageInfo(val height: Int, val width: Int)
+    @Parcelize
+    data class ImageInfo(val height: Int, val width: Int) : Parcelable
 
+    @Parcelize
     data class AudioInfo(
         val duration: Int,
         val bitrate: Int
-    )
+    ) : Parcelable
 
 }
 

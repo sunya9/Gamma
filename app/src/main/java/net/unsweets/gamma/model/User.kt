@@ -1,12 +1,15 @@
 package net.unsweets.gamma.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.model.entities.Entities
 import net.unsweets.gamma.model.entities.HaveEntities
 import net.unsweets.gamma.model.image.Avatar
 import net.unsweets.gamma.model.image.Cover
 import java.util.*
 
+@Parcelize
 data class User(
     val badge: Badge?,
     val content: UserContent,
@@ -24,7 +27,8 @@ data class User(
     @Json(name = "you_follow") val youFollow: Boolean,
     @Json(name = "you_muted") val youMuted: Boolean,
     val verified: VerifiedDomain?
-) {
+) : Parcelable {
+    @Parcelize
     data class UserContent(
         @Json(name = "avatar_image") val avatarImage: Avatar,
         @Json(name = "cover_image") val coverImage: Cover,
@@ -32,8 +36,9 @@ data class User(
         override val html: String?,
         val markdownText: String?,
         override val text: String?
-    ): HaveEntities
+    ): HaveEntities, Parcelable
 
+    @Parcelize
     data class UserCount(
         val bookmarks: Int,
         val clients: Int,
@@ -41,16 +46,19 @@ data class User(
         val following: Int,
         val posts: Int,
         val users: Int
-    )
+    ) : Parcelable
+
+    @Parcelize
     data class Badge(
         val id: String,
         val name: String
-    )
+    ) : Parcelable
 
+    @Parcelize
     data class VerifiedDomain(
         val domain: String,
         val link: String
-    )
+    ) : Parcelable
 
     enum class AccountType {
         @Json(name = "human") HUMAN,

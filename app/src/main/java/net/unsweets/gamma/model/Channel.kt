@@ -1,7 +1,10 @@
 package net.unsweets.gamma.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Channel(
     val id: String,
     @Json(name = "is_active") val isActive: Boolean,
@@ -14,35 +17,41 @@ data class Channel(
     @Json(name = "you_subscribed") val youSubscribed: Boolean,
     @Json(name = "you_muted") val youMuted: Boolean,
     @Json(name = "has_unread") val hasUnread: Boolean
-) {
+) : Parcelable {
+    @Parcelize
     data class ChannelCount(
         val messages: Int,
         val subscribers: Int
-    )
+    ) : Parcelable
 
+    @Parcelize
     data class Acl(
         val full: Full,
         val write: Write,
         val read: Read
-    ) {
+    ) : Parcelable {
+        @Parcelize
         data class Full(
             override val immutable: Boolean,
             override val you: Boolean,
-            @Json(name = "user_ids") override val userIds: List<String>): IAuthority
+            @Json(name = "user_ids") override val userIds: List<String>): IAuthority, Parcelable
+
+        @Parcelize
         data class Write(
             override val immutable: Boolean,
             override val you: Boolean,
             @Json(name = "user_ids") override val userIds: List<String>,
             @Json(name ="any_user") val anyUser: Boolean
-        ) : IAuthority
+        ) : IAuthority, Parcelable
 
+        @Parcelize
         data class Read(
             override val immutable: Boolean,
             override val you: Boolean,
             @Json(name = "user_ids") override val userIds: List<String>,
             @Json(name = "any_user") val anyUser: Boolean,
             val public: Boolean
-        ) : IAuthority
+        ) : IAuthority, Parcelable
 
         private interface IAuthority {
             val immutable: Boolean

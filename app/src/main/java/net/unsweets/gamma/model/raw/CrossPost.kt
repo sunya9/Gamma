@@ -1,9 +1,13 @@
 package net.unsweets.gamma.model.raw
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
-data class CrossPost(override val value: CrossPostValue) : Raw.IRaw {
+@Parcelize
+data class CrossPost(override val value: CrossPostValue) : Raw.IRaw, Parcelable {
     override val type: String = "io.pnut.core.crosspost"
 
-    data class CrossPostValue(@Json(name = "canonical_url") val canonicalUrl: String) : Raw.RawValue
+    @Parcelize
+    data class CrossPostValue(@Json(name = "canonical_url") val canonicalUrl: String) : Raw.RawValue, Parcelable
 }

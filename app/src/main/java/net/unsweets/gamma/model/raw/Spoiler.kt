@@ -1,11 +1,16 @@
 package net.unsweets.gamma.model.raw
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-data class Spoiler(override val value: SpoilerValue) : Raw.IRaw {
+@Parcelize
+data class Spoiler(override val value: SpoilerValue) : Raw.IRaw, Parcelable {
     override val type: String = "shawn.spoiler"
 
-    data class SpoilerValue(val topic: String, @Json(name = "expired_at") val expiredAt: Date?) : Raw.RawValue
+    @Parcelize
+    data class SpoilerValue(val topic: String, @Json(name = "expired_at") val expiredAt: Date?) : Raw.RawValue,
+        Parcelable
 
 }

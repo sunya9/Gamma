@@ -1,8 +1,11 @@
 package net.unsweets.gamma.model.raw
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
-data class OEmbed(override val value: OembedValue) : Raw.IRaw {
+@Parcelize
+data class OEmbed(override val value: OembedValue) : Raw.IRaw, Parcelable {
     override val type: String = "io.pnut.core.oembed"
 
     interface BaseOEmbed : Raw.RawValue {
@@ -56,7 +59,8 @@ data class OEmbed(override val value: OembedValue) : Raw.IRaw {
 
     }
 
-    sealed class OembedValue : BaseOEmbed {
+    sealed class OembedValue : BaseOEmbed, Parcelable {
+        @Parcelize
         data class Photo(
             override val type: String,
             override val version: String,
