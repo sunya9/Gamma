@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.util.Log
 import android.view.View
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
@@ -27,15 +26,13 @@ interface HaveEntities {
         val normalColor = ResourcesCompat.getColor(context.resources, R.color.colorPrimary, context.theme)
         val pressedColor = ResourcesCompat.getColor(context.resources, R.color.colorPrimaryDarker, context.theme)
         if (entities == null || text == null) return builder
-        var offset = 0
         entities?.let {
             arrayListOf(it.links, it.mentions, it.tags)
                 .flatten()
                 .sortedBy { entity -> entity.pos }
                 .forEach { entity ->
-                    val zwj = entity.text.count { char ->  char == '\u200d' }
-                    val surrogate = entity.text.count { char -> Character.isSurrogate(char) }
-                    val diff = zwj + surrogate / 2
+                    val offset = text!!.offsetByCodePoints(0, entity.pos) - entity.pos
+                    val diff = entity.text.codePointCount(0, entity.text.length) - entity.text.length
                     val startPos = entity.pos + offset
                     val endPos = startPos + entity.len + diff
                     builder.setSpan(object : TouchableSpan(normalColor, pressedColor) {
@@ -43,7 +40,6 @@ interface HaveEntities {
                             clickedEntity(context, entity)
                         }
                     }, startPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    offset += diff
 
                 }
         }
@@ -71,7 +67,6 @@ interface HaveEntities {
 
         private fun openLink(context: Context, entity: Entities.SealedEntity.LinkEntities) {
             val link = entity.link
-            val text = entity.text
             val menuLabel = context.getString(R.string.post)
             val packageName = CustomTabsClient.getPackageName(context, arrayListOf(context.packageName))
 
