@@ -16,7 +16,7 @@ data class Post(
     @Json(name = "is_revised") val isRevised: Boolean?,
     val revision: String?,
     val source: Client,
-    val user: User,
+    val user: User?,
     @Json(name = "thread_id") val threadId: String,
     @Json(name = "reply_to") val replyTo: String?,
     @Json(name = "repost_of") val repostOf: Post?,
@@ -40,4 +40,6 @@ data class Post(
         val reposts: Int,
         val threads: Int
     ) : Parcelable
+
+    fun getMainPost(): Post = repostOf ?: this
 }
