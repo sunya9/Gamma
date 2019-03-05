@@ -1,8 +1,9 @@
-package net.unsweets.gamma.activity
+package net.unsweets.gamma.ui.activity
 
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -20,11 +21,15 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_compose_post.*
 import kotlinx.android.synthetic.main.compose_thumbnail_image.view.*
 import net.unsweets.gamma.R
-import net.unsweets.gamma.api.model.PostBody
 import net.unsweets.gamma.databinding.ActivityComposePostBinding
-import net.unsweets.gamma.fragment.GalleryItemListDialogFragment
-import net.unsweets.gamma.model.Post
-import net.unsweets.gamma.util.*
+import net.unsweets.gamma.model.entity.Post
+import net.unsweets.gamma.model.entity.PostBody
+import net.unsweets.gamma.ui.base.BaseViewModel
+import net.unsweets.gamma.ui.fragment.GalleryItemListDialogFragment
+import net.unsweets.gamma.ui.util.GlideApp
+import net.unsweets.gamma.ui.util.hideKeyboard
+import net.unsweets.gamma.ui.util.showKeyboard
+import net.unsweets.gamma.ui.util.toLiveData
 
 
 class ComposePostActivity : BaseActivity(), GalleryItemListDialogFragment.Listener {
@@ -59,31 +64,36 @@ class ComposePostActivity : BaseActivity(), GalleryItemListDialogFragment.Listen
 
     private lateinit var adapter: ThumbnailAdapter
 
+    private val eventObserver = Observer<Event> {
+        when (it) {
+            Event.Sent -> sent()
+            Event.AttachPicture -> requestGalleryDialog()
+            else -> Unit
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_compose_post)
         if (savedInstanceState == null) revealAnimation(binding.rootLayout)
         viewModel = ViewModelProviders.of(this).get(ComposePostViewModel::class.java)
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
         setSupportActionBar(binding.toolbar)
         supportActionBar?.let {
-            it.setDisplayHomeAsUpEnabled(true)
+            //            it.setDisplayHomeAsUpEnabled(true)
             it.setTitle(R.string.compose_a_post)
         }
-        viewModel.event.observe(this, Observer {
-            when (it) {
-                Event.SendPost -> sendPost()
-                Event.AttachPicture -> requestGalleryDialog()
-                else -> Unit
-            }
-        })
+        viewModel.event.observe(this, eventObserver)
         binding.composeTextEditText.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) return@setOnFocusChangeListener
             showKeyboard(v)
         }
-        adapter = ThumbnailAdapter(this)
+        adapter = ThumbnailAdapter()
         thumbnailRecyclerView.adapter = adapter
+    }
+
+    private fun sent() {
+        finishWithAnim()
     }
 
     private fun requestGalleryDialog() {
@@ -184,13 +194,6 @@ class ComposePostActivity : BaseActivity(), GalleryItemListDialogFragment.Listen
 
     private fun exitReveal() = createRevealAnim(false)?.start()
 
-    private fun sendPost() {
-        val text = viewModel.text.value ?: return
-        pnut.createPost(PostBody(text)).then {
-        }
-        finishWithAnim()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
@@ -210,14 +213,11 @@ class ComposePostActivity : BaseActivity(), GalleryItemListDialogFragment.Listen
         exitReveal()
     }
 
-    class ThumbnailAdapter(context: Context) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
+    class ThumbnailAdapter : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
         private val items = ArrayList<String>()
-        val inflater = LayoutInflater.from(
-            context
-        )
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = inflater.inflate(R.layout.compose_thumbnail_image, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.compose_thumbnail_image, parent, false)
             return ViewHolder(view)
         }
 
@@ -255,7 +255,7 @@ class ComposePostActivity : BaseActivity(), GalleryItemListDialogFragment.Listen
     }
 
 
-    class ComposePostViewModel : Store<Event>() {
+    class ComposePostViewModel(app: Application) : BaseViewModel<Event>(app) {
         val replyTarget = MutableLiveData<Post>()
         val text = MutableLiveData<String>().apply { value = "" }
         private val counter: LiveData<Int> = Transformations.map(text) {
@@ -266,12 +266,18 @@ class ComposePostActivity : BaseActivity(), GalleryItemListDialogFragment.Listen
         val enableSendButton: LiveData<Boolean> =
             Transformations.map(counter) { (0 < (it ?: 0)) and !TextUtils.isEmpty(text.value ?: "") }
 
-        fun sendPost() = sendEvent(Event.SendPost)
+        fun sendPost() {
+            val text = text.value ?: return
+            val result = pnut.createPost(PostBody(text)).toLiveData()
+            sendEvent(Event.Sent)
+//            when(result.value) {
+//                is Promise.Success -> sendEvent(Event.Sent)
+//            }
+        }
         fun attachPicture() = sendEvent(Event.AttachPicture)
     }
 
     enum class Event {
-        SendPost,
-        AttachPicture
+        AttachPicture, Sent
     }
 }
