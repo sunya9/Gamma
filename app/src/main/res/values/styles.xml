@@ -1,27 +1,82 @@
 <resources>
-    <!-- Base application theme. --><style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorAccent">@color/colorAccent</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="floatingActionButtonStyle">@style/FloatingActionButton</item>
-    <item name="tabStyle">@style/Tab</item>
-    <item name="toolbarStyle">@style/Toolbar</item>
-    <item name="android:windowBackground">@color/colorWindowBackground</item>
-    <item name="materialButtonStyle">@style/Button</item>
-    <item name="colorError">@color/colorError</item>
-    <item name="materialCardViewStyle">@style/CardStyle</item>
-    <item name="colorControlHighlight">@color/colorGrayLight</item>
-    <item name="windowActionBar">false</item>
-    <item name="windowNoTitle">true</item>
-    <item name="android:textAppearance">@style/TextAppearance</item>
-    <item name="android:statusBarColor">@color/colorStatusBar</item>
-    <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>
-    <item name="android:fontFamily">@font/montserrat</item>
-</style>
+
+    <style name="BaseTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <!--<item name="colorPrimaryDark">#f0f</item>-->
+        <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
+        <item name="extendedFloatingActionButtonStyle">@style/ExtendedFloatingActionButtonStyle</item>
+        <!--<item name="android:textColorPrimary">@color/textColorPrimary</item>-->
+        <!--<item name="android:textColorPrimaryInverse">#f0f</item>-->
+        <!--<item name="android:textColorSecondaryInverse">#f0f</item>-->
+        <!--<item name="android:textColorSecondary">#f0f</item>-->
+        <!--<item name="android:textColorTertiary">@color/textColorTertiary</item>-->
+        <!--<item name="android:textColorTertiaryInverse">@color/textColorTertiaryInverse</item>-->
+        <item name="tabStyle">@style/Tab</item>
+        <item name="toolbarStyle">@style/Toolbar</item>
+        <item name="android:windowBackground">@color/colorWindowBackground</item>
+        <!--<item name="android:windowBackground">#f0f</item>-->
+        <item name="materialButtonStyle">@style/Button</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="materialCardViewStyle">@style/CardStyle</item>
+        <item name="colorControlNormal">@color/toolbarIcon</item>
+        <item name="colorControlHighlight">@color/colorGrayLight</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textAppearance">@style/TextAppearance</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
+        <item name="android:fragmentSharedElementEnterTransition">@transition/image_shared_element_transition</item>
+        <item name="android:fragmentSharedElementReturnTransition">@transition/image_shared_element_transition</item>
+        <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle</item>
+        <item name="textInputStyle">@style/TextInputStyle</item>
+        <!--<item name="android:statusBarColor">@color/colorGray</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--widget style-->
+        <item name="checkboxStyle">@style/CheckBoxStyle</item>
+        <item name="radioButtonStyle">@style/RadioButtonStyle</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    </style>
+
+    <style name="AppTheme" parent="BaseTheme" />
+
+    <style name="AppTheme.Translucent">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowEnterTransition">@null</item>
+        <item name="android:windowExitTransition">@null</item>
+        <item name="toolbarStyle">@style/Toolbar.Child</item>
+    </style>
+    s
+
+    <style name="AppTheme.Translucent.FullScreen">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="AppTheme.NoTranslucentStatusBar">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
 
     <style name="AppTheme.WithActionBar">
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
+    </style>
+
+    <style name="AppTheme.WithActionBar.Modal">
+        <item name="navigationIcon">@drawable/ic_close_black_24dp</item>
     </style>
 
     <style name="BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
@@ -38,13 +93,22 @@
         <item name="android:windowNoTitle">false</item>
     </style>
 
-    <style name="FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="backgroundTint">@color/colorPrimary</item>
+    <style name="FloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">?attr/colorPrimary</item>
         <item name="tint">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
+
+    <style name="ExtendedFloatingActionButtonStyle" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="iconTint">@android:color/white</item>
+    </style>
+
+    <style name="TextInputStyle" parent="Widget.Design.TextInputLayout" />
 
     <style name="Tab" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabTextAppearance">@style/TextAppearance</item>
+        <item name="tabUnboundedRipple">false</item>
     </style>
 
     <style name="TextAppearance" parent="TextAppearance.Design.Tab">
@@ -53,11 +117,38 @@
 
     <style name="Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:elevation">4dp</item>
-        <item name="android:background">@android:color/white</item>
+        <item name="android:background">@color/toolbarBg</item>
+    </style>
+
+    <style name="Toolbar.Child">
+        <item name="android:displayOptions">homeAsUp</item>
+    </style>
+
+    <style name="Toolbar.Up">
+        <item name="android:displayOptions">homeAsUp|showHome|showTitle</item>
+    </style>
+
+    <style name="Toolbar.White"></style>
+
+    <style name="ProfileToolbar">
+        <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle.Profile</item>
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
+    </style>
+
+    <style name="ActionOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <style name="ToolbarNavigationButtonStyle" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:tint">@color/toolbarIcon</item>
+    </style>
+
+    <style name="ToolbarNavigationButtonStyle.Profile">
+        <item name="android:tint">@android:color/white</item>
     </style>
 
     <style name="Button" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">999dp</item>
+        <item name="cornerRadius">24dp</item>
     </style>
 
     <style name="Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
@@ -66,7 +157,7 @@
     </style>
 
     <style name="AppTheme.SplashTheme">
-        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowBackground">@drawable/bg_splash</item>
         <item name="android:statusBarColor">@color/colorGray</item>
     </style>
 
@@ -90,4 +181,59 @@
     <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
         <item name="cardCornerRadius">0dp</item>
     </style>
+
+    <style name="CheckBoxStyle" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="android:buttonTint">@color/colorPrimary</item>
+    </style>
+
+    <style name="RadioButtonStyle" parent="Widget.MaterialComponents.CompoundButton.RadioButton">
+        <item name="android:buttonTint">@color/colorPrimary</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@color/toolbarIcon</item>
+    </style>
+
+    <style name="BaseFullScreenDialogStyle" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
+        <item name="extendedFloatingActionButtonStyle">@style/ExtendedFloatingActionButtonStyle</item>
+        <item name="tabStyle">@style/Tab</item>
+        <!--<item name="toolbarStyle">@style/Toolbar</item>-->
+        <!--<item name="android:windowBackground">@color/colorWindowBackground</item>-->
+        <item name="materialButtonStyle">@style/Button</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="materialCardViewStyle">@style/CardStyle</item>
+        <item name="colorControlNormal">@color/toolbarIcon</item>
+        <item name="colorControlHighlight">@color/colorGrayLight</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textAppearance">@style/TextAppearance</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
+        <item name="android:fragmentSharedElementEnterTransition">@transition/image_shared_element_transition</item>
+        <item name="android:fragmentSharedElementReturnTransition">@transition/image_shared_element_transition</item>
+        <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle</item>
+        <item name="textInputStyle">@style/TextInputStyle</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--widget style-->
+        <item name="checkboxStyle">@style/CheckBoxStyle</item>
+        <item name="radioButtonStyle">@style/RadioButtonStyle</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowEnterTransition">@null</item>
+        <item name="android:windowExitTransition">@null</item>
+        <item name="toolbarStyle">@style/Toolbar.Child</item>
+    </style>
+    <style name="FullScreenDialogStyle" parent="BaseFullScreenDialogStyle"/>
 </resources>

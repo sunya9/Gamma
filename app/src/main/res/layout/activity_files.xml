@@ -1,13 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.FilesActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".presentation.activity.FilesActivity">
 
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        style="@style/Toolbar.Up"
+        android:layout_width="match_parent"
+        android:layout_height="152dp"
+        android:background="@android:color/white"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="4dp"
+            app:expandedTitleMarginBottom="52dp"
+            app:expandedTitleMarginStart="72dp"
+            app:title="@string/files">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                style="@style/Toolbar.Up"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="0dp"
+                app:layout_collapseMode="pin"
+                app:title="@string/files" />
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <fragment
+        android:id="@+id/fileListFragment"
+        android:name="net.unsweets.gamma.presentation.fragment.FileListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layout="@layout/fragment_base_list" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-         />
-</androidx.core.widget.NestedScrollView>
+        app:fabSize="mini"
+        android:text="@string/upload"
+        app:icon="@drawable/ic_file_upload_black_24dp"
+        app:layout_anchor="@id/appBarLayout"
+        android:layout_marginStart="16dp"
+        app:layout_anchorGravity="bottom|start" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

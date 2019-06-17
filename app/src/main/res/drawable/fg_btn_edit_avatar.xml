@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list android:color="?attr/colorControlHighlight"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <item android:height="@dimen/size_edit_avatar" android:width="@dimen/size_edit_avatar"
+        android:drawable="@drawable/fg_btn_edit_cover" />
+</layer-list>

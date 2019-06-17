@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group >
+        <item
+            android:id="@+id/menuMessage"
+            android:title="@string/send_a_message" />
+    </group>
+    <group >
+        <item
+            android:id="@+id/menuMute"
+            android:title="@string/mute" />
+        <item
+            android:id="@+id/menuBlock"
+            android:title="@string/block" />
+    </group>
+    <group >
+        <item
+            android:id="@+id/menuShare"
+            android:title="@string/share" />
+    </group>
+</menu>

@@ -1,13 +1,31 @@
 <resources>
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="navigation_drawer_width">320dp</dimen>
-    <dimen name="navigation_drawer_icon_size">64dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="post_item_avatar_size">48dp</dimen>
-    <dimen name="radius_size">999dp</dimen>
-    <dimen name="profile_avatar_size">96dp</dimen>
-    <dimen name="profile_card_negative_margin_size">70dp</dimen>
-    <dimen name="list_item_spacing">16dp</dimen>
-    <dimen name="list_item_spacing_half">8dp</dimen>
+    <!--width/height-->
+    <dimen name="width_navigation_drawer">320dp</dimen>
+    <dimen name="height_status_bar">24dp</dimen>
+
+    <!--size-->
+    <dimen name="size_navigation_drawer_icon">64dp</dimen>
+    <dimen name="size_post_item_avatar">48dp</dimen>
+    <dimen name="size_radius">999dp</dimen>
+    <dimen name="size_profile_avatar">96dp</dimen>
+    <dimen name="size_interaction_icon">24dp</dimen>
+    <dimen name="size_edit_avatar">96dp</dimen>
+    <dimen name="size_btn_edit_picture_icon">32dp</dimen>
+
+    <!--margin-->
+    <dimen name="margin_profile_card_negative">70dp</dimen>
+    <dimen name="margin_activity_horizontal_half">8dp</dimen>
+    <dimen name="margin_activity_horizontal">16dp</dimen>
+    <dimen name="margin_list_item_x">16dp</dimen>
+    <dimen name="margin_list_item_half">8dp</dimen>
+    <dimen name="margin_list_bottom">100dp</dimen>
+    <dimen name="margin_inset_divider">72dp</dimen>
+    <dimen name="margin_regular">16dp</dimen>
+    <dimen name="margin_get_new_items_top">16dp</dimen>
+
+    <!--padding-->
+    <dimen name="pad_compose_thumbnail">4dp</dimen>
+    <dimen name="margin_list_item_y">12dp</dimen>
+    <dimen name="width_list_item_swipe_action_view">48dp</dimen>
+    <dimen name="elevation_list_item_elevation">24dp</dimen>
 </resources>

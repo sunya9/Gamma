@@ -3,12 +3,20 @@
     <color name="colorPrimary">#d36854</color>
     <color name="colorPrimaryDarker">#9d3a2b</color>
     <color name="colorPrimaryLighter">#ff9881</color>
-    <color name="colorPrimaryDark">@color/colorGray</color>
-    <color name="colorAccent">#4a484c</color>
+    <!--<color name="colorPrimaryDark">@color/colorGray</color>-->
+    <!--<color name="colorPrimaryDark">@color/toolbarBg</color>-->
+    <color name="colorPrimaryDark">@color/toolbarBg</color>
+    <!--<color name="colorAccent">#4a484c</color>-->
+    <color name="colorAccent">#d36854</color>
     <color name="colorAttention">#d44646</color>
-    <color name="colorStatusBar">@color/colorAccent</color>
+    <color name="colorSecondary">@color/colorGray</color>
+    <color name="colorStatusBar">@color/colorGray</color>
     <color name="colorNavigationDrawerHeaderBackgroundTint">#9000</color>
     <color name="colorWindowBackground">#f9f9f9</color>
+    <color name="textColorTertiary">@color/colorGrayDark</color>
+    <color name="textColorTertiaryInverse">@color/colorGrayLighter</color>
+    <color name="textColorPrimary">@android:color/black</color>
+    <!--color palette -->
     <color name="colorSolid">#ededed</color>
     <color name="colorError">#d44646</color>
     <color name="colorTertiary">#3000</color>
@@ -18,7 +26,16 @@
     <color name="colorGrayLight">#999</color>
     <color name="colorGrayLighter">#ddd</color>
     <color name="colorGrayLightest">#eee</color>
-    <color name="colorDivider">#03ffffff</color>
+    <color name="colorDivider">#1e000000</color>
     <color name="ic_launcher_background">@color/colorGray</color>
-
+    <color name="colorThumbnailCloseButtonStroke">@color/colorGrayDarker</color>
+    <color name="colorThumbnailCloseButtonBg">#c333</color>
+    <color name="btn_edit_picture_foreground">#5000</color>
+    <color name="toolbarBg">@android:color/white</color>
+    <color name="bgNavigationDrawerItem">@color/colorGrayLight</color>
+    <color name="toolbarIcon">@color/colorGray</color>
+    <color name="bgDefaultCover">#333</color>
+    <color name="nameShadow">#9000</color>
+    <color name="navigationBar">@android:color/white</color>
+    <color name="navigationBarDivider">@color/colorGrayLightest</color>
 </resources>

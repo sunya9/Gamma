@@ -7,13 +7,13 @@
 
         <variable
             name="viewModel"
-            type="net.unsweets.gamma.ui.activity.EditProfileActivity.EditProfileViewModel" />
+            type="net.unsweets.gamma.presentation.activity.EditProfileActivity.EditProfileViewModel" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activity.EditProfileActivity">
+        tools:context=".presentation.activity.EditProfileActivity">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                     android:contentDescription="@string/description_cover_picture"
                     android:cropToPadding="true"
                     android:focusable="true"
-                    android:foreground="@drawable/btn_edit_cover_foreground"
+                    android:foreground="@drawable/fg_btn_edit_cover"
                     android:scaleType="centerCrop"
                     app:layout_constraintDimensionRatio="@string/ratio_edit_cover"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +60,7 @@
                     android:clickable="true"
                     android:contentDescription="@string/description_avatar_picture"
                     android:focusable="true"
-                    android:src="@drawable/btn_edit_avatar_foreground"
+                    android:src="@drawable/fg_btn_edit_avatar"
                     app:layout_constraintBottom_toBottomOf="@id/viewCoverImage"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/viewCoverImage" />
@@ -123,7 +123,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_activity_horizontal"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin_half"
+                    android:layout_marginEnd="@dimen/margin_activity_horizontal_half"
                     android:text="@string/timezone"
                     app:layout_constraintEnd_toStartOf="@id/viewLocaleLabel"
                     app:layout_constraintStart_toStartOf="parent"
@@ -134,7 +134,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_activity_horizontal"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin_half"
+                    android:layout_marginEnd="@dimen/margin_activity_horizontal_half"
                     app:layout_constraintEnd_toStartOf="@id/viewLocaleSpinner"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/viewTimezoneLabel" />
@@ -143,7 +143,7 @@
                     android:id="@+id/viewLocaleLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin_half"
+                    android:layout_marginStart="@dimen/margin_activity_horizontal_half"
                     android:layout_marginEnd="@dimen/margin_activity_horizontal"
                     android:text="@string/locale"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -154,7 +154,7 @@
                     android:id="@+id/viewLocaleSpinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin_half"
+                    android:layout_marginStart="@dimen/margin_activity_horizontal_half"
                     android:layout_marginEnd="@dimen/margin_activity_horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/viewTimezoneSpinner"

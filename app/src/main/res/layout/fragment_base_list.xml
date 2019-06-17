@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
+    <!--TODO-->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_get_new_items_top"
+        android:text="@string/show_new_items"
+        android:visibility="gone"
+        app:icon="@drawable/ic_arrow_upward_black_24dp" />
 
-    </data>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
-        android:name="net.unsweets.gamma.fragment.BaseListFragment"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="100dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:spanCount="1"
-        tools:context=".fragment.PostItemFragment"
-        tools:listitem="@layout/fragment_post_item" />
-</layout>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/baseList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/margin_list_bottom"
+            app:fastScrollEnabled="true"
+            app:fastScrollHorizontalThumbDrawable="@drawable/bg_fast_scroll_thumb"
+            app:fastScrollHorizontalTrackDrawable="@drawable/bg_fast_scroll_track"
+            app:fastScrollVerticalThumbDrawable="@drawable/bg_fast_scroll_thumb"
+            app:fastScrollVerticalTrackDrawable="@drawable/bg_fast_scroll_track"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:spanCount="1"
+            tools:context=".presentation.fragment.PostItemFragment"
+            tools:listitem="@layout/fragment_post_item" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="true"
+        android:id="@+id/progressBar"
+        android:layout_height="wrap_content" />
+</FrameLayout>

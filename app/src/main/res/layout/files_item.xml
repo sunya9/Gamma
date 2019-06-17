@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/filesItemTitleTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_list_item_x"
+        android:layout_marginTop="@dimen/margin_list_item_y"
+        tools:text="file name"
+        app:layout_constraintEnd_toStartOf="@id/filesItemDateTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/filesItemDateTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_list_item_y"
+        android:layout_marginEnd="@dimen/margin_list_item_x"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textAlignment="textEnd"
+        tools:text="2019/06/15 18:15:17" />
+
+    <TextView
+        android:id="@+id/filesItemSubTitleTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_list_item_x"
+        android:layout_marginEnd="@dimen/margin_list_item_x"
+        android:layout_marginBottom="@dimen/margin_list_item_y"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="file information"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filesItemTitleTextView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
-            type="net.unsweets.gamma.fragment.UserListFragment.UserListViewModel" />
+            type="net.unsweets.gamma.presentation.fragment.UserListFragment.UserListViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".presentation.fragment.UserListFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -20,22 +20,40 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
+                style="@style/Toolbar.Up"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags=""
-                app:subtitle="@{@plurals/user(viewModel.count)}"
-                app:title="@{@string/following_with_name(viewModel.username)}" />
+                android:minHeight="?attr/actionBarSize"
+                android:paddingTop="@dimen/height_status_bar"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:title="@{viewModel.title}"
+                app:subtitle="@{viewModel.subtitle}"
+                tools:subtitle="10 followers"
+                app:onNavigationClick="@{() -> viewModel.back()}"
+                app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+                tools:title="\@foo's followers" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
-            android:name="net.unsweets.gamma.fragment.UserListFragment"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/userListRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            app:layoutManager="LinearLayoutManager"
-            tools:context=".fragment.UserListFragment"
-            tools:listitem="@layout/fragment_user" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/userList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/margin_list_bottom"
+                app:fastScrollEnabled="true"
+                app:fastScrollHorizontalThumbDrawable="@drawable/bg_fast_scroll_thumb"
+                app:fastScrollHorizontalTrackDrawable="@drawable/bg_fast_scroll_track"
+                app:fastScrollVerticalThumbDrawable="@drawable/bg_fast_scroll_thumb"
+                app:fastScrollVerticalTrackDrawable="@drawable/bg_fast_scroll_track"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:spanCount="1"
+                tools:listitem="@layout/fragment_user_item" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

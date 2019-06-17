@@ -15,7 +15,7 @@
         app:title="@string/gallery" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
+        android:id="@+id/pictureList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -23,7 +23,7 @@
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="3"
-        tools:context=".fragment.GalleryItemListDialogFragment"
+        tools:context=".presentation.fragment.GalleryItemListDialogFragment"
         tools:itemCount="20"
         tools:listitem="@layout/fragment_gallery_item_list_dialog_item" />
 </LinearLayout>

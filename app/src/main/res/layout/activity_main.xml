@@ -1,60 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activity.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
-            type="net.unsweets.gamma.activity.MainActivity.MainActivityViewModel" />
+            type="net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel" />
+
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        tools:context=".presentation.activity.MainActivity">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+            android:id="@+id/coordinatorLayout"
+            app:statusBarBackground="@android:color/transparent"
+            android:layout_height="match_parent">
 
-            <FrameLayout
+            <net.unsweets.gamma.presentation.view.WindowInsetsFrameLayout
                 android:id="@+id/fragmentPlaceholder"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:layout_height="match_parent" />
 
             <com.google.android.material.bottomappbar.BottomAppBar
                 android:id="@+id/bottomAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                app:fabCradleRoundedCornerRadius="8dp"
-                app:hideOnScroll="true"
+                app:hideOnScroll="false"
                 app:navigationIcon="@drawable/ic_menu_black_24dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
+                android:onClick="@{() -> viewModel.composePost()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:onClick="@{() -> viewModel.composePost()}"
                 android:src="@drawable/ic_create_black_24dp"
+                android:transitionName="@string/fab_transition"
                 app:layout_anchor="@id/bottomAppBar" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigationView"
-            android:layout_width="320dp"
+            android:layout_width="@dimen/width_navigation_drawer"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:headerLayout="@layout/navigation_drawer_header"
-            app:itemBackground="@drawable/navigation_drawer_item_background"
+            app:itemBackground="@drawable/bg_navigation_drawer_item"
             app:itemIconTint="@color/navigation_drawer_item_color"
             app:itemTextColor="@color/navigation_drawer_item_color"
             app:menu="@menu/navigation_drawer" />

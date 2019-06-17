@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="net.unsweets.gamma.activity.MainActivity.MainActivityViewModel" />
+            type="net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +25,7 @@
             android:elevation="-10dp"
             android:foreground="@color/colorNavigationDrawerHeaderBackgroundTint"
             android:scaleType="centerCrop"
-            app:glideSrc="@{viewModel.loginUser.content.coverImage.link}"
+            app:glideSrc="@{viewModel.user.content.coverImage.link}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
             android:id="@+id/navigationDrawerHandleNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
-            android:text="@{viewModel.loginUser.name}"
+            android:text="@{viewModel.user.name}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/navigationDrawerScreenNameTextView"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@{`@` + viewModel.loginUser.username}"
+            android:text="@{`@` + viewModel.user.username}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textColor="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -59,13 +59,13 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/navigationDrawerAvatarImageView"
-            android:layout_width="@dimen/navigation_drawer_icon_size"
-            android:layout_height="@dimen/navigation_drawer_icon_size"
+            android:layout_width="@dimen/size_navigation_drawer_icon"
+            android:layout_height="@dimen/size_navigation_drawer_icon"
             android:layout_marginTop="48dp"
             android:layout_marginBottom="16dp"
             android:cropToPadding="false"
             android:elevation="4dp"
-            app:glideSrc="@{viewModel.loginUser.content.avatarImage.link}"
+            app:glideSrc="@{viewModel.user.content.avatarImage.link}"
             app:layout_constraintBottom_toTopOf="@+id/navigationDrawerHandleNameTextView"
             app:layout_constraintStart_toStartOf="@+id/navigationDrawerScreenNameTextView"
             app:layout_constraintTop_toTopOf="@+id/navigationDrawerHeaderImageView"

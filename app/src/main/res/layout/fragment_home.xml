@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activity.MainActivity">
+    tools:context=".presentation.fragment.HomeFragment">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.Toolbar
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false"
+        android:background="@color/toolbarBg">
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:minHeight="0dp"
-            app:contentInsetEnd="0dp"
-            app:contentInsetStart="0dp">
-
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:fitsSystemWindows="true"
+            >
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="center_horizontal"
-                android:clipToPadding="false"
-                android:overScrollMode="always"
-                app:tabGravity="fill"
+                app:tabGravity="center"
                 app:tabIndicatorColor="@color/colorPrimary"
+                android:background="@android:color/transparent"
                 app:tabMode="scrollable">
 
                 <com.google.android.material.tabs.TabItem
@@ -37,22 +39,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/mentions" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/interactions" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/stars" />
             </com.google.android.material.tabs.TabLayout>
-        </androidx.appcompat.widget.Toolbar>
+        </FrameLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-</layout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

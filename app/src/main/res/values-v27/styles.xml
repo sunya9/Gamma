@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="@style/BaseTheme">
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@color/navigationBar</item>
+        <item name="android:navigationBarDividerColor">@color/navigationBarDivider</item>
+    </style>
+    <style name="FullScreenDialogStyle" parent="BaseFullScreenDialogStyle">
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@color/navigationBar</item>
+        <item name="android:navigationBarDividerColor">@color/navigationBarDivider</item>
+    </style>
+</resources>

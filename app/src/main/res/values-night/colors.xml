@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="toolbarBg">@color/colorGrayDark</color>
+    <color name="colorWindowBackground">@color/colorGrayDarker</color>
+    <color name="colorDivider">#1effffff</color>
+    <color name="textColorTertiary">@color/colorGrayLighter</color>
+    <color name="textColorTertiaryInverse">@color/colorGrayDark</color>
+    <color name="bgNavigationDrawerItem">@color/colorGray</color>
+    <color name="toolbarIcon">@color/colorGrayLightest</color>
+    <color name="textColorPrimary">@android:color/white</color>
+    <color name="navigationBar">@android:color/black</color>
+    <color name="navigationBarDivider">@android:color/transparent</color>
+</resources>

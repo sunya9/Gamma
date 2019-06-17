@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.ExploreFragment">
+    tools:context=".presentation.fragment.ExploreFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -15,6 +15,9 @@
             style="@style/Toolbar.White"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:paddingTop="@dimen/height_status_bar"
             app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
             tools:title="Explore" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -22,16 +25,22 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/swipeRefreshLayout"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
+            android:id="@+id/exploreList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="@dimen/list_bottom_spacing"
+            android:paddingBottom="@dimen/margin_list_bottom"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:spanCount="1"
+            app:fastScrollEnabled="true"
+            app:fastScrollHorizontalThumbDrawable="@drawable/bg_fast_scroll_thumb"
+            app:fastScrollHorizontalTrackDrawable="@drawable/bg_fast_scroll_track"
+            app:fastScrollVerticalThumbDrawable="@drawable/bg_fast_scroll_thumb"
+            app:fastScrollVerticalTrackDrawable="@drawable/bg_fast_scroll_track"
             tools:listitem="@layout/fragment_post_item" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

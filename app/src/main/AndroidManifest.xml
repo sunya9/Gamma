@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
+        android:name=".GammaApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,20 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name="net.unsweets.gamma.presentation.activity.MainActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateVisible"
             android:theme="@style/AppTheme" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".activity.ComposePostActivity"
+            android:name="net.unsweets.gamma.presentation.activity.ComposePostActivity"
             android:exported="true"
+            android:theme="@style/AppTheme.Translucent"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-        <activity android:name=".activity.LoginActivity" />
+        <activity android:name="net.unsweets.gamma.presentation.activity.LoginActivity" />
         <activity
-            android:name=".activity.EntryActivity"
+            android:name="net.unsweets.gamma.presentation.activity.EntryActivity"
             android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +37,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.GetUserInfoActivity"
+            android:name="net.unsweets.gamma.presentation.activity.VerifyTokenActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -48,21 +51,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="net.unsweets.gamma.presentation.activity.SettingsActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName="net.unsweets.gamma.presentation.activity.MainActivity"
             android:theme="@style/PreferenceTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.unsweets.gamma.activity.MainActivity" />
+                android:value="net.unsweets.gamma.presentation.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.FilesActivity"
-            android:parentActivityName=".activity.MainActivity">
+            android:name="net.unsweets.gamma.presentation.activity.FilesActivity"
+            android:parentActivityName="net.unsweets.gamma.presentation.activity.MainActivity"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.unsweets.gamma.activity.MainActivity" />
+                android:value="net.unsweets.gamma.presentation.activity.MainActivity" />
         </activity>
-        <activity android:name=".activity.EditProfileActivity" />
+        <activity
+            android:name="net.unsweets.gamma.presentation.activity.EditProfileActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme.WithActionBar.Modal"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="net.unsweets.gamma.presentation.activity.PhotoViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/AppTheme.Translucent.FullScreen" />
     </application>
 </manifest>

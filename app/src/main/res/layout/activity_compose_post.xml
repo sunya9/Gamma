@@ -2,15 +2,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.ComposePostActivity">
+    tools:context=".presentation.activity.ComposePostActivity">
 
     <data>
 
         <variable
             name="viewModel"
-            type="net.unsweets.gamma.ui.activity.ComposePostActivity.ComposePostViewModel" />
+            type="net.unsweets.gamma.presentation.fragment.ComposePostFragment.ComposePostViewModel" />
 
-        <import type="net.unsweets.gamma.ui.util.BindingUtil" />
+        <import type="net.unsweets.gamma.presentation.util.BindingUtil" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,10 +25,10 @@
             android:id="@+id/toolbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_close_black_24dp"
             tools:title="@string/compose_a_post">
 
             <TextView
@@ -36,10 +36,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/margin_regular"
+                android:layout_marginEnd="@dimen/margin_regular"
                 android:gravity="end"
-                android:text="@{viewModel.counterStr}" />
+                android:text="@{viewModel.counterStr}"
+                tools:text="256" />
         </androidx.appcompat.widget.Toolbar>
 
         <ScrollView
@@ -61,6 +62,7 @@
                     android:background="@android:color/transparent"
                     android:gravity="top|start"
                     android:inputType="textMultiLine"
+                    android:minLines="5"
                     android:padding="16dp"
                     android:text="@={viewModel.text}"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -85,54 +87,41 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/bottomToolbar"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
             android:clipToPadding="false"
             app:contentInsetStart="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:orientation="horizontal">
+                android:clipToPadding="false">
 
-                <HorizontalScrollView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:clipToPadding="false">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
-
-                        <androidx.appcompat.widget.AppCompatImageButton
-                            android:id="@+id/AttachPictureButton"
-                            style="@style/BorderlessButton.ComposeBottomIcon"
-                            android:layout_width="?attr/actionBarSize"
-                            android:layout_height="match_parent"
-                            android:onClick="@{() -> viewModel.attachPicture() }"
-                            android:src="@drawable/ic_photo_library_black_24dp"
-                            android:text="@string/post"
-                            android:tint="@color/colorAccent" />
-                    </LinearLayout>
-                </HorizontalScrollView>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/sendButton"
-                    style="@style/BorderlessButton"
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/viewLeftActionMenuView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:enabled="@{safeUnbox(viewModel.enableSendButton)}"
-                    android:onClick="@{() -> viewModel.sendPost() }"
-                    android:src="@drawable/ic_send_black_24dp"
-                    android:text="@string/post" />
-            </LinearLayout>
+                    android:layout_height="0dp"
+                    android:elevation="0dp"
+                    app:contentInsetStart="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:menu="@menu/compose_left" />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/viewRightActionMenuView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:elevation="0dp"
+                    app:contentInsetStart="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:menu="@menu/compose_right" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
