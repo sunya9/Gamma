@@ -108,8 +108,8 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer {
     }
 
     private fun uncheckMenuItem(menu: Menu) {
-        val size = menu.size() - 1
-        for (i in 0..size) {
+        val size = menu.size()
+        for (i in 0 until size) {
             val item = menu.getItem(i)
             if (item.hasSubMenu()) {
                 uncheckMenuItem(item.subMenu)
