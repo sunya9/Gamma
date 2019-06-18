@@ -6,10 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
-import android.view.Menu
-import android.view.MenuItem
-import android.view.ViewAnimationUtils
-import android.view.WindowManager
+import android.view.*
 import android.view.animation.AccelerateInterpolator
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
@@ -17,8 +14,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import net.unsweets.gamma.R
+import net.unsweets.gamma.broadcast.PostReceiver
 import net.unsweets.gamma.databinding.ActivityMainBinding
 import net.unsweets.gamma.databinding.NavigationDrawerHeaderBinding
 import net.unsweets.gamma.domain.entity.User
@@ -30,10 +30,17 @@ import net.unsweets.gamma.presentation.fragment.ProfileFragment
 import net.unsweets.gamma.presentation.util.DrawerContentFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper.addFragment
 import net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel
+import net.unsweets.gamma.service.PostService
 import javax.inject.Inject
 
 
-class MainActivity : BaseActivity(), BaseActivity.HaveDrawer {
+class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback {
+    override fun onReceive() {
+        val view = findViewById<View>(android.R.id.content) ?: return
+        Snackbar.make(view, R.string.posted, Snackbar.LENGTH_SHORT).apply {
+            setAnchorView(R.id.fab)
+        }.show()
+    }
 
     private val drawerToggle: ActionBarDrawerToggle by lazy {
         ActionBarDrawerToggle(
@@ -44,6 +51,14 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer {
     }
     @Inject
     lateinit var getAuthenticatedUseCase: GetAuthenticatedUserUseCase
+
+    private val receiverManager by lazy {
+        LocalBroadcastManager.getInstance(applicationContext)
+    }
+
+    private val postReceiver by lazy {
+        PostReceiver(this)
+    }
 
     private val viewModel: MainActivityViewModel by lazy {
         ViewModelProviders.of(this, MainActivityViewModel.Factory(getAuthenticatedUseCase))
@@ -75,6 +90,16 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer {
         setupFragment(savedInstanceState == null)
         setupNavigation()
         bottomAppBar.inflateMenu(R.menu.main)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        receiverManager.registerReceiver(postReceiver, PostService.getIntentFilter())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        receiverManager.unregisterReceiver(postReceiver)
     }
 
     private fun setupFragment(firstStart: Boolean) {

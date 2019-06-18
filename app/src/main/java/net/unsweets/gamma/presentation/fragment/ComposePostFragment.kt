@@ -11,7 +11,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.widget.ImageButton
@@ -29,11 +28,13 @@ import kotlinx.android.synthetic.main.compose_thumbnail_image.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.ActivityComposePostBinding
 import net.unsweets.gamma.domain.entity.Post
+import net.unsweets.gamma.domain.entity.PostBody
 import net.unsweets.gamma.presentation.activity.ComposePostActivity
 import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.presentation.util.hideKeyboard
 import net.unsweets.gamma.presentation.util.showKeyboard
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
+import net.unsweets.gamma.service.PostService
 
 class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDialogFragment.Listener {
     private enum class BundleKey {
@@ -63,6 +64,11 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             }
     }
 
+    private val enableSendButtonObserver = Observer<Boolean> {
+        val menu = binding.viewRightActionMenuView.menu ?: return@Observer
+        val menuItem = menu.findItem(R.id.menuPost) ?: return@Observer
+        menuItem.isEnabled = it
+    }
     private val viewModel: ComposePostViewModel by lazy {
         ViewModelProviders.of(this).get(ComposePostViewModel::class.java)
     }
@@ -72,11 +78,15 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     private lateinit var adapter: ThumbnailAdapter
 
     private val eventObserver = Observer<Event> {
-        when (it) {
-            Event.Sent -> sent()
-            Event.AttachPicture -> requestGalleryDialog()
-            else -> Unit
-        }
+
+    }
+
+    private fun send() {
+        val text = viewModel.text.value ?: return
+        val postBody = PostBody(text)
+        val newIntent = PostService.newIntent(context, postBody)
+        context!!.startService(newIntent)
+        finishWithAnim()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,6 +111,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             cancelToCompose()
         }
         viewModel.event.observe(this, eventObserver)
+        viewModel.enableSendButton.observe(this, enableSendButtonObserver)
         view.composeTextEditText.setOnFocusChangeListener { editText, b ->
             if(!b) return@setOnFocusChangeListener
             showKeyboard(editText)
@@ -110,9 +121,6 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
         binding.viewLeftActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
         binding.viewRightActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
-    }
-    private fun sent() {
-        finishWithAnim()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -236,6 +244,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         when (item.itemId) {
             android.R.id.home -> cancelToCompose()
             R.id.menuInsertPhoto -> requestGalleryDialog()
+            R.id.menuPost -> send()
         }
         return true
     }
@@ -293,28 +302,18 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
     class ComposePostViewModel(app: Application) : BaseViewModel<Event>(app) {
         val replyTarget = MutableLiveData<Post>()
+        private val maxTextLength = 256
         val text = MutableLiveData<String>().apply { value = "" }
         private val counter: LiveData<Int> = Transformations.map(text) {
             val text = it ?: ""
-            256 - text.codePointCount(0, text.length)
+            maxTextLength - text.codePointCount(0, text.length)
         }
         val counterStr: LiveData<String> = Transformations.map(counter) { it.toString() }
         val enableSendButton: LiveData<Boolean> =
-            Transformations.map(counter) { (0 < (it ?: 0)) and !TextUtils.isEmpty(text.value ?: "") }
-
-        fun sendPost() {
-            val text = text.value ?: return
-//            val result = pnut.createPost(PostBody(text)).toLiveData()
-            sendEvent(Event.Sent)
-//            when(result.value) {
-//                is Promise.Success -> sendEvent(Event.Sent)
-//            }
-        }
-
-        fun attachPicture() = sendEvent(Event.AttachPicture)
+            Transformations.map(counter) { (0 <= it) && it < maxTextLength }
     }
 
-    enum class Event {
-        AttachPicture, Sent
+    sealed class Event {
+        data class Send(val postBody: PostBody) : Event()
     }
 }

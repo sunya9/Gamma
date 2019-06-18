@@ -100,4 +100,5 @@
     <string name="nsfw">NSFW</string>
     <string name="this_post_has_deleted">This post has deleted.</string>
     <string name="deleted_post_user_name">deleted post</string>
+    <string name="posted">Posted</string>
 </resources>

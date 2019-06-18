@@ -13,23 +13,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".service.PostService"
+            android:exported="false" />
         <activity
-            android:name="net.unsweets.gamma.presentation.activity.MainActivity"
+            android:name=".presentation.activity.MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize|stateVisible"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name="net.unsweets.gamma.presentation.activity.ComposePostActivity"
+            android:name=".presentation.activity.ComposePostActivity"
             android:exported="true"
             android:theme="@style/AppTheme.Translucent"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-        <activity android:name="net.unsweets.gamma.presentation.activity.LoginActivity" />
+        <activity android:name=".presentation.activity.LoginActivity" />
         <activity
-            android:name="net.unsweets.gamma.presentation.activity.EntryActivity"
+            android:name=".presentation.activity.EntryActivity"
             android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.unsweets.gamma.presentation.activity.VerifyTokenActivity"
+            android:name=".presentation.activity.VerifyTokenActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -51,29 +54,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.unsweets.gamma.presentation.activity.SettingsActivity"
+            android:name=".presentation.activity.SettingsActivity"
             android:exported="true"
-            android:parentActivityName="net.unsweets.gamma.presentation.activity.MainActivity"
+            android:parentActivityName=".presentation.activity.MainActivity"
             android:theme="@style/PreferenceTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.unsweets.gamma.presentation.activity.MainActivity" />
         </activity>
         <activity
-            android:name="net.unsweets.gamma.presentation.activity.FilesActivity"
-            android:parentActivityName="net.unsweets.gamma.presentation.activity.MainActivity"
-            >
+            android:name=".presentation.activity.FilesActivity"
+            android:parentActivityName=".presentation.activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.unsweets.gamma.presentation.activity.MainActivity" />
         </activity>
         <activity
-            android:name="net.unsweets.gamma.presentation.activity.EditProfileActivity"
+            android:name=".presentation.activity.EditProfileActivity"
             android:exported="true"
             android:theme="@style/AppTheme.WithActionBar.Modal"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="net.unsweets.gamma.presentation.activity.PhotoViewActivity"
+            android:name=".presentation.activity.PhotoViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.Translucent.FullScreen" />
     </application>
