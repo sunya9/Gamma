@@ -8,6 +8,9 @@ import net.unsweets.gamma.presentation.activity.*
 abstract class ActivityModule {
     @ContributesAndroidInjector
     abstract fun contributeEntryActivity(): EntryActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeVerifyTokenActivity(): VerifyTokenActivity
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeBaseActivity(): BaseActivity
     @ContributesAndroidInjector(modules = [FragmentModule::class])
