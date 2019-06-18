@@ -4,32 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/menuInsertPhoto"
+        android:checkable="true"
+        android:checked="false"
         android:icon="@drawable/ic_photo_library_24dp"
         android:title="@string/attach_photos"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-    <item
-        android:id="@+id/menuInsertPoll"
-        android:icon="@drawable/ic_poll_black_24dp"
-        android:title="@string/poll"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-    <item
-        android:id="@+id/menuSpoiler"
-        android:icon="@drawable/ic_add_alert_black_24dp"
-        android:title="@string/spoiler"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-    <item
-        android:id="@+id/menuLongPost"
-        android:icon="@drawable/ic_add_box_black_24dp"
-        android:title="@string/long_post"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-    <item
-        android:id="@+id/menuNsfw"
-        android:icon="@drawable/ic_report_black_24dp"
-        android:title="@string/nsfw"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
 </menu>
