@@ -128,8 +128,6 @@
         <item name="android:displayOptions">homeAsUp|showHome|showTitle</item>
     </style>
 
-    <style name="Toolbar.White"></style>
-
     <style name="ProfileToolbar">
         <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle.Profile</item>
         <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
