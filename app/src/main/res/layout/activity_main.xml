@@ -50,6 +50,7 @@
             android:layout_width="@dimen/width_navigation_drawer"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            app:itemTextAppearance="@style/NavigationDrawerStyle"
             app:headerLayout="@layout/navigation_drawer_header"
             app:itemBackground="@drawable/bg_navigation_drawer_item"
             app:itemIconTint="@color/navigation_drawer_item_color"

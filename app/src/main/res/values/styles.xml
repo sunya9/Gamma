@@ -236,4 +236,8 @@
         <item name="toolbarStyle">@style/Toolbar.Child</item>
     </style>
     <style name="FullScreenDialogStyle" parent="BaseFullScreenDialogStyle"/>
+
+    <style name="NavigationDrawerStyle">
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
 </resources>
