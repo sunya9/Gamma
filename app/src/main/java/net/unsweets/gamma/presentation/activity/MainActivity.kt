@@ -12,7 +12,6 @@ import android.view.ViewAnimationUtils
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
@@ -128,22 +127,17 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer {
         fab.getLocationOnScreen(pos)
         val cx = pos[0] + fab.width / 2
         val cy = pos[1] + fab.height / 2
-        val newIntent = ComposePostActivity.newIntent(this, cx, cy)
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, fab, getString(R.string.fab_transition))
-        val fragment=  ComposePostFragment.newInstance(cx, cy)
+        val fragment = ComposePostFragment.newInstance(cx, cy)
         fragment.dialog?.setOnShowListener {
             val decorView = window.decorView
             val targetRadius = Math.hypot(decorView.width.toDouble(), decorView.height.toDouble()).toFloat()
             val startRadius = 0F
-            val endRadius = targetRadius
-            val anim = ViewAnimationUtils.createCircularReveal(decorView, cx, cy, startRadius, endRadius)
+            val anim = ViewAnimationUtils.createCircularReveal(decorView, cx, cy, startRadius, targetRadius)
             anim.interpolator = AccelerateInterpolator()
             anim.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
                     window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-//                    binding.composeTextEditText.requestFocus()
-//                    showKeyboard(binding.composeTextEditText)
                 }
             })
             val duration = resources.getInteger(android.R.integer.config_mediumAnimTime)
@@ -152,7 +146,6 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer {
 
         }
         fragment.show(supportFragmentManager, DialogKey.ComposePost.name)
-//        ActivityCompat.startActivity(this, newIntent, options.toBundle())
     }
 
     private fun setupNavigation() {
