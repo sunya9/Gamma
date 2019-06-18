@@ -50,14 +50,13 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer {
             .get(MainActivityViewModel::class.java)
     }
     private val fragmentMap = hashMapOf(
-        R.id.conversations to PostItemFragment.getConversationInstance(),
-        R.id.missedConversations to PostItemFragment.getMissedConversationInstance(),
-        R.id.newcomers to PostItemFragment.getNewcomersInstance(),
-        R.id.photos to PostItemFragment.getPhotoInstance(),
-        R.id.trending to PostItemFragment.getTrendingInstance(),
-        R.id.global to PostItemFragment.getGlobalInstance()
+        R.id.conversations to { PostItemFragment.getConversationInstance() },
+        R.id.missedConversations to { PostItemFragment.getMissedConversationInstance() },
+        R.id.newcomers to { PostItemFragment.getNewcomersInstance() },
+        R.id.photos to { PostItemFragment.getPhotoInstance() },
+        R.id.trending to { PostItemFragment.getTrendingInstance() },
+        R.id.global to { PostItemFragment.getGlobalInstance() }
     )
-
     private val eventObserver = Observer<Event> {
         when (it) {
             is Event.OpenMyProfile -> openMyProfile(it.user)
@@ -205,8 +204,10 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer {
     }
 
     private fun showExploreStream(menuId: Int) {
-        val fragment = fragmentMap[menuId] ?: return
-        addFragment(supportFragmentManager, fragment, menuId.toString())
+        val tag = menuId.toString()
+        val cache = supportFragmentManager.findFragmentByTag(tag)
+        val fragment = cache ?: fragmentMap[menuId]?.let { it() } ?: return
+        addFragment(supportFragmentManager, fragment, tag)
     }
 
     private fun goToSettings() {
