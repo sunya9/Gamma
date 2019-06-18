@@ -1,6 +1,7 @@
 package net.unsweets.gamma.domain.entity
 
 import com.squareup.moshi.Json
+import java.io.Serializable
 
 data class PostBody(
     val text: String,
@@ -8,4 +9,4 @@ data class PostBody(
     @Json(name = "is_nsfw") val isNsfw: Boolean? = null,
     @Json(name = "entities.parse_links") val parseLinks: Boolean? = null,
     @Json(name = "entities.parse_markdown_links") val parseMarkdownLinks: Boolean? = null
-)
+) : Serializable
