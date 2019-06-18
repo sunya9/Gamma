@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showSnackBarWhenRaisedError() {
         val errorMessage = intent.getStringExtra(IntentKey.Error.name)
-        if(errorMessage.isEmpty()) return
+        if (errorMessage.isNullOrEmpty()) return
         Snackbar
             .make(findViewById<View>(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG)
             .showAsError()
