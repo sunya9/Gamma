@@ -2,7 +2,7 @@ package net.unsweets.gamma.domain.usecases
 
 import kotlinx.coroutines.*
 
-abstract class UseCase<out Type, in Params> where Type : Any {
+abstract class AsyncUseCase<out Type, in Params> where Type : Any {
 
     abstract suspend fun run(params: Params): Type
 

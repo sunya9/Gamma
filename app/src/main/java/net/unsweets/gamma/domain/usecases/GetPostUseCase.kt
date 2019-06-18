@@ -1,11 +1,12 @@
 package net.unsweets.gamma.domain.usecases
 
+import net.unsweets.gamma.domain.model.StreamType
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.io.GetPostOutputData
-import net.unsweets.gamma.domain.model.StreamType
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
-class GetPostUseCase(private val pnutRepository: IPnutRepository): UseCase<GetPostOutputData, GetPostInputData>() {
+class GetPostUseCase(private val pnutRepository: IPnutRepository) :
+    AsyncUseCase<GetPostOutputData, GetPostInputData>() {
     override suspend fun run(input: GetPostInputData): GetPostOutputData {
         val streamType = input.streamType
         val params = input.params
