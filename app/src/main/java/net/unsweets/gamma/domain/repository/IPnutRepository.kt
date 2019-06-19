@@ -24,6 +24,9 @@ interface IPnutRepository {
     suspend fun updatePost(postId: String, postBody: PostBody): PnutResponse<Post>
     suspend fun deletePost(postId: String): PnutResponse<Post>
 
+    fun createStarPostSync(postId: String): PnutResponse<Post>
+    fun deleteStarPostSync(postId: String): PnutResponse<Post>
+
 
     // user
     suspend fun getUserProfile(userId: String): PnutResponse<User>

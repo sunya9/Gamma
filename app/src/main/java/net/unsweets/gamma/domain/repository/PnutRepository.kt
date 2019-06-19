@@ -20,6 +20,14 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 
 class PnutRepository (private val context: Context): IPnutRepository {
+    override fun createStarPostSync(postId: String): PnutResponse<Post> {
+        return defaultPnutService.createStar(postId).execute().body()!!
+    }
+
+    override fun deleteStarPostSync(postId: String): PnutResponse<Post> {
+        return defaultPnutService.deleteStar(postId).execute().body()!!
+    }
+
     override suspend fun getToken(): PnutResponse<Token> {
         return defaultPnutService.token().await()
     }
