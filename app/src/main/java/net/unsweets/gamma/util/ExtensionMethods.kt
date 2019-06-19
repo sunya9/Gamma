@@ -4,7 +4,10 @@ import android.graphics.Color
 import android.util.Log
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.unsweets.gamma.R
@@ -72,3 +75,12 @@ suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> = suspendCancella
 }
 
 fun Boolean.toInt(): Int = if(this) 1 else 0
+
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+        override fun onChanged(t: T?) {
+            observer.onChanged(t)
+            removeObserver(this)
+        }
+    })
+}
