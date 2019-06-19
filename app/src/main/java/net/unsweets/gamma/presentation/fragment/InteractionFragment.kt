@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.interaction_item.view.*
 import net.unsweets.gamma.R
@@ -16,10 +18,10 @@ import net.unsweets.gamma.domain.entity.Interaction.Action
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.User
-import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
-import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.entity.raw.PollNotice
 import net.unsweets.gamma.domain.model.io.GetInteractionInputData
+import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
+import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.GetInteractionUseCase
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.DateUtil
@@ -53,7 +55,7 @@ class InteractionFragment : NewBaseListFragment<Interaction, InteractionFragment
             Action.Repost -> item as Interaction.Repost
         }
         viewHolder.iconView.setImageResource(item.action.iconRes)
-        viewHolder.timeTextView.text = DateUtil.getShortDateStr(item.eventDate)
+        viewHolder.timeTextView.text = DateUtil.getShortDateStr(viewHolder.itemView.context, item.eventDate)
         viewHolder.messageTextView.text = item.getMessage(context ?: return)
         viewHolder.bodyTextView.text = when (concreteItem) {
             is Interaction.Repost -> handlePost(concreteItem.objects)

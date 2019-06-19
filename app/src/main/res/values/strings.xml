@@ -103,4 +103,10 @@
     <string name="posted">Posted: %s</string>
     <string name="starred">Starred: %s</string>
     <string name="reposted_by_template">reposted by @%s</string>
+    <string name="date_short_seconds_template">%ds</string>
+    <string name="date_short_minutes_template">%dm</string>
+    <string name="date_short_hours_template">%dh</string>
+    <string name="date_short_a_day">a day</string>
+    <string name="date_short_date_this_year">%te %tb</string>
+    <string name="date_short_date_before_last_year">%te %tb %ty</string>
 </resources>

@@ -26,11 +26,8 @@ import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.GetPostUseCase
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
+import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.util.DateUtil.Companion.getShortDateStr
-import net.unsweets.gamma.presentation.util.EntityOnTouchListener
-import net.unsweets.gamma.presentation.util.FragmentHelper
-import net.unsweets.gamma.presentation.util.GlideApp
-import net.unsweets.gamma.presentation.util.PostTouchHelperCallback
 import net.unsweets.gamma.service.PostService
 import net.unsweets.gamma.util.LogUtil
 import java.util.*
@@ -77,6 +74,8 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
     override fun onClickItemListener(item: Post) {
         Toast.makeText(context, item.id, Toast.LENGTH_SHORT).show()
     }
+
+    private enum class DialogKey { Compose }
 
     override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder.Exist, position: Int) {
         val url = item.mainPost.user?.let {
@@ -147,7 +146,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         viewHolder.starStateView.visibility = if (item.mainPost.youBookmarked == true) View.VISIBLE else View.GONE
         viewHolder.repostStateView.visibility = if (item.mainPost.youReposted == true) View.VISIBLE else View.GONE
 
-        viewHolder.dateTextView.text = getShortDateStr(item.mainPost.createdAt)
+        viewHolder.dateTextView.text = getShortDateStr(viewHolder.itemView.context, item.mainPost.createdAt)
     }
 
     private fun setupRepostView(item: Post, repostedByTextView: TextView) {
