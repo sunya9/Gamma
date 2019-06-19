@@ -3,7 +3,6 @@ package net.unsweets.gamma.presentation.fragment
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
@@ -205,7 +204,6 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
         NewBaseListFragment.BaseListViewModel<Post>() {
         override suspend fun getItems(params: PaginationParam): PnutResponse<List<Post>> {
-            Log.e("pagination", params.toString())
             val getPostParam = GetPostsParam().also { it.add(params) }
             return getPostUseCase.run(GetPostInputData(streamType, getPostParam)).res
         }
