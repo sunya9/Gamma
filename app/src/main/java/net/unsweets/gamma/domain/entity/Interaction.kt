@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.raw.PollNotice
@@ -15,7 +16,9 @@ sealed class Interaction(
     open val eventDate: Date,
     open val action: Action,
     open val users: List<User>
-) : Parcelable, Pageable {
+) : Parcelable, Pageable, Unique {
+    @IgnoredOnParcel
+    override val uniqueKey: String by lazy { paginationId }
     @Parcelize
     data class Repost(
         @Json(name = "pagination_id")

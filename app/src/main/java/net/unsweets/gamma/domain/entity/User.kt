@@ -1,9 +1,8 @@
 package net.unsweets.gamma.domain.entity
 
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.domain.entity.entities.Entities
 import net.unsweets.gamma.domain.entity.entities.HaveEntities
@@ -11,7 +10,6 @@ import net.unsweets.gamma.domain.entity.image.Avatar
 import net.unsweets.gamma.domain.entity.image.Cover
 import java.util.*
 
-@Entity
 @Parcelize
 data class User(
     val badge: Badge?,
@@ -19,7 +17,7 @@ data class User(
     val counts: UserCount,
     @Json(name = "created_at") val createdAt: Date,
     @Json(name = "follows_you") val followsYou: Boolean,
-    @PrimaryKey val id: String,
+    val id: String,
     val locale: String,
     val name: String?,
     val timezone: String,
@@ -31,7 +29,9 @@ data class User(
     @Json(name = "you_muted") val youMuted: Boolean,
     val verified: VerifiedDomain?,
     @Json(name = "pagination_id") override val paginationId: String? = null
-) : Parcelable, Pageable {
+) : Parcelable, Pageable, Unique {
+    @IgnoredOnParcel
+    override val uniqueKey: String by lazy { id }
     @Parcelize
     data class UserContent(
         @Json(name = "avatar_image") val avatarImage: Avatar,

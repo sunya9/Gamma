@@ -2,6 +2,7 @@ package net.unsweets.gamma.domain.entity
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -30,7 +31,10 @@ data class File(
 //    val derivativeFiles: List<DerivativeFiles>,
     val user: User?,
     @Json(name = "pagination_id") override val paginationId: String
-) : Parcelable, Pageable {
+) : Parcelable, Pageable, Unique {
+    @IgnoredOnParcel
+    override val uniqueKey: String by lazy { id }
+
     @Parcelize
     data class UploadParameters(val method: String, val url: String) : Parcelable
 
