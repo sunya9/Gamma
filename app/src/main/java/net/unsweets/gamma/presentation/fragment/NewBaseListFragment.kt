@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.Pageable
 import net.unsweets.gamma.domain.entity.PnutResponse
+import net.unsweets.gamma.domain.entity.Unique
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.InfiniteScrollListener
@@ -30,7 +31,8 @@ import net.unsweets.gamma.util.SingleLiveEvent
 
 
 abstract class NewBaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment(),
-    SwipeRefreshLayout.OnRefreshListener, InfiniteScrollListener.Callback where T : Parcelable, T : Pageable {
+    SwipeRefreshLayout.OnRefreshListener,
+    InfiniteScrollListener.Callback where T : Unique, T : Parcelable, T : Pageable {
 
     private val updateProgressBarVisibility = Observer<Boolean> {
         //        progressBar.visibility = if(it) View.VISIBLE else View.GONE
@@ -122,7 +124,7 @@ abstract class NewBaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragmen
         class Failure(val t: Throwable) : ListEvent()
     }
 
-    abstract class BaseListViewModel<T : Pageable> : ViewModel() {
+    abstract class BaseListViewModel<T> : ViewModel() where T : Pageable, T : Unique {
         val items = MutableLiveData<ArrayList<T>>().apply { value = ArrayList() }
         val loading = MutableLiveData<Boolean>().apply { value = false }
         private var lastPagination: PaginationParam? = null
