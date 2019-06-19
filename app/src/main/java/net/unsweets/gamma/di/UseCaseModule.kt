@@ -18,7 +18,8 @@ class UseCaseModule {
     fun provideGetPostUseCase(pnutRepository: IPnutRepository): GetPostUseCase = GetPostUseCase(pnutRepository)
 
     @Provides
-    fun provideGetInteractionUseCase(pnutRepository: IPnutRepository): GetInteractionUseCase = GetInteractionUseCase(pnutRepository)
+    fun provideGetInteractionUseCase(pnutRepository: IPnutRepository): GetInteractionUseCase =
+        GetInteractionUseCase(pnutRepository)
 
     @Provides
     fun provideSetUpTokenUseCase(
@@ -56,5 +57,10 @@ class UseCaseModule {
     fun provideStarUseCase(
         pnutRepository: IPnutRepository
     ): StarUseCase = StarUseCase(pnutRepository)
+
+    @Provides
+    fun provideGetCurrentUserIdUseCase(
+        preferenceRepository: IPreferenceRepository
+    ): GetCurrentUserIdUseCase = GetCurrentUserIdUseCase(preferenceRepository)
 
 }
