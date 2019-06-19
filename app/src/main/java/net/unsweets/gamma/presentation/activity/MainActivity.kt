@@ -41,8 +41,9 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         showSnackBar(getString(R.string.starred, text))
     }
 
-    override fun onPostReceive(intent: Intent) {
-        showSnackBar(getString(R.string.posted))
+    override fun onPostReceive(post: Post) {
+        val text = post.content?.text ?: return
+        showSnackBar(getString(R.string.posted, text))
     }
 
     private fun showSnackBar(text: String) {

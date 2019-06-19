@@ -59,8 +59,7 @@ class PostService : IntentService("PostService") {
             Actions.SendPost.getActionName() -> {
                 val postBody = intent.getSerializableExtra(IntentKey.PostBody.name) as? PostBody ?: return
                 val postOutputData = postUseCase.run(PostInputData(postBody))
-                // TODO: return post data?
-                postOutputData.res.data
+                resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
             }
             Actions.Star.getActionName() -> {
                 val postId = intent.getStringExtra(IntentKey.PostId.name) ?: return
@@ -75,9 +74,12 @@ class PostService : IntentService("PostService") {
 
     companion object {
         @JvmStatic
-        fun newPostIntent(context: Context?, postBody: PostBody) = Intent(context, PostService::class.java).apply {
-            action = Actions.SendPost.getActionName()
-            putExtra(IntentKey.PostBody.name, postBody)
+        fun newPostIntent(context: Context?, postBody: PostBody) {
+            val intent = Intent(context, PostService::class.java).apply {
+                action = Actions.SendPost.getActionName()
+                putExtra(IntentKey.PostBody.name, postBody)
+            }
+            context?.startService(intent)
         }
 
         fun newStarIntent(context: Context?, postId: String, newState: Boolean) {

@@ -84,8 +84,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     private fun send() {
         val text = viewModel.text.value ?: return
         val postBody = PostBody(text)
-        val newIntent = PostService.newPostIntent(context, postBody)
-        context!!.startService(newIntent)
+        PostService.newPostIntent(context, postBody)
         finishWithAnim()
     }
 
