@@ -163,7 +163,7 @@ abstract class UserListFragment : NewBaseListFragment<User, UserListFragment.Use
     class FollowingListFragment: UserListFragment() {
         override val userListType =UserListType.Following
         companion object {
-            fun newInstance(user: User) = FollowerListFragment().apply {
+            fun newInstance(user: User) = FollowingListFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleKey.User.name, user)
                 }
