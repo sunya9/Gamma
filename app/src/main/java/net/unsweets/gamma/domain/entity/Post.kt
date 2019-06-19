@@ -46,7 +46,7 @@ data class Post(
         var threads: Int
     ) : Parcelable
 
-    fun getMainPost(): Post = repostOf ?: this
+    val mainPost: Post = repostOf ?: this
 
     constructor() : this(
         Date(),

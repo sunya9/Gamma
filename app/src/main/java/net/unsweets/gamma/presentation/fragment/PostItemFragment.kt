@@ -79,7 +79,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
     }
 
     override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder.Exist, position: Int) {
-        val url = item.user?.let {
+        val url = item.mainPost.user?.let {
             "${it.content.avatarImage.link}?w=96"
         } ?: "" //
         val context = viewHolder.itemView.context
@@ -105,29 +105,30 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
 //                    Pair(viewHolder.itemView, profileTransition)
                     )
                 )
-                val id = item.user?.id ?: return@setOnClickListener
+                val id = item.mainPost.user?.id ?: return@setOnClickListener
 //            viewHolder.itemView.transitionName = profileTransition
-                val fragment = ProfileFragment.newInstance(id, url, item.user, it.transitionName)
+                val fragment = ProfileFragment.newInstance(id, url, item.mainPost.user, it.transitionName)
                 sharedElementReturnTransition = moveTransition
                 sharedElementEnterTransition = moveTransition
                 fragment.sharedElementEnterTransition = moveTransition
                 fragment.sharedElementReturnTransition = moveTransition
                 FragmentHelper.addFragment(context!!, fragment, id, transitionMap)
             }
-            item.user?.let {
+            item.mainPost.user?.let {
                 viewHolder.screenNameTextView.text = it.username
                 viewHolder.handleNameTextView.text = it.name
             }
             viewHolder.bodyTextView.apply {
-                text = item.content?.getSpannableStringBuilder(context)
+                text = item.mainPost.content?.getSpannableStringBuilder(context)
                 setOnTouchListener(entityListener)
             }
             viewHolder.starTextView.let {
                 it.setOnClickListener {
-                    val newState = item.youBookmarked == false
-                    Toast.makeText(context!!, "star $newState ${item.id}", Toast.LENGTH_SHORT).show()
-                    PostService.newStarIntent(context, item.id, newState)
+                    val newState = item.mainPost.youBookmarked == false
+                    Toast.makeText(context!!, "star $newState ${item.mainPost.id}", Toast.LENGTH_SHORT).show()
+                    PostService.newStarIntent(context, item.mainPost.id, newState)
                     // TODO: revert state when raised error
+                    // star "this post"
                     item.youBookmarked = newState
                     adapter.notifyItemChanged(position)
                 }
@@ -140,9 +141,25 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
             viewHolder.replyTextView.setOnClickListener {
                 Toast.makeText(context!!, "TODO: rpely to ${item.id}", Toast.LENGTH_SHORT).show()
             }
+            setupRepostView(item, viewHolder.repostedByTextView)
 
         }
-        viewHolder.dateTextView.text = getShortDateStr(item.createdAt)
+        viewHolder.dateTextView.text = getShortDateStr(item.mainPost.createdAt)
+    }
+
+    private fun setupRepostView(item: Post, repostedByTextView: TextView) {
+        val originalUser = item.user
+        if (item.repostOf != null && originalUser != null) {
+            repostedByTextView.setOnClickListener {
+                val fragment = ProfileFragment.newInstance(originalUser.id)
+                addFragment(fragment, originalUser.id)
+            }
+            repostedByTextView.text =
+                repostedByTextView.context.getString(R.string.reposted_by_template, originalUser.username)
+        } else {
+            repostedByTextView.visibility = View.GONE
+        }
+
     }
 
     override fun getItemLayout(): Int = R.layout.fragment_post_item
@@ -167,6 +184,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         val bodyTextView: TextView = itemView.bodyTextView
         val dateTextView: TextView = itemView.relativeTimeTextView
         val handleNameTextView: TextView = itemView.handleNameTextView
+        val repostedByTextView: TextView = itemView.repostedByTextView
 
         class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
             val replyTextView: TextView = itemView.replyTextView
@@ -179,7 +197,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
-        BaseListViewModel<Post>() {
+        NewBaseListFragment.BaseListViewModel<Post>() {
         override suspend fun getItems(params: PaginationParam): PnutResponse<List<Post>> {
             Log.e("pagination", params.toString())
             val getPostParam = GetPostsParam().also { it.add(params) }

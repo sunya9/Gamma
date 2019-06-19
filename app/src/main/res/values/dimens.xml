@@ -21,6 +21,7 @@
     <dimen name="margin_list_bottom">100dp</dimen>
     <dimen name="margin_inset_divider">72dp</dimen>
     <dimen name="margin_regular">16dp</dimen>
+    <dimen name="margin_half">8dp</dimen>
     <dimen name="margin_get_new_items_top">16dp</dimen>
 
     <!--padding-->

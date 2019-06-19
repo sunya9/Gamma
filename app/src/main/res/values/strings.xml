@@ -102,4 +102,5 @@
     <string name="deleted_post_user_name">deleted post</string>
     <string name="posted">Posted: %s</string>
     <string name="starred">Starred: %s</string>
+    <string name="reposted_by_template">reposted by @%s</string>
 </resources>
