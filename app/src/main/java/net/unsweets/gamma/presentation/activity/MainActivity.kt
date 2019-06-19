@@ -1,13 +1,12 @@
 package net.unsweets.gamma.presentation.activity
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
-import android.view.*
-import android.view.animation.AccelerateInterpolator
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -163,23 +162,6 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         val cx = pos[0] + fab.width / 2
         val cy = pos[1] + fab.height / 2
         val fragment = ComposePostFragment.newInstance(cx, cy)
-        fragment.dialog?.setOnShowListener {
-            val decorView = window.decorView
-            val targetRadius = Math.hypot(decorView.width.toDouble(), decorView.height.toDouble()).toFloat()
-            val startRadius = 0F
-            val anim = ViewAnimationUtils.createCircularReveal(decorView, cx, cy, startRadius, targetRadius)
-            anim.interpolator = AccelerateInterpolator()
-            anim.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-                }
-            })
-            val duration = resources.getInteger(android.R.integer.config_mediumAnimTime)
-            anim.duration = duration.toLong()
-            anim.start()
-
-        }
         fragment.show(supportFragmentManager, DialogKey.ComposePost.name)
     }
 
