@@ -123,7 +123,7 @@ class PostTouchHelperCallback(
         if (prevActionViewId == null) return
         val view = backgroundView.findViewById<View>(prevActionViewId)
         val scaleDownAnim =
-            AnimationUtils.loadAnimation(context, R.anim.swipe_action_scale_down) as AnimationSet
+            AnimationUtils.loadAnimation(context, R.anim.swipe_action_fade_out) as AnimationSet
         val translateAnim = getTranslateAnim(InOut.Out, direction)
         scaleDownAnim.addAnimation(translateAnim)
         view.startAnimation(scaleDownAnim)
@@ -148,7 +148,7 @@ class PostTouchHelperCallback(
     ) {
         if (shownViewId == null) return
         backgroundView.findViewById<View>(shownViewId)?.let {
-            val scaleUpAnim = AnimationUtils.loadAnimation(context, R.anim.swipe_action_scale_up) as AnimationSet
+            val scaleUpAnim = AnimationUtils.loadAnimation(context, R.anim.swipe_action_fade_in) as AnimationSet
             val translateAnim = getTranslateAnim(InOut.In, direction)
             scaleUpAnim.addAnimation(translateAnim)
             it.startAnimation(scaleUpAnim)

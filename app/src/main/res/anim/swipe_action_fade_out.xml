@@ -3,13 +3,6 @@
     android:duration="@android:integer/config_shortAnimTime"
     android:fillAfter="true"
     android:fillBefore="true">
-    <scale
-        android:fromXScale="100%"
-        android:fromYScale="100%"
-        android:pivotX="50%"
-        android:pivotY="50%"
-        android:toXScale="0%"
-        android:toYScale="0%" />
     <alpha
         android:fromAlpha="1"
         android:toAlpha="0" />
