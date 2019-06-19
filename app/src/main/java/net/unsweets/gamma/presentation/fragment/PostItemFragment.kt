@@ -132,9 +132,9 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
                     item.mainPost.youBookmarked = newState
                     adapter.notifyItemChanged(position)
                 }
-                val starTextRes = if (item.youBookmarked == true) R.string.unstar else R.string.star
+                val starTextRes = if (item.mainPost.youBookmarked == true) R.string.unstar else R.string.star
                 val drawableRes =
-                    if (item.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
+                    if (item.mainPost.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
                 it.text = context.getString(starTextRes)
                 it.setCompoundDrawablesRelativeWithIntrinsicBounds(drawableRes, 0, 0, 0)
             }
