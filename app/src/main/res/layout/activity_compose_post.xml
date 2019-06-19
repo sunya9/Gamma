@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".presentation.activity.ComposePostActivity">
+    tools:context=".presentation.fragment.ComposePostFragment">
 
     <data>
 
@@ -11,6 +11,8 @@
             type="net.unsweets.gamma.presentation.fragment.ComposePostFragment.ComposePostViewModel" />
 
         <import type="net.unsweets.gamma.presentation.util.BindingUtil" />
+
+        <import type="net.unsweets.gamma.presentation.util.DateUtil" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,39 +52,102 @@
             app:layout_constraintBottom_toTopOf="@+id/bottomToolbar"
             app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical">
 
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_half"
+                    android:visibility="@{safeUnbox(viewModel.replyTargetVisibility)}"
+                    app:cardElevation="4dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/replyAvatarImageView"
+                            android:layout_width="@dimen/size_post_item_avatar"
+                            android:layout_height="@dimen/size_post_item_avatar"
+                            android:layout_marginStart="@dimen/margin_regular"
+                            android:layout_marginTop="@dimen/margin_regular"
+                            android:contentDescription="@string/description_avatar_picture"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:src="@tools:sample/avatars" />
+
+                        <TextView
+                            android:id="@+id/replyScreenNameTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_regular"
+                            android:layout_marginTop="@dimen/margin_regular"
+                            android:text="@{viewModel.replyTarget.user.username}"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            app:layout_constraintStart_toEndOf="@id/replyAvatarImageView"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="\@screen_name" />
+
+                        <TextView
+                            android:id="@+id/replyNameTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_half"
+                            android:text="@{viewModel.replyTarget.user.name}"
+                            app:layout_constraintBaseline_toBaselineOf="@id/replyScreenNameTextView"
+                            app:layout_constraintStart_toEndOf="@id/replyScreenNameTextView"
+                            tools:text="handle name" />
+
+                        <TextView
+                            android:id="@+id/replyDateTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_regular"
+                            android:text="@{DateUtil.getShortDateStr(context, viewModel.replyTarget.createdAt)}"
+                            app:layout_constraintBottom_toBottomOf="@id/replyNameTextView"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            tools:text="1d" />
+
+                        <TextView
+                            android:id="@+id/replyBodyTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_regular"
+                            android:layout_marginBottom="@dimen/margin_regular"
+                            android:text="@{viewModel.replyTarget.content.text}"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@id/replyScreenNameTextView"
+                            app:layout_constraintTop_toBottomOf="@id/replyScreenNameTextView"
+                            tools:text="@tools:sample/lorem[10]" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/composeTextEditText"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:gravity="top|start"
                     android:inputType="textMultiLine"
                     android:minLines="5"
                     android:padding="16dp"
-                    android:text="@={viewModel.text}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:text="@={viewModel.text}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/thumbnailRecyclerView"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:minHeight="300dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/composeTextEditText"
                     tools:listitem="@layout/compose_thumbnail_image" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
         </ScrollView>
 
         <androidx.appcompat.widget.Toolbar

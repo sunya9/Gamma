@@ -138,7 +138,10 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
                 it.setCompoundDrawablesRelativeWithIntrinsicBounds(drawableRes, 0, 0, 0)
             }
             viewHolder.replyTextView.setOnClickListener {
-                Toast.makeText(context!!, "TODO: rpely to ${item.id}", Toast.LENGTH_SHORT).show()
+                val pos = getViewPositionOnScreen(viewHolder.avatarView)
+                val fragment = ComposePostFragment.replyInstance(pos.first, pos.second, item.mainPost)
+                fragment.show(childFragmentManager, DialogKey.Compose.name)
+
             }
             setupRepostView(item, viewHolder.repostedByTextView)
 

@@ -29,16 +29,19 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.ActivityComposePostBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
+import net.unsweets.gamma.domain.usecases.GetCurrentUserIdUseCase
 import net.unsweets.gamma.presentation.activity.ComposePostActivity
 import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.presentation.util.hideKeyboard
 import net.unsweets.gamma.presentation.util.showKeyboard
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService
+import net.unsweets.gamma.util.observeOnce
+import javax.inject.Inject
 
 class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDialogFragment.Listener {
     private enum class BundleKey {
-        CX, CY, Text
+        CX, CY, Text, ReplyTarget
     }
 
     private enum class FragmentKey {
@@ -57,6 +60,14 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             }
         }
 
+        fun replyInstance(cx: Int, cy: Int, post: Post) = ComposePostFragment().apply {
+            arguments = Bundle().apply {
+                putInt(BundleKey.CX.name, cx)
+                putInt(BundleKey.CY.name, cy)
+                putParcelable(BundleKey.ReplyTarget.name, post)
+            }
+        }
+
         fun shareUrlIntent(context: Context, title: String?, link: String) =
             Intent(context, ComposePostActivity::class.java).apply {
                 val text = context.getString(R.string.markdown_link, title, link)
@@ -70,7 +81,15 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         menuItem.isEnabled = it
     }
     private val viewModel: ComposePostViewModel by lazy {
-        ViewModelProviders.of(this).get(ComposePostViewModel::class.java)
+        ViewModelProviders.of(
+            this,
+            ComposePostViewModel.Factory(activity!!.application, replyTarget, mentionToMyself)
+        )
+            .get(ComposePostViewModel::class.java)
+    }
+
+    private val replyTarget: Post? by lazy {
+        arguments?.getParcelable<Post>(BundleKey.ReplyTarget.name)
     }
 
     private lateinit var binding: ActivityComposePostBinding
@@ -81,9 +100,20 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
     }
 
+    @Inject
+    lateinit var getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+
+    private val currentUserId: String by lazy {
+        getCurrentUserIdUseCase.run(Unit).id
+    }
+
+    private val mentionToMyself: Boolean by lazy {
+        replyTarget != null && replyTarget?.user?.id == currentUserId
+    }
+
     private fun send() {
         val text = viewModel.text.value ?: return
-        val postBody = PostBody(text)
+        val postBody = PostBody(text, replyTarget?.id)
         PostService.newPostIntent(context, postBody)
         finishWithAnim()
     }
@@ -91,6 +121,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle)
+
     }
 
 
@@ -104,15 +135,12 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.setTitle(R.string.compose_a_post)
-        binding.toolbar.setOnMenuItemClickListener(::onOptionsItemSelected)
-        binding.toolbar.setNavigationOnClickListener {
-            cancelToCompose()
-        }
+        setupToolbar()
+
         viewModel.event.observe(this, eventObserver)
         viewModel.enableSendButton.observe(this, enableSendButtonObserver)
         view.composeTextEditText.setOnFocusChangeListener { editText, b ->
-            if(!b) return@setOnFocusChangeListener
+            if (!b) return@setOnFocusChangeListener
             showKeyboard(editText)
         }
         adapter = ThumbnailAdapter()
@@ -120,21 +148,43 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
         binding.viewLeftActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
         binding.viewRightActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
+
+        replyTarget?.user?.let {
+            GlideApp.with(this).load(it.content.avatarImage.link).into(binding.replyAvatarImageView)
+        }
+
+        viewModel.text.observeOnce(this, Observer<String> {
+            binding.composeTextEditText.setSelection(it.length)
+        })
+
+    }
+
+    private fun setupToolbar() {
+        binding.toolbar.title =
+            if (replyTarget != null)
+                getString(R.string.compose_reply_title_template, replyTarget?.user?.username)
+            else
+                getString(R.string.compose_a_post)
+        binding.toolbar.setOnMenuItemClickListener(::onOptionsItemSelected)
+        binding.toolbar.setNavigationOnClickListener {
+            cancelToCompose()
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setOnShowListener {
-            if(savedInstanceState == null) {
+            if (savedInstanceState == null) {
                 revealAnimation(dialog.rootLayout)
 
             } else {
                 focusToEditText()
             }
         }
+
         dialog.setOnKeyListener { _, keyCode, _ ->
-            if(keyCode != KeyEvent.KEYCODE_BACK) return@setOnKeyListener false
-                exitReveal()
+            if (keyCode != KeyEvent.KEYCODE_BACK) return@setOnKeyListener false
+            exitReveal()
             true
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -299,8 +349,15 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     }
 
 
-    class ComposePostViewModel(app: Application) : BaseViewModel<Event>(app) {
-        val replyTarget = MutableLiveData<Post>()
+    class ComposePostViewModel(
+        app: Application,
+        replyTargetArg: Post?,
+        mentionToMyself: Boolean
+    ) : BaseViewModel<Event>(app) {
+        val replyTarget = MutableLiveData<Post>().apply { value = replyTargetArg }
+        val replyTargetVisibility = Transformations.map(replyTarget) {
+            if (it != null) View.VISIBLE else View.GONE
+        }
         private val maxTextLength = 256
         val text = MutableLiveData<String>().apply { value = "" }
         private val counter: LiveData<Int> = Transformations.map(text) {
@@ -310,6 +367,28 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         val counterStr: LiveData<String> = Transformations.map(counter) { it.toString() }
         val enableSendButton: LiveData<Boolean> =
             Transformations.map(counter) { (0 <= it) && it < maxTextLength }
+
+        init {
+            val replyTargetUserUsername = replyTargetArg?.user?.username
+            text.value =
+                if (replyTargetUserUsername != null && mentionToMyself)
+                    "@$replyTargetUserUsername "
+                else
+                    ""
+        }
+
+        class Factory(
+            private val app: Application,
+            private val replyTarget: Post?,
+            private val mentionToMyself: Boolean
+        ) :
+            ViewModelProvider.AndroidViewModelFactory(app) {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return ComposePostViewModel(app, replyTarget, mentionToMyself) as T
+            }
+
+        }
     }
 
     sealed class Event {
