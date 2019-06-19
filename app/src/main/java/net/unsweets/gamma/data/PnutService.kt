@@ -59,7 +59,7 @@ interface PnutService {
     fun getPostsInThread(@Path("postId") postId: String): Call<PnutResponse<List<Post>>>
 
     @PUT("posts/{postId}/bookmark")
-    fun createStar(@Path("postId") postId: String, @Body note: String): Call<PnutResponse<Post>>
+    fun createStar(@Path("postId") postId: String, @Body note: String = ""): Call<PnutResponse<Post>>
 
     @DELETE("posts/{postId}/bookmark")
     fun deleteStar(@Path("postId") postId: String): Call<PnutResponse<Post>>
