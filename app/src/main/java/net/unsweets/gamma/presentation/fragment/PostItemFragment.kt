@@ -31,6 +31,7 @@ import net.unsweets.gamma.presentation.util.EntityOnTouchListener
 import net.unsweets.gamma.presentation.util.FragmentHelper
 import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.presentation.util.PostTouchHelperCallback
+import net.unsweets.gamma.service.PostService
 import net.unsweets.gamma.util.LogUtil
 import java.util.*
 import javax.inject.Inject
@@ -122,6 +123,14 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
                 setOnTouchListener(entityListener)
             }
             viewHolder.starTextView.let {
+                it.setOnClickListener {
+                    val newState = item.youBookmarked == false
+                    Toast.makeText(context!!, "star $newState ${item.id}", Toast.LENGTH_SHORT).show()
+                    PostService.newStarIntent(context, item.id, newState)
+                    // TODO: revert state when raised error
+                    item.youBookmarked = newState
+                    adapter.notifyItemChanged(position)
+                }
                 val starTextRes = if (item.youBookmarked == true) R.string.unstar else R.string.star
                 val drawableRes =
                     if (item.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
@@ -166,8 +175,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
             val moreImageView: ImageView = itemView.moreImageView
         }
 
-        class Deleted(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
-        }
+        class Deleted(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper)
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :

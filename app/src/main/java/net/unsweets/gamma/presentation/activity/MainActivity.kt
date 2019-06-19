@@ -21,6 +21,7 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.broadcast.PostReceiver
 import net.unsweets.gamma.databinding.ActivityMainBinding
 import net.unsweets.gamma.databinding.NavigationDrawerHeaderBinding
+import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
 import net.unsweets.gamma.presentation.fragment.ComposePostFragment
@@ -35,9 +36,18 @@ import javax.inject.Inject
 
 
 class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback {
-    override fun onReceive() {
+    override fun onStarReceive(post: Post) {
+        val text = post.content?.text ?: return
+        showSnackBar(getString(R.string.starred, text))
+    }
+
+    override fun onPostReceive(intent: Intent) {
+        showSnackBar(getString(R.string.posted))
+    }
+
+    private fun showSnackBar(text: String) {
         val view = findViewById<View>(android.R.id.content) ?: return
-        Snackbar.make(view, R.string.posted, Snackbar.LENGTH_SHORT).apply {
+        Snackbar.make(view, text, Snackbar.LENGTH_SHORT).apply {
             setAnchorView(R.id.fab)
         }.show()
     }
