@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
+import net.unsweets.gamma.domain.entity.Unique
 
-class BaseListRecyclerViewAdapter<T, V : RecyclerView.ViewHolder>(
+class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
     private val listLiveData: LiveData<ArrayList<T>>,
     private var listener: IBaseList<T, V>
 ) : RecyclerView.Adapter<V>() {
@@ -20,6 +21,10 @@ class BaseListRecyclerViewAdapter<T, V : RecyclerView.ViewHolder>(
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         this.recyclerView = null
+    }
+
+    override fun getItemId(position: Int): Long {
+        return listLiveData.value?.get(position)?.uniqueKey?.toLong() ?: 0L
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): V {
