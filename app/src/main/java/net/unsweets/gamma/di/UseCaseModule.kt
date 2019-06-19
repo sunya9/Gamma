@@ -51,4 +51,10 @@ class UseCaseModule {
     fun providePostUseCase(
         pnutRepository: IPnutRepository
     ): PostUseCase = PostUseCase(pnutRepository)
+
+    @Provides
+    fun provideStarUseCase(
+        pnutRepository: IPnutRepository
+    ): StarUseCase = StarUseCase(pnutRepository)
+
 }
