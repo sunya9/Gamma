@@ -76,15 +76,34 @@
         android:id="@+id/postItemForegroundView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:background="@color/colorWindowBackground"
         android:elevation="@dimen/elevation_list_item_elevation"
-        android:padding="16dp"
         tools:translationX="100dp">
+
+        <View
+            android:id="@+id/starStateView"
+            android:layout_width="@dimen/width_post_state"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_star_state"
+            app:layout_constraintBottom_toTopOf="@id/repostStateView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/repostStateView"
+            android:layout_width="@dimen/width_post_state"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_repost_state"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/starStateView" />
 
         <TextView
             android:id="@+id/repostedByTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_regular"
             android:clickable="true"
             android:focusable="true"
             android:text="@string/reposted_by_template"
@@ -96,6 +115,7 @@
             android:id="@+id/avatarImageView"
             android:layout_width="@dimen/size_post_item_avatar"
             android:layout_height="@dimen/size_post_item_avatar"
+            android:layout_marginStart="@dimen/margin_regular"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@id/screenNameTextView"
@@ -110,7 +130,7 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintStart_toEndOf="@+id/avatarImageView"
             app:layout_constraintTop_toBottomOf="@id/repostedByTextView"
-            app:layout_goneMarginTop="0dp"
+            app:layout_goneMarginTop="@dimen/margin_regular"
             tools:text="@tools:sample/first_names" />
 
         <TextView
@@ -118,6 +138,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_half"
+            android:layout_marginEnd="@dimen/margin_regular"
+            android:layout_marginBottom="@dimen/margin_regular"
             android:gravity="top|start"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -139,6 +161,7 @@
             android:id="@+id/relativeTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_regular"
             app:layout_constraintBottom_toBottomOf="@+id/handleNameTextView"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="5s" />

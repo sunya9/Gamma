@@ -129,7 +129,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
                     PostService.newStarIntent(context, item.mainPost.id, newState)
                     // TODO: revert state when raised error
                     // star "this post"
-                    item.youBookmarked = newState
+                    item.mainPost.youBookmarked = newState
                     adapter.notifyItemChanged(position)
                 }
                 val starTextRes = if (item.youBookmarked == true) R.string.unstar else R.string.star
@@ -144,6 +144,9 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
             setupRepostView(item, viewHolder.repostedByTextView)
 
         }
+        viewHolder.starStateView.visibility = if (item.mainPost.youBookmarked == true) View.VISIBLE else View.GONE
+        viewHolder.repostStateView.visibility = if (item.mainPost.youReposted == true) View.VISIBLE else View.GONE
+
         viewHolder.dateTextView.text = getShortDateStr(item.mainPost.createdAt)
     }
 
@@ -159,7 +162,6 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         } else {
             repostedByTextView.visibility = View.GONE
         }
-
     }
 
     override fun getItemLayout(): Int = R.layout.fragment_post_item
@@ -185,6 +187,8 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         val dateTextView: TextView = itemView.relativeTimeTextView
         val handleNameTextView: TextView = itemView.handleNameTextView
         val repostedByTextView: TextView = itemView.repostedByTextView
+        val starStateView: View = itemView.starStateView
+        val repostStateView: View = itemView.repostStateView
 
         class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
             val replyTextView: TextView = itemView.replyTextView

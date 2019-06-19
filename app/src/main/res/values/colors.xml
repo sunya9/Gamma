@@ -38,4 +38,6 @@
     <color name="nameShadow">#9000</color>
     <color name="navigationBar">@android:color/white</color>
     <color name="navigationBarDivider">@color/colorGrayLightest</color>
+    <color name="yellow">#cbc36f</color>
+    <color name="green">#90cb6f</color>
 </resources>

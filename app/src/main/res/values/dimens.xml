@@ -29,4 +29,5 @@
     <dimen name="margin_list_item_y">12dp</dimen>
     <dimen name="width_list_item_swipe_action_view">48dp</dimen>
     <dimen name="elevation_list_item_elevation">24dp</dimen>
+    <dimen name="width_post_state">5dp</dimen>
 </resources>
