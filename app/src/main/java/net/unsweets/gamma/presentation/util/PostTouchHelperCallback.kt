@@ -74,7 +74,9 @@ class PostTouchHelperCallback(
         val backgroundView = vh.itemView.swipeActionsLayout
         val per = dX / deviceWidth
         val direction = if (prevDX < dX) Direction.Right else Direction.Left
-        animActionViews(per, backgroundView, direction)
+        if (isCurrentlyActive) {
+            animActionViews(per, backgroundView, direction)
+        }
         prevDX = dX
         ItemTouchHelper.Callback.getDefaultUIUtil()
             .onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive)
