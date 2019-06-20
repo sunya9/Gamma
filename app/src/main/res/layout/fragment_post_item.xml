@@ -139,13 +139,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_quoter"
             android:layout_marginEnd="@dimen/margin_regular"
-            android:layout_marginBottom="@dimen/margin_regular"
             android:gravity="top|start"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/screenNameTextView"
             app:layout_constraintTop_toBottomOf="@+id/screenNameTextView"
+            android:paddingBottom="@dimen/margin_half"
             tools:text="@tools:sample/lorem" />
 
         <TextView
@@ -165,5 +164,18 @@
             app:layout_constraintBottom_toBottomOf="@+id/handleNameTextView"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="5s" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/thumbnailViewPager"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginEnd="@dimen/margin_regular"
+            android:layout_marginBottom="@dimen/margin_regular"
+            android:background="@drawable/bg_thumbnail"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/bodyTextView"
+            app:layout_constraintTop_toBottomOf="@id/bodyTextView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

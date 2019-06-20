@@ -3,8 +3,10 @@ package net.unsweets.gamma.presentation.fragment
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -14,11 +16,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_post_item.view.*
+import kotlinx.android.synthetic.main.thumbnail_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
+import net.unsweets.gamma.domain.entity.raw.OEmbed
+import net.unsweets.gamma.domain.entity.raw.Raw
 import net.unsweets.gamma.domain.model.StreamType
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
@@ -149,6 +155,37 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         viewHolder.repostStateView.visibility = if (item.mainPost.youReposted == true) View.VISIBLE else View.GONE
 
         viewHolder.dateTextView.text = getShortDateStr(viewHolder.itemView.context, item.mainPost.createdAt)
+
+        val raw = item.raw
+        val photos = OEmbed.Photo.getPhotos(raw)
+        if (photos.isNotEmpty()) {
+            viewHolder.thumbnailViewPager.visibility = View.VISIBLE
+            viewHolder.thumbnailViewPager.adapter = ThumbnailViewPagerAdapter(photos)
+        } else {
+            viewHolder.thumbnailViewPager.visibility = View.GONE
+            viewHolder.thumbnailViewPager.adapter = null
+        }
+    }
+
+    class ThumbnailViewPagerAdapter(private val photos: List<Raw<OEmbed.Photo.PhotoValue>>) :
+        RecyclerView.Adapter<ThumbnailViewPagerAdapter.ThumbnailViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThumbnailViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.thumbnail_item, parent, false)
+            return ThumbnailViewHolder(view)
+        }
+
+        override fun getItemCount(): Int = photos.size
+
+        override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
+            val context = holder.itemView.context
+            val item = photos[position]
+            val url = item.value.thumbnailUrl
+            GlideApp.with(context).load(url).into(holder.thumbnailImageView)
+        }
+
+        class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val thumbnailImageView: ImageView = itemView.thumbnailImageView
+        }
     }
 
     private fun setupRepostView(item: Post, repostedByTextView: TextView) {
@@ -190,6 +227,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         val repostedByTextView: TextView = itemView.repostedByTextView
         val starStateView: View = itemView.starStateView
         val repostStateView: View = itemView.repostStateView
+        val thumbnailViewPager: ViewPager2 = itemView.thumbnailViewPager
 
         class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
             val replyTextView: TextView = itemView.replyTextView

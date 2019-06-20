@@ -8,6 +8,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.data.PnutService
 import net.unsweets.gamma.domain.entity.*
+import net.unsweets.gamma.domain.entity.raw.*
 import net.unsweets.gamma.domain.model.params.composed.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.util.await
@@ -19,7 +20,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 
-class PnutRepository (private val context: Context): IPnutRepository {
+class PnutRepository(private val context: Context) : IPnutRepository {
     override fun createStarPostSync(postId: String): PnutResponse<Post> {
         return defaultPnutService.createStar(postId).execute().body()!!
     }
@@ -176,6 +177,19 @@ class PnutRepository (private val context: Context): IPnutRepository {
                 .withSubtype(Interaction.Follow::class.java, "follow")
                 .withSubtype(Interaction.Bookmark::class.java, "bookmark")
         )
+        .add(
+            PolymorphicJsonAdapterFactory.of(Raw::class.java, "type")
+                .withSubtype(OEmbed::class.java, "io.pnut.core.oembed")
+                .withSubtype(Spoiler::class.java, "shawn.spoiler")
+                .withSubtype(LongPost::class.java, "nl.chimpnut.blog.post")
+                .withSubtype(PollNotice::class.java, "io.pnut.core.poll-notice")
+                .withDefaultValue(RawImpl())
+        )
+        .add(
+            PolymorphicJsonAdapterFactory.of(OEmbed.BaseOEmbedRawValue::class.java, "type")
+                .withSubtype(OEmbed.Photo.PhotoValue::class.java, "photo")
+                .withSubtype(OEmbed.Video.VideoValue::class.java, "video")
+        )
         .add(KotlinJsonAdapterFactory())
         .build()
 
@@ -187,7 +201,7 @@ class PnutRepository (private val context: Context): IPnutRepository {
 
     private fun createPnutService(token: String? = null): PnutService {
         val client = OkHttpClient.Builder()
-        if(token?.isNotEmpty() == true) client.addInterceptor((getAuthorizationHeaderInterceptor(token)))
+        if (token?.isNotEmpty() == true) client.addInterceptor((getAuthorizationHeaderInterceptor(token)))
         if (BuildConfig.DEBUG) {
             val logging = HttpLoggingInterceptor()
             logging.level = HttpLoggingInterceptor.Level.BASIC

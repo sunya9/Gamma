@@ -6,6 +6,7 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.domain.entity.entities.Entities
 import net.unsweets.gamma.domain.entity.entities.HaveEntities
+import net.unsweets.gamma.domain.entity.raw.Raw
 import java.util.*
 
 @Parcelize
@@ -25,7 +26,8 @@ data class Post(
     var content: PostContent?,
     @Json(name = "you_bookmarked") var youBookmarked: Boolean?,
     @Json(name = "you_reposted") var youReposted: Boolean?,
-    @Json(name = "pagination_id") override var paginationId: String?
+    @Json(name = "pagination_id") override var paginationId: String?,
+    @Json(name = "raw") var raw: List<Raw<*>>?
 ) : Parcelable, Pageable, Unique {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
@@ -48,22 +50,4 @@ data class Post(
 
     val mainPost: Post = repostOf ?: this
 
-    constructor() : this(
-        Date(),
-        "-1",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        ""
-    )
 }
