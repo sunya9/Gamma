@@ -31,4 +31,8 @@
     <dimen name="width_list_item_swipe_action_view">48dp</dimen>
     <dimen name="elevation_list_item_elevation">24dp</dimen>
     <dimen name="width_post_state">5dp</dimen>
+    <dimen name="size_thumbnail_tab_item_dot">10dp</dimen>
+    <dimen name="width_thumbnail_tab_item_width">10dp</dimen>
+    <dimen name="height_thumbnail_tab">20dp</dimen>
+    <dimen name="width_thumbnail_tab_item">20dp</dimen>
 </resources>

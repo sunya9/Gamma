@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="center">
+        <inset android:inset="5dp">
+            <shape
+                android:innerRadiusRatio="1"
+                android:shape="oval">
+                <corners android:radius="@dimen/size_thumbnail_tab_item_dot" />
+                <size
+                    android:width="@dimen/size_thumbnail_tab_item_dot"
+                    android:height="@dimen/size_thumbnail_tab_item_dot" />
+                <solid android:color="@color/colorGray" />
+            </shape>
+        </inset>
+    </item>
+</layer-list>

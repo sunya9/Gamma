@@ -176,6 +176,20 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/bodyTextView"
-            app:layout_constraintTop_toBottomOf="@id/bodyTextView" />
+            app:layout_constraintTop_toBottomOf="@id/bodyTextView"></androidx.viewpager2.widget.ViewPager2>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/thumbnailTabLayout"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/height_thumbnail_tab"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@id/thumbnailViewPager"
+            app:layout_constraintEnd_toEndOf="@id/thumbnailViewPager"
+            app:layout_constraintStart_toStartOf="@id/thumbnailViewPager"
+            app:tabBackground="@drawable/bg_thumbnail_tab_item"
+            app:tabGravity="center"
+            app:tabIndicator="@drawable/bg_thumbnail_tab_indicator"
+            app:tabIndicatorGravity="center"
+            app:tabMaxWidth="@dimen/width_thumbnail_tab_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

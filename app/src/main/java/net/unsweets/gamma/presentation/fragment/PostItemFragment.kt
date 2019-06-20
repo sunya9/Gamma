@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_post_item.view.*
 import kotlinx.android.synthetic.main.thumbnail_item.view.*
@@ -161,6 +163,12 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         if (photos.isNotEmpty()) {
             viewHolder.thumbnailViewPager.visibility = View.VISIBLE
             viewHolder.thumbnailViewPager.adapter = ThumbnailViewPagerAdapter(photos)
+            TabLayoutMediator(
+                viewHolder.thumbnailTabLayout,
+                viewHolder.thumbnailViewPager
+            ) { _: TabLayout.Tab, _: Int ->
+            }.attach()
+            viewHolder.thumbnailTabLayout.visibility = if (photos.size == 1) View.GONE else View.VISIBLE
         } else {
             viewHolder.thumbnailViewPager.visibility = View.GONE
             viewHolder.thumbnailViewPager.adapter = null
@@ -228,6 +236,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         val starStateView: View = itemView.starStateView
         val repostStateView: View = itemView.repostStateView
         val thumbnailViewPager: ViewPager2 = itemView.thumbnailViewPager
+        val thumbnailTabLayout: TabLayout = itemView.thumbnailTabLayout
 
         class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
             val replyTextView: TextView = itemView.replyTextView
