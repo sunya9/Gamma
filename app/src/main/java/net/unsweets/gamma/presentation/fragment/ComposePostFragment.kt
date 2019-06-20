@@ -2,6 +2,7 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.Manifest
 import android.animation.Animator
+import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
 import android.app.Application
 import android.app.Dialog
@@ -176,7 +177,11 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         dialog.setOnShowListener {
             if (savedInstanceState == null) {
                 revealAnimation(dialog.rootLayout)
-
+                view.let {
+                    val anim = AnimatorInflater.loadAnimator(context, R.animator.bg_compose_window)
+                    anim.setTarget(it)
+                    anim.start()
+                }
             } else {
                 focusToEditText()
             }
@@ -276,7 +281,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
                 }
             }
         })
-        val duration = resources.getInteger(android.R.integer.config_mediumAnimTime)
+        val duration = resources.getInteger(R.integer.compose_duration)
         anim.duration = duration.toLong()
         return anim
     }
