@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ChannelInvite(override val value: ChannelInviteValue) : Raw.IRaw, Parcelable {
+data class ChannelInvite(override val value: ChannelInviteValue) : Raw<ChannelInvite.ChannelInviteValue>(), Parcelable {
     override val type: String = "io.pnut.core.channel.invite"
 
     @Parcelize

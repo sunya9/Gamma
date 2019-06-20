@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ChatSettings(override val value: ChatSettingsValue) : Raw.IRaw, Parcelable {
+data class ChatSettings(override val value: ChatSettingsValue) : Raw<ChatSettings.ChatSettingsValue>(), Parcelable {
     override val type: String = "io.pnut.core.chat-settings"
 
     @Parcelize

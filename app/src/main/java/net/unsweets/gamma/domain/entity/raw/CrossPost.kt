@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class CrossPost(override val value: CrossPostValue) : Raw.IRaw, Parcelable {
+data class CrossPost(override val value: CrossPostValue) : Raw<CrossPost.CrossPostValue>(), Parcelable {
     override val type: String = "io.pnut.core.crosspost"
 
     @Parcelize

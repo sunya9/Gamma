@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Language(override val value: LanguageValue) : Raw.IRaw, Parcelable {
+data class Language(override val value: LanguageValue) : Raw<Language.LanguageValue>(), Parcelable {
     @Parcelize
     data class LanguageValue(val language: String) : Raw.RawValue, Parcelable
 
