@@ -107,7 +107,7 @@
     <string name="date_short_minutes_template">%dm</string>
     <string name="date_short_hours_template">%dh</string>
     <string name="date_short_a_day">a day</string>
-    <string name="date_short_date_this_year">%te %tb</string>
-    <string name="date_short_date_before_last_year">%te %tb %ty</string>
+    <string name="date_short_date_this_year" formatted="false">%te %tb</string>
+    <string name="date_short_date_before_last_year" formatted="false">%te %tb %ty</string>
     <string name="compose_reply_title_template">Reply to @%s</string>
 </resources>
