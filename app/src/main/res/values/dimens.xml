@@ -35,4 +35,5 @@
     <dimen name="width_thumbnail_tab_item_width">10dp</dimen>
     <dimen name="height_thumbnail_tab">20dp</dimen>
     <dimen name="width_thumbnail_tab_item">20dp</dimen>
+    <dimen name="width_avatar_border">2dp</dimen>
 </resources>

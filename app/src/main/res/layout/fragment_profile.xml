@@ -82,6 +82,8 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
+                            app:civ_border_color="@color/colorAvatarBorder"
+                            app:civ_border_width="@dimen/width_avatar_border"
                             tools:src="@tools:sample/avatars" />
 
                         <TextView
@@ -130,6 +132,8 @@
                             android:id="@+id/userMainActionButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:onClick="@{() -> viewModel.mainAction()}"
+                            android:transitionName="@string/transition_edit_profile"
                             android:text="@{viewModel.mainActionButtonText}"
                             app:layout_constraintBottom_toTopOf="@+id/profileCardView"
                             app:layout_constraintEnd_toEndOf="@+id/profileCardView"
