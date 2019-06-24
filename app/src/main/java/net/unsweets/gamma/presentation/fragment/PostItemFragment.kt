@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -161,7 +162,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         val raw = item.raw
         val photos = OEmbed.Photo.getPhotos(raw)
         if (photos.isNotEmpty()) {
-            viewHolder.thumbnailViewPager.visibility = View.VISIBLE
+            viewHolder.thumbnailViewPagerCardView.visibility = View.VISIBLE
             viewHolder.thumbnailViewPager.adapter = ThumbnailViewPagerAdapter(photos)
             TabLayoutMediator(
                 viewHolder.thumbnailTabLayout,
@@ -170,7 +171,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
             }.attach()
             viewHolder.thumbnailTabLayout.visibility = if (photos.size == 1) View.GONE else View.VISIBLE
         } else {
-            viewHolder.thumbnailViewPager.visibility = View.GONE
+            viewHolder.thumbnailViewPagerCardView.visibility = View.GONE
             viewHolder.thumbnailViewPager.adapter = null
         }
     }
@@ -236,6 +237,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
         val starStateView: View = itemView.starStateView
         val repostStateView: View = itemView.repostStateView
         val thumbnailViewPager: ViewPager2 = itemView.thumbnailViewPager
+        val thumbnailViewPagerCardView: CardView = itemView.thumbnailViewPagerCardView
         val thumbnailTabLayout: TabLayout = itemView.thumbnailTabLayout
 
         class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {

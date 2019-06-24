@@ -140,11 +140,11 @@
             android:layout_marginTop="@dimen/margin_quoter"
             android:layout_marginEnd="@dimen/margin_regular"
             android:gravity="top|start"
+            android:paddingBottom="@dimen/margin_half"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/screenNameTextView"
             app:layout_constraintTop_toBottomOf="@+id/screenNameTextView"
-            android:paddingBottom="@dimen/margin_half"
             tools:text="@tools:sample/lorem" />
 
         <TextView
@@ -165,31 +165,37 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="5s" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/thumbnailViewPager"
+        <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="200dp"
+            android:id="@+id/thumbnailViewPagerCardView"
+            app:cardUseCompatPadding="true"
             android:layout_marginEnd="@dimen/margin_regular"
             android:layout_marginBottom="@dimen/margin_regular"
-            android:background="@drawable/bg_thumbnail"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/bodyTextView"
-            app:layout_constraintTop_toBottomOf="@id/bodyTextView"></androidx.viewpager2.widget.ViewPager2>
+            app:contentPadding="@dimen/pad_preview_thumbnail"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bodyTextView">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/thumbnailTabLayout"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/height_thumbnail_tab"
-            android:background="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="@id/thumbnailViewPager"
-            app:layout_constraintEnd_toEndOf="@id/thumbnailViewPager"
-            app:layout_constraintStart_toStartOf="@id/thumbnailViewPager"
-            app:tabBackground="@drawable/bg_thumbnail_tab_item"
-            app:tabGravity="center"
-            app:tabIndicator="@drawable/bg_thumbnail_tab_indicator"
-            app:tabIndicatorGravity="center"
-            app:tabMaxWidth="@dimen/width_thumbnail_tab_item" />
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/thumbnailViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/thumbnailTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_thumbnail_tab"
+                android:layout_gravity="bottom"
+                android:background="@android:color/transparent"
+                app:tabBackground="@drawable/bg_thumbnail_tab_item"
+                app:tabGravity="center"
+                app:tabIndicator="@drawable/bg_thumbnail_tab_indicator"
+                app:tabIndicatorGravity="center"
+                app:tabMaxWidth="@dimen/width_thumbnail_tab_item"
+                app:tabRippleColor="@null" />
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
