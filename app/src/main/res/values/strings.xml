@@ -110,4 +110,6 @@
     <string name="date_short_date_this_year" formatted="false">%te %tb</string>
     <string name="date_short_date_before_last_year" formatted="false">%te %tb %ty</string>
     <string name="compose_reply_title_template">Reply to @%s</string>
+    <string name="camera">Camera</string>
+    <string name="library">Library</string>
 </resources>
