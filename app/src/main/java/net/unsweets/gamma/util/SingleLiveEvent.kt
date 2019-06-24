@@ -70,7 +70,7 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
         value = null
     }
 
-    fun setAndCall(@Nullable t: T?) {
+    fun emit(@Nullable t: T?) {
         value = t
         value = null
     }
