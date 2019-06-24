@@ -130,10 +130,11 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/composeTextEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:background="@android:color/transparent"
                     android:gravity="top|start"
                     android:inputType="textMultiLine"
+                    android:layout_weight="1"
                     android:minLines="5"
                     android:padding="16dp"
                     android:text="@={viewModel.text}" />
@@ -141,10 +142,10 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/thumbnailRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:minHeight="300dp"
+                    android:layout_height="200dp"
+                    android:minHeight="200dp"
                     android:orientation="horizontal"
+                    android:visibility="@{safeUnbox(viewModel.previewAttachmentsVisibility)}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/compose_thumbnail_image" />
             </LinearLayout>

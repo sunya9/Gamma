@@ -76,6 +76,13 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             }
     }
 
+    private val thumbnailAdapterListener = object : ThumbnailAdapter.Callback {
+        override fun onRemove() {
+            if (adapter.getItems().size > 0) return
+            viewModel.previewAttachmentsVisibility.value = View.GONE
+        }
+    }
+
     private val enableSendButtonObserver = Observer<Boolean> {
         val menu = binding.viewRightActionMenuView.menu ?: return@Observer
         val menuItem = menu.findItem(R.id.menuPost) ?: return@Observer
@@ -122,7 +129,6 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle)
-
     }
 
 
@@ -144,7 +150,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             if (!b) return@setOnFocusChangeListener
             showKeyboard(editText)
         }
-        adapter = ThumbnailAdapter()
+        adapter = ThumbnailAdapter(thumbnailAdapterListener)
         thumbnailRecyclerView.adapter = adapter
 
         binding.viewLeftActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
@@ -228,6 +234,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
     override fun onGalleryItemClicked(path: String) {
         adapter.add(path)
+        viewModel.previewAttachmentsVisibility.value = View.VISIBLE
     }
 
 
@@ -312,7 +319,10 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         exitReveal()
     }
 
-    class ThumbnailAdapter : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
+    class ThumbnailAdapter(private val listener: Callback) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
+        interface Callback {
+            fun onRemove()
+        }
         private val items = ArrayList<String>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -334,8 +344,9 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             holder.thumbnailView.setOnClickListener { }
         }
 
-        fun remove(index: Int) {
+        private fun remove(index: Int) {
             items.removeAt(index)
+            listener.onRemove()
             notifyItemRemoved(index)
         }
 
@@ -372,6 +383,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         val counterStr: LiveData<String> = Transformations.map(counter) { it.toString() }
         val enableSendButton: LiveData<Boolean> =
             Transformations.map(counter) { (0 <= it) && it < maxTextLength }
+        val previewAttachmentsVisibility = MutableLiveData<Int>().apply { value = View.GONE }
 
         init {
             val replyTargetUserUsername = replyTargetArg?.user?.username
