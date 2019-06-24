@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:navigationIcon="@drawable/ic_close_black_24dp"
+        app:menu="@menu/gallery"
         app:title="@string/gallery" />
 
     <androidx.recyclerview.widget.RecyclerView
