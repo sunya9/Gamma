@@ -25,6 +25,8 @@ abstract class FragmentModule {
     @ContributesAndroidInjector
     abstract fun contributeProfileFragment(): ProfileFragment
     @ContributesAndroidInjector
+    abstract fun contributeEditProfileFragment(): EditProfileFragment
+    @ContributesAndroidInjector
     abstract fun contributeUserPostFragment(): SpecificUserPostFragment.UserPostFragment
     @ContributesAndroidInjector
     abstract fun contributeFollowerListFragment(): UserListFragment.FollowerListFragment
