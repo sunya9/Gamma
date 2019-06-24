@@ -11,8 +11,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="@drawable/ic_close_black_24dp"
         app:menu="@menu/gallery"
+        app:navigationIcon="@drawable/ic_close_black_24dp"
         app:title="@string/gallery" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -22,6 +22,11 @@
         android:layout_weight="1"
         android:background="@color/colorWindowBackground"
         android:clipToPadding="false"
+        app:fastScrollEnabled="true"
+        app:fastScrollHorizontalThumbDrawable="@drawable/bg_fast_scroll_thumb"
+        app:fastScrollHorizontalTrackDrawable="@drawable/bg_fast_scroll_track"
+        app:fastScrollVerticalThumbDrawable="@drawable/bg_fast_scroll_thumb"
+        app:fastScrollVerticalTrackDrawable="@drawable/bg_fast_scroll_track"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="3"
         tools:context=".presentation.fragment.GalleryItemListDialogFragment"
