@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.transition.ChangeBounds
 import com.google.android.material.appbar.AppBarLayout
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentProfileBinding
@@ -52,7 +53,7 @@ class ProfileFragment : BaseFragment() {
 
     private val entityOnTouchListener: View.OnTouchListener = EntityOnTouchListener()
 
-    private val eventObserver = Observer<Event> { eventHandling(it) }
+    private val eventObserver = Observer<Event>(::eventHandling)
     private val userObserver = Observer<User> {
         if (it == null || it.content.coverImage.isDefault) return@Observer
         viewModel.iconUrl.postValue(it.content.avatarImage.link)
@@ -188,7 +189,22 @@ class ProfileFragment : BaseFragment() {
         when (it) {
             is Event.FollowingList -> openFollowingList(it.user)
             is Event.FollowerList -> openFollowerList(it.user)
+            is Event.EditProfile -> showEditProfileDialog()
         }
+    }
+
+    private enum class DialogKey { EditProfile }
+
+    private fun showEditProfileDialog() {
+        val fm = fragmentManager ?: return
+        val fragment = EditProfileFragment.newInstance(userId).also {
+            //            val transition = TransitionInflater.from(context).inflateTransition(R.transition.edit_profile)
+            sharedElementEnterTransition = ChangeBounds()
+        }
+        // TODO: fix fragment transition
+        val ft = fm.beginTransaction()
+            .addSharedElement(binding.userMainActionButton, binding.userMainActionButton.transitionName)
+        fragment.show(ft, DialogKey.EditProfile.name)
     }
 
     class ProfileViewModel(val app: Application, val getProfileUseCase: GetProfileUseCase) : AndroidViewModel(app) {
@@ -236,6 +252,12 @@ class ProfileFragment : BaseFragment() {
             event.value = Event.FollowingList(user)
         }
 
+        fun mainAction() {
+            if (me.value == true) {
+                event.value = Event.EditProfile
+            }
+        }
+
         class Factory(private val application: Application, private val getProfileUseCase: GetProfileUseCase) :
             ViewModelProvider.AndroidViewModelFactory(application) {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -246,8 +268,10 @@ class ProfileFragment : BaseFragment() {
     }
 
     sealed class Event {
+        object EditProfile : ProfileFragment.Event()
         data class FollowerList(val user: User) : Event()
         data class FollowingList(val user: User) : Event()
+
     }
 
     companion object {
