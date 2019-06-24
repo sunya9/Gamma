@@ -201,7 +201,7 @@
         <item name="extendedFloatingActionButtonStyle">@style/ExtendedFloatingActionButtonStyle</item>
         <item name="tabStyle">@style/Tab</item>
         <!--<item name="toolbarStyle">@style/Toolbar</item>-->
-        <!--<item name="android:windowBackground">@color/colorWindowBackground</item>-->
+        <item name="android:windowBackground">@color/colorWindowBackground</item>
         <item name="materialButtonStyle">@style/Button</item>
         <item name="colorError">@color/colorError</item>
         <item name="materialCardViewStyle">@style/CardStyle</item>
@@ -214,8 +214,6 @@
         <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementsUseOverlay">true</item>
-        <item name="android:fragmentSharedElementEnterTransition">@transition/image_shared_element_transition</item>
-        <item name="android:fragmentSharedElementReturnTransition">@transition/image_shared_element_transition</item>
         <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle</item>
         <item name="textInputStyle">@style/TextInputStyle</item>
         <item name="android:windowTranslucentStatus">true</item>
@@ -226,7 +224,6 @@
         <item name="radioButtonStyle">@style/RadioButtonStyle</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowEnterTransition">@null</item>
