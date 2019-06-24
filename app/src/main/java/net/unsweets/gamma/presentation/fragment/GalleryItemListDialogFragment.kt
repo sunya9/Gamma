@@ -40,7 +40,6 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
             galleryItemList.addAll(getImages())
             pictureList.post { adapter.notifyDataSetChanged() }
         }).start()
-        toolbar.setTitle(R.string.gallery)
         toolbar.setNavigationOnClickListener { dismiss() }
         pictureList.adapter = adapter
     }
