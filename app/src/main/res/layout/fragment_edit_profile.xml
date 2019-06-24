@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="net.unsweets.gamma.presentation.fragment.EditProfileFragment.EditProfileViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@color/colorWindowBackground"
+        android:fitsSystemWindows="true"
+        android:transitionName="@string/transition_edit_profile"
+        tools:context=".presentation.fragment.EditProfileFragment">
+
+        <ProgressBar
+            style="@android:style/Widget.Material.Light.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/margin_regular"
+            android:layout_marginEnd="@dimen/margin_regular"
+            android:indeterminate="true"
+            android:visibility="@{viewModel.show(safeUnbox(viewModel.loading) == true)}"
+            tools:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:menu="@menu/edit_profile"
+                app:navigationIcon="@drawable/ic_close_black_24dp"
+                app:title="@string/edit_profile" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/margin_regular"
+                    android:visibility="@{viewModel.show(safeUnbox(viewModel.loading) == false)}">
+
+                    <ImageView
+                        android:id="@+id/viewCoverImage"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:adjustViewBounds="true"
+                        android:clickable="true"
+                        android:contentDescription="@string/description_cover_picture"
+                        android:cropToPadding="true"
+                        android:focusable="true"
+                        android:foreground="@drawable/fg_btn_edit_cover"
+                        android:onClick="@{() -> viewModel.showDialogToChangeCover()}"
+                        android:scaleType="centerCrop"
+                        app:glideSrc="@{viewModel.user.content.coverImage.link}"
+                        app:layout_constraintDimensionRatio="@string/ratio_edit_cover"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@tools:sample/backgrounds/scenic" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/viewCurrentAvatarImage"
+                        android:layout_width="@dimen/size_edit_avatar"
+                        android:layout_height="@dimen/size_edit_avatar"
+                        android:layout_marginStart="@dimen/margin_activity_horizontal"
+                        android:clickable="true"
+                        android:contentDescription="@string/description_current_avatar_picture"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:foreground="@drawable/fg_btn_edit_avatar"
+                        android:onClick="@{() -> viewModel.showDialogToChangeAvatar()}"
+                        app:civ_border_color="@color/colorAvatarBorder"
+                        app:civ_border_width="@dimen/width_avatar_border"
+                        app:glideSrc="@{viewModel.user.content.avatarImage.link}"
+                        app:layout_constraintBottom_toBottomOf="@id/viewCoverImage"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/viewCoverImage"
+                        tools:src="@tools:sample/avatars" />
+
+                    <TextView
+                        android:id="@+id/viewScreenName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_half"
+                        android:text="@{'@' + viewModel.user.username}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                        app:layout_constraintBottom_toBottomOf="@id/viewCurrentAvatarImage"
+                        app:layout_constraintStart_toEndOf="@id/viewCurrentAvatarImage"
+                        app:layout_constraintTop_toBottomOf="@id/viewCoverImage"
+                        app:layout_constraintVertical_bias="0.25"
+                        tools:text="\@test_user" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/viewNameLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_activity_horizontal"
+                        android:layout_marginTop="@dimen/margin_regular"
+                        android:layout_marginEnd="@dimen/margin_activity_horizontal"
+                        android:hint="@string/name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/viewCurrentAvatarImage">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/viewNameEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:text="@{viewModel.name}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/viewDescriptionLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_activity_horizontal"
+                        android:layout_marginTop="@dimen/margin_regular"
+                        android:layout_marginEnd="@dimen/margin_activity_horizontal"
+                        android:hint="@string/description"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/viewNameLayout">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/viewDescriptionEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top|start"
+                            android:inputType="textMultiLine"
+                            android:minLines="5"
+                            android:text="@{viewModel.description}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/viewTimezoneLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_activity_horizontal"
+                        android:layout_marginTop="@dimen/margin_regular"
+                        android:layout_marginEnd="@dimen/margin_activity_horizontal_half"
+                        android:text="@string/timezone"
+                        app:layout_constraintEnd_toStartOf="@id/viewLocaleLabel"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/viewDescriptionLayout" />
+
+                    <Spinner
+                        android:id="@+id/viewTimezoneSpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_activity_horizontal"
+                        android:layout_marginEnd="@dimen/margin_activity_horizontal_half"
+                        app:layout_constraintEnd_toStartOf="@id/viewLocaleSpinner"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/viewTimezoneLabel" />
+
+                    <TextView
+                        android:id="@+id/viewLocaleLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_activity_horizontal_half"
+                        android:layout_marginTop="@dimen/margin_regular"
+                        android:layout_marginEnd="@dimen/margin_activity_horizontal"
+                        android:text="@string/locale"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/viewTimezoneLabel"
+                        app:layout_constraintTop_toBottomOf="@+id/viewDescriptionLayout" />
+
+                    <Spinner
+                        android:id="@+id/viewLocaleSpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_activity_horizontal_half"
+                        android:layout_marginEnd="@dimen/margin_activity_horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/viewTimezoneSpinner"
+                        app:layout_constraintTop_toBottomOf="@+id/viewLocaleLabel" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </ScrollView>
+        </LinearLayout>
+    </FrameLayout>
+</layout>

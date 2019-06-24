@@ -70,11 +70,6 @@
                 android:value="net.unsweets.gamma.presentation.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".presentation.activity.EditProfileActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.WithActionBar.Modal"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".presentation.activity.PhotoViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.Translucent.FullScreen" />

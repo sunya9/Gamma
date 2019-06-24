@@ -30,7 +30,7 @@
     <color name="ic_launcher_background">@color/colorGray</color>
     <color name="colorThumbnailCloseButtonStroke">@color/colorGrayDarker</color>
     <color name="colorThumbnailCloseButtonBg">#c333</color>
-    <color name="btn_edit_picture_foreground">#5000</color>
+    <color name="btn_edit_picture_foreground">#9000</color>
     <color name="toolbarBg">@android:color/white</color>
     <color name="bgNavigationDrawerItem">@color/colorGrayLight</color>
     <color name="toolbarIcon">@color/colorGray</color>
