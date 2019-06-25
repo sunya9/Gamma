@@ -19,7 +19,7 @@ import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.toFormatString
 import javax.inject.Inject
 
-class FileListFragment : NewBaseListFragment<File, FileListFragment.FileViewHolder>(),
+class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<File, FileListFragment.FileViewHolder> {
     @Inject
     lateinit var getFilesUseCase: GetFilesUseCase

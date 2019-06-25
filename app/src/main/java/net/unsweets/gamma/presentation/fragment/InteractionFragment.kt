@@ -27,7 +27,7 @@ import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.DateUtil
 import javax.inject.Inject
 
-class InteractionFragment : NewBaseListFragment<Interaction, InteractionFragment.InteractionViewHolder>(),
+class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.InteractionViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<Interaction, InteractionFragment.InteractionViewHolder> {
 
     @Inject

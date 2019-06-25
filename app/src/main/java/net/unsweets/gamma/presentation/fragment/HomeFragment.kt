@@ -53,7 +53,7 @@ class HomeFragment : Fragment(), DrawerContentFragment {
     }
 
 
-    data class Item(val fragment: NewBaseListFragment<*, *>, @StringRes val title: Int)
+    data class Item(val fragment: BaseListFragment<*, *>, @StringRes val title: Int)
 
     class StreamViewPagerAdapter(fm: FragmentManager, val context: Context?, private val items: List<Item>) :
         FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {

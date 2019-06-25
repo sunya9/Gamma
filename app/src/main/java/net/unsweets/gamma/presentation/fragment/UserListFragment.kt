@@ -33,7 +33,7 @@ import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.util.SingleLiveEvent
 import javax.inject.Inject
 
-abstract class UserListFragment : NewBaseListFragment<User, UserListFragment.UserViewHolder>(),
+abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<User, UserListFragment.UserViewHolder> {
     override val baseListListener: BaseListRecyclerViewAdapter.IBaseList<User, UserViewHolder> = this
 

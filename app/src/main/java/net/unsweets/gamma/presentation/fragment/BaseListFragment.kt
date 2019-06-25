@@ -29,7 +29,7 @@ import net.unsweets.gamma.presentation.util.SmoothScroller
 import net.unsweets.gamma.util.SingleLiveEvent
 
 
-abstract class NewBaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment(),
+abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment(),
     SwipeRefreshLayout.OnRefreshListener,
     InfiniteScrollListener.Callback where T : Unique, T : Parcelable, T : Pageable {
 

@@ -42,7 +42,7 @@ import java.util.*
 import javax.inject.Inject
 
 
-abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.PostViewHolder.Exist>(),
+abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder.Exist>(),
     BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder.Exist> {
 
     private val itemTouchHelper: ItemTouchHelper by lazy {
@@ -251,7 +251,7 @@ abstract class PostItemFragment : NewBaseListFragment<Post, PostItemFragment.Pos
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
-        NewBaseListFragment.BaseListViewModel<Post>() {
+        BaseListFragment.BaseListViewModel<Post>() {
         override suspend fun getItems(params: PaginationParam): PnutResponse<List<Post>> {
             val getPostParam = GetPostsParam().also { it.add(params) }
             return getPostUseCase.run(GetPostInputData(streamType, getPostParam)).res
