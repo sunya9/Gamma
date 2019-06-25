@@ -9,8 +9,10 @@ import dagger.android.AndroidInjection
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
 import net.unsweets.gamma.domain.model.PostInputData
+import net.unsweets.gamma.domain.model.RepostInputData
 import net.unsweets.gamma.domain.model.StarInputData
 import net.unsweets.gamma.domain.usecases.PostUseCase
+import net.unsweets.gamma.domain.usecases.RepostUseCase
 import net.unsweets.gamma.domain.usecases.StarUseCase
 import javax.inject.Inject
 
@@ -19,7 +21,7 @@ private const val actionPrefix = "net.unsweets.gamma.service.PostService"
 class PostService : IntentService("PostService") {
     private enum class IntentKey { PostBody, PostId, NewState }
     enum class Actions {
-        SendPost, Star;
+        SendPost, Star, Repost;
 
         fun getActionName() = "$actionPrefix.$name"
 
@@ -41,6 +43,8 @@ class PostService : IntentService("PostService") {
     lateinit var postUseCase: PostUseCase
     @Inject
     lateinit var starUseCase: StarUseCase
+    @Inject
+    lateinit var repostUseCase: RepostUseCase
 
     override fun onCreate() {
         AndroidInjection.inject(this)
@@ -67,6 +71,12 @@ class PostService : IntentService("PostService") {
                 val postOutputData = starUseCase.run(StarInputData(postId, newState))
                 resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
             }
+            Actions.Repost.getActionName() -> {
+                val postId = intent.getStringExtra(IntentKey.PostId.name) ?: return
+                val newState = intent.getBooleanExtra(IntentKey.NewState.name, true)
+                val postOutputData = repostUseCase.run(RepostInputData(postId, newState))
+                resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
+            }
             else -> return
         }
         LocalBroadcastManager.getInstance(baseContext).sendBroadcast(resultIntent)
@@ -85,6 +95,15 @@ class PostService : IntentService("PostService") {
         fun newStarIntent(context: Context?, postId: String, newState: Boolean) {
             val intent = Intent(context, PostService::class.java).apply {
                 action = Actions.Star.getActionName()
+                putExtra(IntentKey.PostId.name, postId)
+                putExtra(IntentKey.NewState.name, newState)
+            }
+            context?.startService(intent)
+        }
+
+        fun newRepostIntent(context: Context?, postId: String, newState: Boolean) {
+            val intent = Intent(context, PostService::class.java).apply {
+                action = Actions.Repost.getActionName()
                 putExtra(IntentKey.PostId.name, postId)
                 putExtra(IntentKey.NewState.name, newState)
             }

@@ -59,6 +59,11 @@ class UseCaseModule {
     ): StarUseCase = StarUseCase(pnutRepository)
 
     @Provides
+    fun provideRepostUseCase(
+        pnutRepository: IPnutRepository
+    ): RepostUseCase = RepostUseCase(pnutRepository)
+
+    @Provides
     fun provideGetCurrentUserIdUseCase(
         preferenceRepository: IPreferenceRepository
     ): GetCurrentUserIdUseCase = GetCurrentUserIdUseCase(preferenceRepository)
