@@ -5,8 +5,8 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/home"
-            android:icon="@drawable/ic_home_black_24dp"
             android:checked="true"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/home" />
         <item android:title="@string/explore">
             <menu>
@@ -28,7 +28,7 @@
                         android:title="@string/newcomers" />
                     <item
                         android:id="@+id/photos"
-                        android:icon="@drawable/ic_photo_camera_black_24dp"
+                        android:icon="@drawable/ic_photo_camera_24dp"
                         android:title="@string/photos" />
                     <item
                         android:id="@+id/trending"
@@ -41,27 +41,26 @@
                 </group>
             </menu>
         </item>
-
-        <group
-            android:id="@+id/otherGroup"
-            android:menuCategory="secondary"
-            android:orderInCategory="250">
-            <item
-                android:id="@+id/messages"
-                android:icon="@drawable/ic_mail_black_24dp"
-                android:title="@string/messages" />
-            <item
-                android:id="@+id/file"
-                android:icon="@drawable/ic_cloud_black_24dp"
-                android:title="@string/files" />
-        </group>
-        <group
-            android:id="@+id/other"
-            android:menuCategory="system">
-            <item
-                android:id="@+id/settings"
-                android:icon="@drawable/ic_settings_black_24dp"
-                android:title="@string/settings" />
-        </group>
+    </group>
+    <group
+        android:id="@+id/otherGroup"
+        android:menuCategory="secondary"
+        android:orderInCategory="250">
+        <item
+            android:id="@+id/messages"
+            android:icon="@drawable/ic_mail_black_24dp"
+            android:title="@string/messages" />
+        <item
+            android:id="@+id/file"
+            android:icon="@drawable/ic_cloud_black_24dp"
+            android:title="@string/files" />
+    </group>
+    <group
+        android:id="@+id/other"
+        android:menuCategory="system">
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/settings" />
     </group>
 </menu>
