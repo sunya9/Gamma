@@ -72,16 +72,17 @@ abstract class NewBaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragmen
     abstract val viewModel: BaseListViewModel<T>
 
     fun scrollToTop() {
-//        val ctx = activity ?: return
-        val linearSmoothScroller =
-            object : LinearSmoothScroller(context!!) {
-                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                    return 10f / displayMetrics.densityDpi
+        context?.let {
+            val linearSmoothScroller =
+                object : LinearSmoothScroller(it) {
+                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                        return 10f / displayMetrics.densityDpi
+                    }
+                }.apply {
+                    targetPosition = 0
                 }
-            }.apply {
-                targetPosition = 0
-            }
-        getRecyclerView(view!!).layoutManager?.startSmoothScroll(linearSmoothScroller)
+            getRecyclerView(view!!).layoutManager?.startSmoothScroll(linearSmoothScroller)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
