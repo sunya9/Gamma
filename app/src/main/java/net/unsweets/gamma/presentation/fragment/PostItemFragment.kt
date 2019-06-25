@@ -133,7 +133,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewHolder.starTextView.let {
                 it.setOnClickListener {
                     val newState = item.mainPost.youBookmarked == false
-                    Toast.makeText(context!!, "star $newState ${item.mainPost.id}", Toast.LENGTH_SHORT).show()
                     PostService.newStarIntent(context, item.mainPost.id, newState)
                     // TODO: revert state when raised error
                     // star "this post"
