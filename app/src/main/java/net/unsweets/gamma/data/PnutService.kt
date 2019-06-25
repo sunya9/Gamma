@@ -67,7 +67,7 @@ interface PnutService {
     @PUT("posts/{postId}/repost")
     fun createRepost(@Path("postId") postId: String): Call<PnutResponse<Post>>
 
-    @DELETE("posts/{postId/repost")
+    @DELETE("posts/{postId}/repost")
     fun deleteRepost(@Path("postId") postId: String): Call<PnutResponse<Post>>
 
     // TODO: I don't know correct type
