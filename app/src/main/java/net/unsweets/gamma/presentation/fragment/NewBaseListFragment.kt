@@ -47,6 +47,10 @@ abstract class NewBaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragmen
     @DrawableRes
     open val dividerDrawable: Int = R.drawable.divider_inset
 
+    private val infiniteScrollListener by lazy {
+        InfiniteScrollListener(this)
+    }
+
     private fun receiveNewItems(items: List<T>, insertPosition: Int?) {
         val currentItems = viewModel.items.value ?: ArrayList()
         val insertPos = insertPosition ?: 0
@@ -99,16 +103,22 @@ abstract class NewBaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getRecyclerView(view).let {
-            it.adapter = adapter
-            val dividerItemDecoration = DividerItemDecoration(context, LinearLayout.VERTICAL)
-            val divider = AppCompatResources.getDrawable(context!!, dividerDrawable)!!
-            dividerItemDecoration.setDrawable(divider)
-            it.addItemDecoration(dividerItemDecoration)
-            it.addOnScrollListener(InfiniteScrollListener(this))
-        }
+        setupRecyclerView(getRecyclerView(view))
         getSwipeRefreshLayout(view).setOnRefreshListener(this)
-        getRecyclerView(view).addOnScrollListener(InfiniteScrollListener(this))
+    }
+
+    private fun setupRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.adapter = adapter
+        val dividerItemDecoration = DividerItemDecoration(context, LinearLayout.VERTICAL)
+        val divider = AppCompatResources.getDrawable(context!!, dividerDrawable)!!
+        dividerItemDecoration.setDrawable(divider)
+        recyclerView.addItemDecoration(dividerItemDecoration)
+        recyclerView.addOnScrollListener(infiniteScrollListener)
+    }
+
+    override fun onDestroyView() {
+        getRecyclerView(view!!).removeOnScrollListener(infiniteScrollListener)
+        super.onDestroyView()
     }
 
     override fun onRefresh() {
