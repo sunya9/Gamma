@@ -35,6 +35,13 @@ import javax.inject.Inject
 
 
 class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback {
+    override fun onRepostReceive(post: Post) {
+        val text = post.content?.text ?: return
+        val prefixRes = if (post.youReposted == true) R.string.repost else R.string.delete_repost
+        val message = "${getString(prefixRes)}: $text"
+        showSnackBar(message)
+    }
+
     override fun onStarReceive(post: Post) {
         val text = post.content?.text ?: return
         showSnackBar(getString(R.string.starred, text))
