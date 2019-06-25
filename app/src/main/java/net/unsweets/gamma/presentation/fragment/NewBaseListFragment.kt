@@ -2,7 +2,6 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_base_list.view.*
@@ -27,6 +25,7 @@ import net.unsweets.gamma.domain.entity.Unique
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.InfiniteScrollListener
+import net.unsweets.gamma.presentation.util.SmoothScroller
 import net.unsweets.gamma.util.SingleLiveEvent
 
 
@@ -72,17 +71,8 @@ abstract class NewBaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragmen
     abstract val viewModel: BaseListViewModel<T>
 
     fun scrollToTop() {
-        context?.let {
-            val linearSmoothScroller =
-                object : LinearSmoothScroller(it) {
-                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                        return 10f / displayMetrics.densityDpi
-                    }
-                }.apply {
-                    targetPosition = 0
-                }
-            getRecyclerView(view!!).layoutManager?.startSmoothScroll(linearSmoothScroller)
-        }
+        val ctx = context ?: return
+        getRecyclerView(view!!).layoutManager?.startSmoothScroll(SmoothScroller(ctx))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
