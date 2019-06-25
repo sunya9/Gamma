@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentEditProfileBinding
 import net.unsweets.gamma.domain.entity.User
-import net.unsweets.gamma.domain.model.UpdateProfileInputData
+import net.unsweets.gamma.domain.model.io.UpdateProfileInputData
 import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
 import net.unsweets.gamma.domain.usecases.UpdateProfileUseCase
 import net.unsweets.gamma.util.SingleLiveEvent

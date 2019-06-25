@@ -1,7 +1,7 @@
 package net.unsweets.gamma.domain.usecases
 
-import net.unsweets.gamma.domain.model.RepostInputData
-import net.unsweets.gamma.domain.model.RepostOutputData
+import net.unsweets.gamma.domain.model.io.RepostInputData
+import net.unsweets.gamma.domain.model.io.RepostOutputData
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
 class RepostUseCase(val pnutRepository: IPnutRepository) : UseCase<RepostOutputData, RepostInputData>() {

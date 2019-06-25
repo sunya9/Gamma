@@ -1,6 +1,6 @@
 package net.unsweets.gamma.domain.usecases
 
-import net.unsweets.gamma.domain.model.GetCurrentUserIdOutputData
+import net.unsweets.gamma.domain.model.io.GetCurrentUserIdOutputData
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
 
 class GetCurrentUserIdUseCase(val preferenceRepository: IPreferenceRepository) :

@@ -1,4 +1,4 @@
-package net.unsweets.gamma.domain.model
+package net.unsweets.gamma.domain.model.io
 
 import net.unsweets.gamma.domain.entity.PostBody
 

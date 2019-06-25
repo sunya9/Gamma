@@ -1,7 +1,7 @@
 package net.unsweets.gamma.domain.usecases
 
-import net.unsweets.gamma.domain.model.StarInputData
-import net.unsweets.gamma.domain.model.StarOutputData
+import net.unsweets.gamma.domain.model.io.StarInputData
+import net.unsweets.gamma.domain.model.io.StarOutputData
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
 class StarUseCase(val pnutRepository: IPnutRepository) : UseCase<StarOutputData, StarInputData>() {

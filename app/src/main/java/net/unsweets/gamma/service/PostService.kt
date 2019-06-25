@@ -8,9 +8,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import dagger.android.AndroidInjection
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
-import net.unsweets.gamma.domain.model.PostInputData
-import net.unsweets.gamma.domain.model.RepostInputData
-import net.unsweets.gamma.domain.model.StarInputData
+import net.unsweets.gamma.domain.model.io.PostInputData
+import net.unsweets.gamma.domain.model.io.RepostInputData
+import net.unsweets.gamma.domain.model.io.StarInputData
 import net.unsweets.gamma.domain.usecases.PostUseCase
 import net.unsweets.gamma.domain.usecases.RepostUseCase
 import net.unsweets.gamma.domain.usecases.StarUseCase
@@ -74,7 +74,12 @@ class PostService : IntentService("PostService") {
             Actions.Repost.getActionName() -> {
                 val postId = intent.getStringExtra(IntentKey.PostId.name) ?: return
                 val newState = intent.getBooleanExtra(IntentKey.NewState.name, true)
-                val postOutputData = repostUseCase.run(RepostInputData(postId, newState))
+                val postOutputData = repostUseCase.run(
+                    RepostInputData(
+                        postId,
+                        newState
+                    )
+                )
                 resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
             }
             else -> return
