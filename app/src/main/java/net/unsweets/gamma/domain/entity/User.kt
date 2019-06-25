@@ -70,4 +70,6 @@ data class User(
         @Json(name = "bot") BOT
     }
 
+    @IgnoredOnParcel
+    val me = followsYou && youFollow && !youCanFollow
 }
