@@ -36,15 +36,25 @@ import javax.inject.Inject
 
 class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback {
     override fun onRepostReceive(post: Post) {
-        val text = post.content?.text ?: return
-        val prefixRes = if (post.youReposted == true) R.string.repost else R.string.delete_repost
-        val message = "${getString(prefixRes)}: $text"
-        showSnackBar(message)
+        showActionResultSnackbar(post, Action.Repost)
     }
 
     override fun onStarReceive(post: Post) {
-        val text = post.content?.text ?: return
-        showSnackBar(getString(R.string.starred, text))
+        showActionResultSnackbar(post, Action.Star)
+    }
+
+    private enum class Action { Star, Repost }
+
+    private fun showActionResultSnackbar(post: Post, action: Action) {
+        val actionNameRes = when (action) {
+            Action.Star -> if (post.mainPost.youBookmarked == true) R.string.stars else R.string.unstar
+            Action.Repost -> if (post.mainPost.youReposted == true) R.string.repost else R.string.delete_repost
+        }
+        val actionName = getString(actionNameRes)
+        val username = post.mainPost.user?.username ?: return
+        val content = post.content?.text ?: return
+        val message = getString(R.string.action_result_snackbar_template, actionName, username, content)
+        showSnackBar(message)
     }
 
     override fun onPostReceive(post: Post) {
