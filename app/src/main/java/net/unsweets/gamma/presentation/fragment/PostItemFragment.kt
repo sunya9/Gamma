@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -61,7 +63,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     @Inject
     lateinit var getPostUseCase: GetPostUseCase
-
     abstract val streamType: StreamType
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this, PostItemViewModel.Factory(streamType, getPostUseCase))
@@ -151,6 +152,30 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 fragment.show(childFragmentManager, DialogKey.Compose.name)
 
             }
+            viewHolder.repostTextView.let {
+                val repostType = when {
+                    item.mainPost.youReposted == true -> RepostButtonType.DeleteRepost
+                    item.mainPost.user?.me == true -> RepostButtonType.DeletePost
+                    else -> RepostButtonType.Repost
+                }
+                it.setText(repostType.textRes)
+                it.setCompoundDrawablesRelativeWithIntrinsicBounds(repostType.iconRes, 0, 0, 0)
+                it.setOnClickListener {
+                    when (repostType) {
+                        RepostButtonType.DeletePost -> {
+                            TODO()
+                        }
+                        RepostButtonType.DeleteRepost,
+                        RepostButtonType.Repost -> {
+                            val newState = item.mainPost.youReposted == false
+                            PostService.newRepostIntent(context, item.mainPost.id, newState)
+                            item.mainPost.youReposted = newState
+                        }
+                    }
+                    // TODO: revert state when raised error
+                    adapter.notifyItemChanged(position)
+                }
+            }
             setupRepostView(item, viewHolder.repostedByTextView)
 
         }
@@ -174,6 +199,12 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewHolder.thumbnailViewPagerCardView.visibility = View.GONE
             viewHolder.thumbnailViewPager.adapter = null
         }
+    }
+
+    private enum class RepostButtonType(@StringRes val textRes: Int, @DrawableRes val iconRes: Int) {
+        DeleteRepost(R.string.delete_repost, R.drawable.ic_repeat_black_24dp),
+        DeletePost(R.string.delete_post, R.drawable.ic_delete_black_24dp),
+        Repost(R.string.repost, R.drawable.ic_repeat_border_black_24dp)
     }
 
     class ThumbnailViewPagerAdapter(private val photos: List<Raw<OEmbed.Photo.PhotoValue>>) :
@@ -206,6 +237,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             }
             repostedByTextView.text =
                 repostedByTextView.context.getString(R.string.reposted_by_template, originalUser.username)
+            repostedByTextView.visibility = View.VISIBLE
         } else {
             repostedByTextView.visibility = View.GONE
         }

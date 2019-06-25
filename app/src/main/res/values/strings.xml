@@ -112,4 +112,6 @@
     <string name="compose_reply_title_template">Reply to @%s</string>
     <string name="camera">Camera</string>
     <string name="library">Library</string>
+    <string name="delete_repost">Delete repost</string>
+    <string name="delete_post">Delete post</string>
 </resources>
