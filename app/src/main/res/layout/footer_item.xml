@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_regular"
+    android:layout_marginBottom="@dimen/margin_regular">
+
+    <ProgressBar
+        android:id="@+id/loadingIndicatorProgressBar"
+        style="@android:style/Widget.Material.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+
+    <TextView
+        android:id="@+id/noItemsMessageTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_items_template"
+        android:textAlignment="center"
+        tools:text="No items." />
+</FrameLayout>
