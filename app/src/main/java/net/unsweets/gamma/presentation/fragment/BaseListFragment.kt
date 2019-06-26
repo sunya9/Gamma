@@ -6,14 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_base_list.view.*
@@ -26,6 +24,7 @@ import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.InfiniteScrollListener
 import net.unsweets.gamma.presentation.util.SmoothScroller
+import net.unsweets.gamma.presentation.view.DividerIgnoreLastItem
 import net.unsweets.gamma.util.SingleLiveEvent
 
 
@@ -33,8 +32,8 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     SwipeRefreshLayout.OnRefreshListener,
     InfiniteScrollListener.Callback where T : Unique, T : Parcelable, T : Pageable {
 
-    private val updateProgressBarVisibility = Observer<Boolean> {
-        //        progressBar.visibility = if(it) View.VISIBLE else View.GONE
+    private val updateFooter = Observer<PnutResponse.Meta> {
+        adapter.updateFooter()
     }
     private val listEventObserver = Observer<ListEvent> {
         @Suppress("UNCHECKED_CAST")
@@ -66,7 +65,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     }
 
     protected val adapter: BaseListRecyclerViewAdapter<T, V> by lazy {
-        BaseListRecyclerViewAdapter(viewModel.items, baseListListener)
+        BaseListRecyclerViewAdapter(viewModel.items, viewModel.olderDirectionMeta, baseListListener)
     }
     abstract val viewModel: BaseListViewModel<T>
 
@@ -78,7 +77,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.listEvent.observe(this, listEventObserver)
-        viewModel.loading.observe(this, updateProgressBarVisibility)
+        viewModel.olderDirectionMeta.observe(this, updateFooter)
     }
 
     override fun onCreateView(
@@ -100,7 +99,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
-        val dividerItemDecoration = DividerItemDecoration(context, LinearLayout.VERTICAL)
+        val dividerItemDecoration = DividerIgnoreLastItem(context, DividerIgnoreLastItem.VERTICAL)
         val divider = AppCompatResources.getDrawable(context!!, dividerDrawable)!!
         dividerItemDecoration.setDrawable(divider)
         recyclerView.addItemDecoration(dividerItemDecoration)
@@ -128,6 +127,8 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     abstract class BaseListViewModel<T> : ViewModel() where T : Pageable, T : Unique {
         val items = MutableLiveData<ArrayList<T>>().apply { value = ArrayList() }
         val loading = MutableLiveData<Boolean>().apply { value = false }
+        val olderDirectionMeta = MutableLiveData<PnutResponse.Meta>()
+        val newerDirectionMeta = MutableLiveData<PnutResponse.Meta>()
         private var lastPagination: PaginationParam? = null
         val listEvent = SingleLiveEvent<ListEvent>()
 
@@ -166,9 +167,17 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
                 }.onSuccess {
                     val insertPosition = if (!pagination.maxId.isNullOrEmpty()) 0 else items.value?.size
                     Log.e("insertPosition", insertPosition.toString())
+                    when {
+                        !pagination.minId.isNullOrEmpty() -> {
+                            olderDirectionMeta.value = it.meta
+                        }
+                        !pagination.maxId.isNullOrEmpty() -> {
+                            newerDirectionMeta.value = it.meta
+                        }
+                    }
                     listEvent.value = ListEvent.ReceiveNewItems(it.data, insertPosition)
                 }.onFailure {
-                    Log.e("error", it.message)
+                    Log.e("error", it.message ?: "no message")
                     listEvent.value = ListEvent.Failure(it)
                     lastPagination = null
                 }

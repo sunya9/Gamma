@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<File, FileListFragment.FileViewHolder> {
+    override val itemNameRes: Int = R.string.files
     @Inject
     lateinit var getFilesUseCase: GetFilesUseCase
 

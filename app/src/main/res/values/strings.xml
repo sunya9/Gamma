@@ -115,5 +115,6 @@
     <string name="delete_repost">Delete repost</string>
     <string name="delete_post">Delete post</string>
     <string name="action_result_snackbar_template">%1$s: @%2$s: %3$s</string>
-    <string name="no_items_template">No %ss.</string>
+    <string name="no_items_template">No %s.</string>
+    <string name="users">users</string>
 </resources>

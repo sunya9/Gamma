@@ -18,7 +18,6 @@ import net.unsweets.gamma.domain.entity.Interaction.Action
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.User
-import net.unsweets.gamma.domain.entity.raw.PollNotice
 import net.unsweets.gamma.domain.model.io.GetInteractionInputData
 import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
@@ -29,6 +28,7 @@ import javax.inject.Inject
 
 class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.InteractionViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<Interaction, InteractionFragment.InteractionViewHolder> {
+    override val itemNameRes: Int = R.string.interactions
 
     @Inject
     lateinit var getInteractionUseCase: GetInteractionUseCase

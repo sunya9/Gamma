@@ -35,6 +35,7 @@ import javax.inject.Inject
 
 abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<User, UserListFragment.UserViewHolder> {
+    override val itemNameRes: Int = R.string.users
     override val baseListListener: BaseListRecyclerViewAdapter.IBaseList<User, UserViewHolder> = this
 
     private enum class BundleKey {

@@ -46,6 +46,7 @@ import javax.inject.Inject
 
 abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder.Exist>(),
     BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder.Exist> {
+    override val itemNameRes: Int = R.string.posts
 
     private val itemTouchHelper: ItemTouchHelper by lazy {
         val postTouchHelperCallback = PostTouchHelperCallback(context!!, adapter)

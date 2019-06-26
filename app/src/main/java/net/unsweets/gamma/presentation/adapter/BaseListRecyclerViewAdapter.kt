@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import kotlinx.android.synthetic.main.footer_item.view.*
 import net.unsweets.gamma.R
+import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Unique
 
 class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
     private val listLiveData: LiveData<ArrayList<T>>,
+    private val olderDirectionMeta: LiveData<PnutResponse.Meta>,
     private var listener: IBaseList<T, V>
 ) : RecyclerView.Adapter<V>() {
     // empty view; loading indicator;
@@ -68,6 +70,7 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
         fun onClickItemListener(item: T)
         fun onBindViewHolder(item: T, viewHolder: V, position: Int)
         fun getItemLayout(): Int
+        val itemNameRes: Int
     }
 
     override fun onBindViewHolder(holder: V, position: Int) {
@@ -79,19 +82,35 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
             }
             ViewType.Footer -> {
                 val viewHolder = holder as? FooterViewHolder ?: return
-                if (bodyItemCount > 0) {
-                    viewHolder.loadingIndicatorProgressBar.visibility = View.VISIBLE
-                    viewHolder.noItemsMessageTextView.visibility = View.GONE
-                } else {
-                    viewHolder.loadingIndicatorProgressBar.visibility = View.GONE
-                    viewHolder.noItemsMessageTextView.visibility = View.VISIBLE
-                    val context = holder.itemView.context
-//                    val itemClass = .javaClass.simpleName
-//                    viewHolder.noItemsMessageTextView.text = context.getString(R.string.no_items_template, itemClass)
+                val meta = olderDirectionMeta.value
+                when {
+                    meta == null || meta.more == true -> {
+                        // remain items
+                        viewHolder.noItemsMessageTextView.visibility = View.GONE
+                        viewHolder.loadingIndicatorProgressBar.visibility = View.VISIBLE
+                    }
+                    meta.more == false -> {
+                        // loaded all items
+                        viewHolder.noItemsMessageTextView.visibility = View.GONE
+                        viewHolder.loadingIndicatorProgressBar.visibility = View.GONE
+                    }
+                    else -> {
+                        // empty
+                        viewHolder.loadingIndicatorProgressBar.visibility = View.GONE
+                        viewHolder.noItemsMessageTextView.visibility = View.VISIBLE
+                        val context = holder.itemView.context
+                        val itemName = context.getString(listener.itemNameRes).toLowerCase()
+                        viewHolder.noItemsMessageTextView.text =
+                            context.getString(R.string.no_items_template, itemName)
+                    }
                 }
             }
         }
 
+    }
+
+    fun updateFooter() {
+        notifyItemChanged(listLiveData.value?.size ?: 0)
     }
 
     class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
