@@ -56,18 +56,19 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
         }
         viewHolder.iconView.setImageResource(item.action.iconRes)
         viewHolder.timeTextView.text = DateUtil.getShortDateStr(viewHolder.itemView.context, item.eventDate)
-        viewHolder.messageTextView.text = item.getMessage(context ?: return)
+        viewHolder.messageTextView.text = item.getMessage(viewHolder.itemView.context)
         viewHolder.bodyTextView.text = when (concreteItem) {
             is Interaction.Repost -> handlePost(concreteItem.objects)
             is Interaction.Bookmark -> handlePost(concreteItem.objects)
             is Interaction.Reply -> handlePost(concreteItem.objects)
             is Interaction.Follow -> handleUser(concreteItem.objects)
             is Interaction.PollResponse -> handlePoll(concreteItem.objects)
+            is Interaction.HasUsersFieldInteraction -> TODO()
         }
     }
 
-    private fun handlePoll(objects: List<PollNotice>): CharSequence? {
-        return objects[0].value.prompt
+    private fun handlePoll(objects: List<Interaction.PollResponse.InteractionPoll>): CharSequence? {
+        return objects[0].prompt
     }
 
     private fun handleUser(objects: List<User>): CharSequence? {
