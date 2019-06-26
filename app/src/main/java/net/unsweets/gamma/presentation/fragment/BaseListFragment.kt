@@ -32,9 +32,6 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     SwipeRefreshLayout.OnRefreshListener,
     InfiniteScrollListener.Callback where T : Unique, T : Parcelable, T : Pageable {
 
-    private val updateFooter = Observer<PnutResponse.Meta> {
-        adapter.updateFooter()
-    }
     private val listEventObserver = Observer<ListEvent> {
         @Suppress("UNCHECKED_CAST")
         when (it) {
@@ -54,6 +51,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
         val insertPos = insertPosition ?: 0
         viewModel.items.value = currentItems.also { it.addAll(insertPos, items) }
         adapter.notifyItemRangeInserted(insertPos, items.size)
+        adapter.updateFooter()
         viewModel.loading.postValue(false)
 
         getSwipeRefreshLayout(view ?: return).isRefreshing = false
@@ -77,7 +75,6 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.listEvent.observe(this, listEventObserver)
-        viewModel.olderDirectionMeta.observe(this, updateFooter)
     }
 
     override fun onCreateView(
