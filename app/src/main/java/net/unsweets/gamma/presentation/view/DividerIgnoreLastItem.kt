@@ -9,7 +9,8 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 
-class DividerIgnoreLastItem(context: Context?, orientation: Int) : DividerItemDecoration(context, orientation) {
+class DividerIgnoreLastItem(context: Context?, orientation: Int, private val reverse: Boolean = false) :
+    DividerItemDecoration(context, orientation) {
     companion object {
         val HORIZONTAL = LinearLayout.HORIZONTAL
         val VERTICAL = LinearLayout.VERTICAL
@@ -66,11 +67,14 @@ class DividerIgnoreLastItem(context: Context?, orientation: Int) : DividerItemDe
         canvas.restore()
     }
 
+
     private fun isLastItem(parent: RecyclerView, childItemPos: Int): Boolean {
         val child = parent.getChildAt(childItemPos)
         val pos = parent.getChildAdapterPosition(child)
-        val res = (parent.adapter?.itemCount ?: 0) - 1 == pos
-        return res
+        return when (reverse) {
+            true -> pos == 0
+            false -> (parent.adapter?.itemCount ?: 0) - 1 == pos
+        }
     }
 
 

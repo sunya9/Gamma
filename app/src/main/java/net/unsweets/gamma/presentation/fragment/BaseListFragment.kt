@@ -31,6 +31,7 @@ import net.unsweets.gamma.util.SingleLiveEvent
 abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment(),
     SwipeRefreshLayout.OnRefreshListener,
     InfiniteScrollListener.Callback where T : Unique, T : Parcelable, T : Pageable {
+    open val reverse = false
 
     private val listEventObserver = Observer<ListEvent> {
         @Suppress("UNCHECKED_CAST")
@@ -52,6 +53,10 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
         viewModel.items.value = currentItems.also { it.addAll(insertPos, items) }
         adapter.notifyItemRangeInserted(insertPos, items.size)
         adapter.updateFooter()
+        // scroll to top when insert in first time
+        if (currentItems.isEmpty()) {
+            getRecyclerView(view!!).scrollToPosition(0)
+        }
         viewModel.loading.postValue(false)
 
         getSwipeRefreshLayout(view ?: return).isRefreshing = false
@@ -63,7 +68,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     }
 
     protected val adapter: BaseListRecyclerViewAdapter<T, V> by lazy {
-        BaseListRecyclerViewAdapter(viewModel.items, viewModel.olderDirectionMeta, baseListListener)
+        BaseListRecyclerViewAdapter(viewModel.items, viewModel.olderDirectionMeta, baseListListener, reverse)
     }
     abstract val viewModel: BaseListViewModel<T>
 
@@ -96,7 +101,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
-        val dividerItemDecoration = DividerIgnoreLastItem(context, DividerIgnoreLastItem.VERTICAL)
+        val dividerItemDecoration = DividerIgnoreLastItem(context, DividerIgnoreLastItem.VERTICAL, reverse)
         val divider = AppCompatResources.getDrawable(context!!, dividerDrawable)!!
         dividerItemDecoration.setDrawable(divider)
         recyclerView.addItemDecoration(dividerItemDecoration)

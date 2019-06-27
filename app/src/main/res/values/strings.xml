@@ -118,4 +118,5 @@
     <string name="no_items_template">No %s.</string>
     <string name="users">users</string>
     <string name="closed_poll">Closed poll: %s</string>
+    <string name="thread">Thread</string>
 </resources>

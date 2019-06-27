@@ -16,7 +16,8 @@ import net.unsweets.gamma.domain.entity.Unique
 class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
     private val listLiveData: LiveData<ArrayList<T>>,
     private val olderDirectionMeta: LiveData<PnutResponse.Meta>,
-    private var listener: IBaseList<T, V>
+    private var listener: IBaseList<T, V>,
+    private val reverse: Boolean = false
 ) : RecyclerView.Adapter<V>() {
     // empty view; loading indicator;
     override fun getItemCount(): Int = bodyItemCount + 1
@@ -40,11 +41,24 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
     private enum class ViewType { Body, Footer }
 
     override fun getItemViewType(position: Int): Int {
-        val isLastItem = itemCount == position + 1
-        return when {
-            isLastItem -> ViewType.Footer
-            else -> ViewType.Body
-        }.ordinal
+        return when (reverse) {
+            true -> {
+                val isFirstItem = position == 0
+                return when {
+                    isFirstItem -> ViewType.Footer
+                    else -> ViewType.Body
+                }.ordinal
+            }
+            false -> {
+                val isLastItem = itemCount == position + 1
+                when {
+                    isLastItem -> ViewType.Footer
+                    else -> ViewType.Body
+                }.ordinal
+            }
+
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): V {
@@ -74,10 +88,12 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
     }
 
     override fun onBindViewHolder(holder: V, position: Int) {
+        val offset = if (reverse) -1 else 0
         when (ViewType.values()[getItemViewType(position)]) {
             ViewType.Body -> {
-                val item = listLiveData.value?.get(position) ?: return
-                listener.onBindViewHolder(item, holder, position)
+                val itemPosition = position + offset
+                val item = listLiveData.value?.get(itemPosition) ?: return
+                listener.onBindViewHolder(item, holder, itemPosition)
                 holder.itemView.setOnClickListener { listener.onClickItemListener(item) }
             }
             ViewType.Footer -> {
@@ -110,7 +126,11 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
     }
 
     fun updateFooter() {
-        notifyItemChanged(listLiveData.value?.size ?: 0)
+        when (reverse) {
+            true -> notifyItemChanged(0)
+            false -> notifyItemChanged(listLiveData.value?.size ?: 0)
+        }
+
     }
 
     class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

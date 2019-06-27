@@ -1,6 +1,5 @@
 package net.unsweets.gamma.di
 
-import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import net.unsweets.gamma.presentation.fragment.*
@@ -50,5 +49,8 @@ abstract class FragmentModule {
     abstract fun contributeFileListFragment(): FileListFragment
     @ContributesAndroidInjector
     abstract fun contributeTagStreamFragment(): TagStreamFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeThreadFragment(): ThreadFragment
 
 }

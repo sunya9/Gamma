@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
@@ -82,7 +81,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         PostViewHolder.Exist(mView, itemTouchHelper)
 
     override fun onClickItemListener(item: Post) {
-        Toast.makeText(context, item.id, Toast.LENGTH_SHORT).show()
+        val fragment = getThreadInstance(item)
+        addFragment(fragment, item.id)
     }
 
     private enum class DialogKey { Compose }
@@ -325,5 +325,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
         fun getUserPostInstance(userId: String) = SpecificUserPostFragment.UserPostFragment.newInstance(userId)
         fun getStarInstance(userId: String = "me") = SpecificUserPostFragment.StarsPostFragment.newInstance(userId)
+
+        fun getThreadInstance(post: Post) = ThreadFragment.newInstance(post)
     }
 }
