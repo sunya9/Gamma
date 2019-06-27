@@ -1,13 +1,9 @@
 package net.unsweets.gamma.presentation.fragment
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.DaggerFragment
-import net.unsweets.gamma.GammaApplication
 import net.unsweets.gamma.presentation.util.FragmentHelper
-import javax.inject.Inject
 
 abstract class BaseFragment : DaggerFragment() {
     protected var isConfigurationChanges: Boolean = false
@@ -33,7 +29,6 @@ abstract class BaseFragment : DaggerFragment() {
     }
 
     protected fun addFragment(fragment: Fragment, tag: String) {
-        val fm = fragmentManager ?: return
-        FragmentHelper.addFragment(fm, fragment, tag)
+        FragmentHelper.addFragment(context!!, fragment, tag)
     }
 }
