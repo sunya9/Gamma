@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    app:cardUseCompatPadding="true"
+    app:contentPadding="@dimen/pad_preview_thumbnail">
 
     <ImageView
         android:id="@+id/thumbnailImageView"
@@ -12,4 +14,4 @@
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/backgrounds/scenic" />
-</FrameLayout>
+</androidx.cardview.widget.CardView>

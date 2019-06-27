@@ -5,11 +5,11 @@ import android.transition.Transition
 import android.transition.TransitionInflater
 import android.view.MotionEvent
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -184,7 +184,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val raw = item.raw
         val photos = OEmbed.Photo.getPhotos(raw)
         if (photos.isNotEmpty()) {
-            viewHolder.thumbnailViewPagerCardView.visibility = View.VISIBLE
+            viewHolder.thumbnailViewPagerFrameLayout.visibility = View.VISIBLE
             viewHolder.thumbnailViewPager.adapter = ThumbnailViewPagerAdapter(photos)
             TabLayoutMediator(
                 viewHolder.thumbnailTabLayout,
@@ -193,7 +193,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             }.attach()
             viewHolder.thumbnailTabLayout.visibility = if (photos.size == 1) View.GONE else View.VISIBLE
         } else {
-            viewHolder.thumbnailViewPagerCardView.visibility = View.GONE
+            viewHolder.thumbnailViewPagerFrameLayout.visibility = View.GONE
             viewHolder.thumbnailViewPager.adapter = null
         }
     }
@@ -245,7 +245,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val starStateView: View = itemView.starStateView
         val repostStateView: View = itemView.repostStateView
         val thumbnailViewPager: ViewPager2 = itemView.thumbnailViewPager
-        val thumbnailViewPagerCardView: CardView = itemView.thumbnailViewPagerCardView
+        val thumbnailViewPagerFrameLayout: FrameLayout = itemView.thumbnailViewPagerFrameLayout
         val thumbnailTabLayout: TabLayout = itemView.thumbnailTabLayout
 
         class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
