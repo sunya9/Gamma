@@ -3,10 +3,8 @@ package net.unsweets.gamma.presentation.fragment
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
@@ -23,18 +21,17 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_post_item.view.*
-import kotlinx.android.synthetic.main.thumbnail_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.raw.OEmbed
-import net.unsweets.gamma.domain.entity.raw.Raw
 import net.unsweets.gamma.domain.model.StreamType
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.GetPostUseCase
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
+import net.unsweets.gamma.presentation.adapter.ThumbnailViewPagerAdapter
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.util.DateUtil.Companion.getShortDateStr
 import net.unsweets.gamma.service.PostService
@@ -205,27 +202,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         DeleteRepost(R.string.delete_repost, R.drawable.ic_repeat_black_24dp),
         DeletePost(R.string.delete_post, R.drawable.ic_delete_black_24dp),
         Repost(R.string.repost, R.drawable.ic_repeat_border_black_24dp)
-    }
-
-    class ThumbnailViewPagerAdapter(private val photos: List<Raw<OEmbed.Photo.PhotoValue>>) :
-        RecyclerView.Adapter<ThumbnailViewPagerAdapter.ThumbnailViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThumbnailViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.thumbnail_item, parent, false)
-            return ThumbnailViewHolder(view)
-        }
-
-        override fun getItemCount(): Int = photos.size
-
-        override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
-            val context = holder.itemView.context
-            val item = photos[position]
-            val url = item.value.thumbnailUrl
-            GlideApp.with(context).load(url).into(holder.thumbnailImageView)
-        }
-
-        class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val thumbnailImageView: ImageView = itemView.thumbnailImageView
-        }
     }
 
     private fun setupRepostView(item: Post, repostedByTextView: TextView) {
