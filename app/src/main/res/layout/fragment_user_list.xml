@@ -29,7 +29,6 @@
                 app:title="@{viewModel.title}"
                 app:subtitle="@{viewModel.subtitle}"
                 tools:subtitle="10 followers"
-                app:onNavigationClick="@{() -> viewModel.back()}"
                 app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
                 tools:title="\@foo's followers" />
         </com.google.android.material.appbar.AppBarLayout>

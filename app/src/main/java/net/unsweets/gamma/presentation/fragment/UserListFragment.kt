@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -28,9 +27,7 @@ import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.GetUsersUseCase
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.EntityOnTouchListener
-import net.unsweets.gamma.presentation.util.FragmentHelper
 import net.unsweets.gamma.presentation.util.GlideApp
-import net.unsweets.gamma.util.SingleLiveEvent
 import javax.inject.Inject
 
 abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserViewHolder>(),
@@ -56,12 +53,6 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
     }
     private val entityListener: View.OnTouchListener = EntityOnTouchListener()
 
-    private val eventObserver = Observer<Event> {
-        when (it) {
-            is Event.Back -> FragmentHelper.backFragment(fragmentManager)
-        }
-    }
-
     override fun createViewHolder(mView: View, viewType: Int): UserViewHolder = UserViewHolder(mView)
 
     override fun onClickItemListener(item: User) {
@@ -84,13 +75,9 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
 
     private lateinit var binding: FragmentUserListBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.event
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_list, container, false)
+        binding.toolbar.setNavigationOnClickListener { backToPrevFragment() }
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         return binding.root
@@ -103,17 +90,12 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
         val bodyTextView: TextView = itemView.bodyTextView
     }
 
-    sealed class Event {
-        object Back : Event()
-    }
-
     class UserListViewModel(
         private val app: Application,
         private val user: User,
         private val userListType: UserListType,
         private val getUsersUseCase: GetUsersUseCase
     ) : BaseListViewModel<User>() {
-        val event = SingleLiveEvent<Event>()
         override suspend fun getItems(params: PaginationParam): PnutResponse<List<User>> {
             val getUsersParam = GetUsersParam().apply { add(params) }
             val getUsersInputData = GetUsersInputData(user.id, userListType, getUsersParam)
@@ -132,9 +114,6 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
         }
         val subtitle  = app.resources.getQuantityString(R.plurals.user, count, count)
 
-        fun back() {
-            event.value = Event.Back
-        }
         class Factory(
             private val application: Application,
             private val user: User,
