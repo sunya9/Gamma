@@ -9,6 +9,7 @@ sealed class StreamType {
     data class Stars(val userId: String): StreamType()
     data class Tag(val tag: String): StreamType()
     data class User(val userId: String): StreamType()
+    data class Thread(val postId: String) : StreamType()
     sealed class Explore(@StringRes val titleRes: Int): StreamType() {
         object Conversations : Explore(R.string.conversations)
         object MissedConversations : Explore(R.string.missed_conversations)

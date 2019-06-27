@@ -18,6 +18,7 @@ interface IPnutRepository {
     suspend fun getGlobal(getPostsParam: GetPostsParam): PnutResponse<List<Post>>
     suspend fun getTagStream(tag: String, getPostsParam: GetPostsParam): PnutResponse<List<Post>>
     suspend fun searchPosts(params: SearchParam): PnutResponse<List<Post>>
+    suspend fun getThread(postId: String, params: GetPostsParam): PnutResponse<List<Post>>
 
     suspend fun createPost(postBody: PostBody): PnutResponse<Post>
     fun createPostSync(postBody: PostBody): PnutResponse<Post>

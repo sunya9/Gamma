@@ -56,7 +56,7 @@ interface PnutService {
     fun getTrending(@QueryMap pagination: Map<String, String>): Call<PnutResponse<List<Post>>>
 
     @GET("posts/{postId}/thread")
-    fun getPostsInThread(@Path("postId") postId: String): Call<PnutResponse<List<Post>>>
+    fun getThread(@Path("postId") postId: String, @QueryMap params: Map<String, String>): Call<PnutResponse<List<Post>>>
 
     @PUT("posts/{postId}/bookmark")
     fun createStar(@Path("postId") postId: String, @Body note: String = ""): Call<PnutResponse<Post>>

@@ -21,6 +21,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 
 class PnutRepository(private val context: Context) : IPnutRepository {
+    override suspend fun getThread(postId: String, params: GetPostsParam): PnutResponse<List<Post>> {
+        return defaultPnutService.getThread(postId, params.toMap()).await()
+    }
+
     override fun createRepostSync(postId: String): PnutResponse<Post> {
         return defaultPnutService.createRepost(postId).execute().body()!!
     }

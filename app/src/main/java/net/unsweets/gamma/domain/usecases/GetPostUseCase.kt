@@ -16,6 +16,7 @@ class GetPostUseCase(private val pnutRepository: IPnutRepository) :
             is StreamType.Stars -> pnutRepository.getStars(streamType.userId, params)
             is StreamType.Tag -> pnutRepository.getTagStream(streamType.tag, params)
             is StreamType.User -> pnutRepository.getUserPosts(streamType.userId, params)
+            is StreamType.Thread -> pnutRepository.getThread(streamType.postId, params)
             is StreamType.Explore.Conversations -> pnutRepository.getConversations(params)
             is StreamType.Explore.MissedConversations -> pnutRepository.getMissedConversations(params)
             is StreamType.Explore.Newcomers -> pnutRepository.getNewcomers(params)
