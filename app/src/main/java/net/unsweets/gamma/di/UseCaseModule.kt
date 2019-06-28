@@ -72,4 +72,9 @@ class UseCaseModule {
     fun updateProfileUseCase(
         pnutRepository: IPnutRepository
     ): UpdateProfileUseCase = UpdateProfileUseCase(pnutRepository)
+
+    @Provides
+    fun provideFollowUseCase(
+        pnutRepository: IPnutRepository
+    ): FollowUseCase = FollowUseCase(pnutRepository)
 }
