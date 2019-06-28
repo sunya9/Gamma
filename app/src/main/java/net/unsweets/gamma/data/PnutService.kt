@@ -103,7 +103,7 @@ interface PnutService {
     @GET("users/me/blocked")
     fun getBlockedUsers(@QueryMap pagination: Map<String, String>): Call<PnutResponse<List<User>>>
 
-    @GET("/users/me/muted")
+    @GET("users/me/muted")
     fun getMutedUsers(@QueryMap pagination: Map<String, String>): Call<PnutResponse<List<User>>>
 
     // User(s) resources
@@ -122,22 +122,22 @@ interface PnutService {
     @GET("users/{userId}/followers")
     fun getFollowers(@Path("userId") userId: String, @QueryMap pagination: Map<String, String>): Call<PnutResponse<List<User>>>
 
-    @PUT("/users/{userId}/follow")
+    @PUT("users/{userId}/follow")
     fun follow(@Path("userId") userId: String): Call<PnutResponse<User>>
 
-    @DELETE("/users/{userId}/follow")
+    @DELETE("users/{userId}/follow")
     fun unFollow(@Path("userId") userId: String): Call<PnutResponse<User>>
 
-    @PUT("/users/{userId}/mute")
+    @PUT("users/{userId}/mute")
     fun mute(@Path("userId") userId: String): Call<PnutResponse<User>>
 
-    @DELETE("/users/{userId}/mute")
+    @DELETE("users/{userId}/mute")
     fun unMute(@Path("userId") userId: String): Call<PnutResponse<User>>
 
-    @PUT("/users/{userId}/block")
+    @PUT("users/{userId}/block")
     fun block(@Path("userId") userId: String): Call<PnutResponse<User>>
 
-    @DELETE("/users/{userId}/block")
+    @DELETE("users/{userId}/block")
     fun unBlock(@Path("userId") userId: String): Call<PnutResponse<User>>
 
     @GET("users/search")
@@ -147,7 +147,7 @@ interface PnutService {
     @GET("channels/{channelId}")
     fun getChannel(@Path("channelId") channelId: String): Call<PnutResponse<Channel>>
 
-    @GET("/channels/{channelId}/messages")
+    @GET("channels/{channelId}/messages")
     fun getChannelMessages(@Path("channelId") channelId: String, @QueryMap paging: Map<String, String>): Call<PnutResponse<List<Message>>>
 
     @GET("users/me/channels")
