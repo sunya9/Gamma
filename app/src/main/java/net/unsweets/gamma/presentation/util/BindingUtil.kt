@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.BindingAdapter
+import com.google.android.material.button.MaterialButton
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.Post
 
@@ -51,5 +53,12 @@ object BindingUtil {
     fun Toolbar.setSubTitleBinding(newSubTitle: Function0<String>) {
         subtitle = newSubTitle()
     }
+
+    @BindingAdapter("backgroundTint")
+    @JvmStatic
+    fun MaterialButton.setBackgroundTint(@ColorInt color: Int) {
+        this.setBackgroundColor(color)
+    }
+
 }
 

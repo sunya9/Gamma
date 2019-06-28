@@ -132,15 +132,18 @@
                             android:id="@+id/userMainActionButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            style="@style/Button.Outlined"
+                            android:elevation="2dp"
+                            android:textColor="@{ safeUnbox(viewModel.user.youFollow) == false ? @color/colorPrimary : @android:color/white}"
+                            app:backgroundTint="@{ safeUnbox(viewModel.user.youFollow) == false ? @android:color/white : @color/colorPrimary}"
                             android:onClick="@{() -> viewModel.mainAction()}"
+                            app:rippleColor="@color/colorPrimaryDarker"
                             android:transitionName="@string/transition_edit_profile"
                             android:text="@{viewModel.mainActionButtonText}"
                             app:layout_constraintBottom_toTopOf="@+id/profileCardView"
                             app:layout_constraintEnd_toEndOf="@+id/profileCardView"
                             app:layout_constraintStart_toStartOf="@+id/profileCardView"
                             app:layout_constraintTop_toTopOf="@+id/profileCardView" />
-
-
                         <View
                             android:layout_width="0dp"
                             app:layout_constraintStart_toStartOf="parent"
