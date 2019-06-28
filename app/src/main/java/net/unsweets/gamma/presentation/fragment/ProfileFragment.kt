@@ -20,12 +20,14 @@ import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.ChangeBounds
 import com.google.android.material.appbar.AppBarLayout
+import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentProfileBinding
 import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.model.io.FollowInputData
+import net.unsweets.gamma.domain.usecases.FollowUseCase
 import net.unsweets.gamma.domain.usecases.GetProfileUseCase
 import net.unsweets.gamma.presentation.adapter.ProfilePagerAdapter
-import net.unsweets.gamma.presentation.util.ComputedLiveData
 import net.unsweets.gamma.presentation.util.EntityOnTouchListener
 import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.util.SingleLiveEvent
@@ -40,8 +42,11 @@ class ProfileFragment : BaseFragment() {
 
     @Inject
     lateinit var getProfileUseCase: GetProfileUseCase
+    @Inject
+    lateinit var followUseCase: FollowUseCase
+
     private val viewModel: ProfileViewModel by lazy {
-        ViewModelProviders.of(this, ProfileViewModel.Factory(activity!!.application, getProfileUseCase))
+        ViewModelProviders.of(this, ProfileViewModel.Factory(activity!!.application, getProfileUseCase, followUseCase))
             .get(ProfileViewModel::class.java)
     }
 
@@ -207,7 +212,11 @@ class ProfileFragment : BaseFragment() {
         fragment.show(ft, DialogKey.EditProfile.name)
     }
 
-    class ProfileViewModel(val app: Application, val getProfileUseCase: GetProfileUseCase) : AndroidViewModel(app) {
+    class ProfileViewModel(
+        val app: Application,
+        val getProfileUseCase: GetProfileUseCase,
+        val followUseCase: FollowUseCase
+    ) : AndroidViewModel(app) {
         val event = SingleLiveEvent<Event>()
         val user = MutableLiveData<User>()
         val iconUrl = MutableLiveData<String>().apply { value = "" }
@@ -233,11 +242,11 @@ class ProfileFragment : BaseFragment() {
         private val me = Transformations.map(user) {
             it.followsYou && it.youFollow && !it.youCanFollow
         }
-        val mainActionButtonText: LiveData<String> = ComputedLiveData.of(me, user) { me, user ->
+        val mainActionButtonText: LiveData<String> = Transformations.map(user) {
             when {
-                me == true -> app.getString(R.string.edit_profile)
-                user?.followsYou == true -> app.getString(R.string.unfollow)
-                user?.youBlocked == true -> app.getString(R.string.unblock)
+                it.me -> app.getString(R.string.edit_profile)
+                it.youFollow -> app.getString(R.string.unfollow)
+                it.youBlocked -> app.getString(R.string.unblock)
                 else -> app.getString(R.string.follow)
             }
         }
@@ -253,16 +262,37 @@ class ProfileFragment : BaseFragment() {
         }
 
         fun mainAction() {
-            if (me.value == true) {
-                event.value = Event.EditProfile
+            when {
+                user.value?.me == true -> {
+                    event.value = Event.EditProfile
+                }
+                user.value?.youFollow == false -> follow()
+                else -> unfollow()
             }
         }
 
-        class Factory(private val application: Application, private val getProfileUseCase: GetProfileUseCase) :
+        private fun follow() = updateRelationship(true)
+        private fun unfollow() = updateRelationship(false)
+        private fun updateRelationship(follow: Boolean) {
+            viewModelScope.launch {
+                runCatching {
+                    val user = user.value ?: return@launch
+                    followUseCase.run(FollowInputData(user.id, follow))
+                }.onSuccess {
+                    user.postValue(it.res.data)
+                }
+            }
+        }
+
+        class Factory(
+            private val application: Application,
+            private val getProfileUseCase: GetProfileUseCase,
+            private val followUseCase: FollowUseCase
+        ) :
             ViewModelProvider.AndroidViewModelFactory(application) {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return ProfileViewModel(application, getProfileUseCase) as T
+                return ProfileViewModel(application, getProfileUseCase, followUseCase) as T
             }
         }
     }
