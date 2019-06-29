@@ -239,6 +239,7 @@ class ProfileFragment : BaseFragment() {
         }
         val toolbarTextColor = MutableLiveData<Int>().apply { value = Color.WHITE }
         val toolbarBgColor = MutableLiveData<Int>().apply { value = Color.TRANSPARENT }
+        val loading = MutableLiveData<Boolean>().apply { value = false }
         private val me = Transformations.map(user) {
             it.followsYou && it.youFollow && !it.youCanFollow
         }
@@ -276,11 +277,13 @@ class ProfileFragment : BaseFragment() {
         private fun updateRelationship(follow: Boolean) {
             viewModelScope.launch {
                 runCatching {
+                    loading.postValue(true)
                     val user = user.value ?: return@launch
                     followUseCase.run(FollowInputData(user.id, follow))
                 }.onSuccess {
                     user.postValue(it.res.data)
                 }
+                loading.postValue(false)
             }
         }
 

@@ -1,12 +1,14 @@
 package net.unsweets.gamma.presentation.util
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.button.MaterialButton
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.Post
@@ -58,6 +60,21 @@ object BindingUtil {
     @JvmStatic
     fun MaterialButton.setBackgroundTint(@ColorInt color: Int) {
         this.setBackgroundColor(color)
+    }
+
+    @BindingAdapter("loading")
+    @JvmStatic
+    fun MaterialButton.setLoadingIndicator(loading: Boolean) {
+        if (loading) {
+            val progress = CircularProgressDrawable(context).apply {
+                val gray = context.getColor(R.color.colorGrayLighter)
+                setColorFilter(gray, PorterDuff.Mode.SRC_IN)
+                start()
+            }
+            icon = progress
+        } else {
+            icon = null
+        }
     }
 
 }

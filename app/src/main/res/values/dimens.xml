@@ -37,4 +37,5 @@
     <dimen name="width_thumbnail_tab_item">20dp</dimen>
     <dimen name="width_avatar_border">2dp</dimen>
     <dimen name="pad_preview_thumbnail">4dp</dimen>
+    <dimen name="size_button_loading_indicator">24dp</dimen>
 </resources>
