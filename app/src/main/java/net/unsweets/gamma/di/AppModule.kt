@@ -2,8 +2,10 @@ package net.unsweets.gamma.di
 
 import android.app.Application
 import android.content.Context
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
+import net.unsweets.gamma.data.db.Database
 import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.repository.PnutRepository
@@ -24,4 +26,8 @@ class AppModule(private val application: Application) {
     @Provides
     @Singleton
     fun providePnutRepository(): IPnutRepository = PnutRepository(application)
+
+    @Provides
+    @Singleton
+    fun provideDatabase() = Room.databaseBuilder(application, Database::class.java, "gamma.db").build()
 }
