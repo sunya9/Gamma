@@ -2,32 +2,39 @@ package net.unsweets.gamma.di
 
 import android.app.Application
 import android.content.Context
-import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import net.unsweets.gamma.data.db.Database
-import net.unsweets.gamma.domain.repository.IPnutRepository
-import net.unsweets.gamma.domain.repository.IPreferenceRepository
-import net.unsweets.gamma.domain.repository.PnutRepository
-import net.unsweets.gamma.domain.repository.PreferenceRepository
+import net.unsweets.gamma.domain.repository.*
+import net.unsweets.gamma.domain.service.IProvidePnutServiceService
+import net.unsweets.gamma.domain.service.ProvidePnutServiceService
 import javax.inject.Singleton
 
 @Module(subcomponents = [
     UseCaseComponent::class
 ])
 class AppModule(private val application: Application) {
+    //    private val database = Room.databaseBuilder(application, Database::class.java, "gamma.db").build()
+    private val accountRepository = AccountRepository(application)
+    private val pnutRepository = PnutRepository(application)
+    private val preferenceRepository = PreferenceRepository(application)
+
     @Provides
     fun provideContext(): Context = application
 
     @Provides
     @Singleton
-    fun providePreferenceRepository(): IPreferenceRepository = PreferenceRepository(application)
+    fun providePreferenceRepository(): IPreferenceRepository = preferenceRepository
 
     @Provides
     @Singleton
-    fun providePnutRepository(): IPnutRepository = PnutRepository(application)
+    fun providePnutRepository(): IPnutRepository = pnutRepository
 
     @Provides
     @Singleton
-    fun provideDatabase() = Room.databaseBuilder(application, Database::class.java, "gamma.db").build()
+    fun provideAccountRepository(): IAccountRepository = accountRepository
+
+    @Provides
+    @Singleton
+    fun provideProvidePnutServiceService(): IProvidePnutServiceService =
+        ProvidePnutServiceService(application, accountRepository, preferenceRepository)
 }
