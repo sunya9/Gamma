@@ -15,7 +15,7 @@ import javax.inject.Singleton
     AppModule::class,
     ActivityModule::class,
     UseCaseModule::class,
-    ServiceModule::class
+    ServiceIntentModule::class
 ])
 @Singleton
 interface AppComponent : AndroidInjector<GammaApplication>  {
@@ -24,6 +24,6 @@ interface AppComponent : AndroidInjector<GammaApplication>  {
     fun inject(activity: VerifyTokenActivity)
     fun inject(context: Context)
     fun useCaseComponentBuilder(): UseCaseComponent.Builder
-    fun serviceComponentBuilder(): ServiceComponent.Builder
+    fun serviceIntentComponentBuilder(): ServiceIntentComponent.Builder
 //    fun inject(baseFragment: BaseFragment)
 }

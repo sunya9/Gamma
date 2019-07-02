@@ -5,7 +5,7 @@ import dagger.android.ContributesAndroidInjector
 import net.unsweets.gamma.service.PostService
 
 @Module
-abstract class ServiceModule {
+abstract class ServiceIntentModule {
     @ContributesAndroidInjector
     abstract fun contributePostService(): PostService
 }
