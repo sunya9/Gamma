@@ -1,11 +1,13 @@
 package net.unsweets.gamma.domain.usecases
 
 import net.unsweets.gamma.domain.model.io.SetupTokenOutputData
+import net.unsweets.gamma.domain.repository.IAccountRepository
+import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
-import net.unsweets.gamma.domain.service.IProvidePnutServiceService
 
 class SetupTokenUseCase(
-    private val providePnutServiceService: IProvidePnutServiceService,
+    private val pnutRepository: IPnutRepository,
+    private val accountRepository: IAccountRepository,
     private val preferenceRepository: IPreferenceRepository
 ) :
     AsyncUseCase<SetupTokenOutputData, Unit>() {
@@ -14,7 +16,8 @@ class SetupTokenUseCase(
         val id = preferenceRepository.getDefaultAccountID() ?: return SetupTokenOutputData(
             false
         )
-        val res = providePnutServiceService.updateDefaultPnutService(id)
-        return SetupTokenOutputData(res)
+        val token = accountRepository.getToken(id) ?: return SetupTokenOutputData(false)
+        pnutRepository.updateDefaultPnutService(token)
+        return SetupTokenOutputData(true)
     }
 }

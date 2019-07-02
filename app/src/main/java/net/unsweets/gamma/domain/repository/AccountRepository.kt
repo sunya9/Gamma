@@ -5,6 +5,10 @@ import net.unsweets.gamma.data.db.entities.Account
 
 
 class AccountRepository(context: Context) : AbstractPreferenceRepository(context), IAccountRepository {
+    override fun getStoredIds(): List<String> {
+        return sharedPreferences.all.keys.toList()
+    }
+
     override val name = "Account"
 
     override fun getToken(id: String): String? {

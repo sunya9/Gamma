@@ -5,13 +5,13 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import net.unsweets.gamma.domain.repository.*
-import net.unsweets.gamma.domain.service.IProvidePnutServiceService
-import net.unsweets.gamma.domain.service.ProvidePnutServiceService
 import javax.inject.Singleton
 
-@Module(subcomponents = [
-    UseCaseComponent::class
-])
+@Module(
+    subcomponents = [
+        UseCaseComponent::class
+    ]
+)
 class AppModule(private val application: Application) {
     //    private val database = Room.databaseBuilder(application, Database::class.java, "gamma.db").build()
     private val accountRepository = AccountRepository(application)
@@ -32,9 +32,4 @@ class AppModule(private val application: Application) {
     @Provides
     @Singleton
     fun provideAccountRepository(): IAccountRepository = accountRepository
-
-    @Provides
-    @Singleton
-    fun provideProvidePnutServiceService(): IProvidePnutServiceService =
-        ProvidePnutServiceService(application, accountRepository, preferenceRepository)
 }

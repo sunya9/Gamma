@@ -4,7 +4,6 @@ import net.unsweets.gamma.domain.model.io.VerifyTokenInputData
 import net.unsweets.gamma.domain.model.io.VerifyTokenOutputData
 import net.unsweets.gamma.domain.repository.IAccountRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
-import net.unsweets.gamma.domain.repository.PnutRepository
 
 class VerifyTokenUseCase(
     private val accountRepository: IAccountRepository,
@@ -14,7 +13,8 @@ class VerifyTokenUseCase(
         val token = params.token
         val res = pnutRepository.verifyToken(token)
         accountRepository.addAccount(res.data.user.id, token)
-        if(pnutRepository is PnutRepository) pnutRepository.updateDefaultPnutService(token)
+        pnutRepository.updateDefaultPnutService(token)
+
         return VerifyTokenOutputData(res.data)
     }
 }

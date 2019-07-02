@@ -57,4 +57,5 @@ interface IPnutRepository {
     suspend fun getToken(): PnutResponse<Token>
     suspend fun verifyToken(token: String): PnutResponse<Token>
 
+    fun updateDefaultPnutService(token: String)
 }

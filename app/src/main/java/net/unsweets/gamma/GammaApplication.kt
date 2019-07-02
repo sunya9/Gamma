@@ -38,7 +38,8 @@ class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
     private fun setToken(): Boolean {
         return runBlocking {
             SetupTokenUseCase(
-                module.provideProvidePnutServiceService(),
+                module.providePnutRepository(),
+                module.provideAccountRepository(),
                 module.providePreferenceRepository()
             ).run(Unit)
         }.existDefaultAccount
