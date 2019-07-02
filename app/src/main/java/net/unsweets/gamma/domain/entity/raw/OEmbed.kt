@@ -3,12 +3,14 @@ package net.unsweets.gamma.domain.entity.raw
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Suppress("UNCHECKED_CAST")
 @Parcelize
 @JsonClass(generateAdapter = true)
 open class OEmbed(override val value: BaseOEmbedRawValue) : Raw<OEmbed.BaseOEmbedRawValue>() {
+    @IgnoredOnParcel
     override val type: String = "io.pnut.core.oembed"
 
     companion object {

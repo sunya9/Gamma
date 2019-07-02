@@ -48,6 +48,7 @@ data class Post(
         var threads: Int
     ) : Parcelable
 
+    @IgnoredOnParcel
     val mainPost: Post = repostOf ?: this
 
 }

@@ -2,10 +2,12 @@ package net.unsweets.gamma.domain.entity.raw
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ChannelInvite(override val value: ChannelInviteValue) : Raw<ChannelInvite.ChannelInviteValue>(), Parcelable {
+    @IgnoredOnParcel
     override val type: String = "io.pnut.core.channel.invite"
 
     @Parcelize
