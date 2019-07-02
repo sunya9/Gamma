@@ -3,6 +3,7 @@ package net.unsweets.gamma.presentation.util
 import android.content.Context
 import android.graphics.Canvas
 import android.util.DisplayMetrics
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.Animation
@@ -112,6 +113,7 @@ class PostTouchHelperCallback(
         if (prevActionViewId == shownViewId) return
         hideActionViewAnimation(prevActionViewId, backgroundView, direction)
         showActionViewAnimation(backgroundView, shownViewId, direction)
+        backgroundView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         prevActionViewId = shownViewId
     }
 

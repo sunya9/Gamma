@@ -25,6 +25,7 @@
             android:drawablePadding="8dp"
             android:drawableTint="@android:color/white"
             android:gravity="center_vertical"
+            android:hapticFeedbackEnabled="true"
             android:lines="1"
             android:padding="16dp"
             android:text="@string/reply"
@@ -40,6 +41,7 @@
             android:drawablePadding="8dp"
             android:drawableTint="@android:color/white"
             android:gravity="center_vertical"
+            android:hapticFeedbackEnabled="true"
             android:lines="1"
             android:padding="16dp"
             android:text="@string/star"
@@ -54,6 +56,7 @@
             android:drawablePadding="8dp"
             android:drawableTint="@android:color/white"
             android:gravity="center_vertical"
+            android:hapticFeedbackEnabled="true"
             android:lines="1"
             android:padding="16dp"
             android:text="@string/repost"
@@ -64,6 +67,7 @@
             android:id="@+id/moreImageView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:hapticFeedbackEnabled="true"
             android:padding="16dp"
             android:scaleType="center"
             android:src="@drawable/ic_more_horiz_black_24dp"
@@ -166,14 +170,14 @@
             tools:text="5s" />
 
         <FrameLayout
+            android:id="@+id/thumbnailViewPagerFrameLayout"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:id="@+id/thumbnailViewPagerFrameLayout"
             android:layout_marginEnd="@dimen/margin_regular"
             android:layout_marginBottom="@dimen/margin_regular"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/bodyTextView"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bodyTextView">
 
             <androidx.viewpager2.widget.ViewPager2
