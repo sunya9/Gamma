@@ -2,17 +2,19 @@ package net.unsweets.gamma.di
 
 import dagger.Module
 import dagger.Provides
+import net.unsweets.gamma.domain.repository.IAccountRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
+import net.unsweets.gamma.domain.service.IProvidePnutServiceService
 import net.unsweets.gamma.domain.usecases.*
 
 @Module
 class UseCaseModule {
     @Provides
     fun provideTokenUseCase(
-        pnutRepository: IPnutRepository,
-        preferenceRepository: IPreferenceRepository
-    ): VerifyTokenUseCase = VerifyTokenUseCase(pnutRepository, preferenceRepository)
+        accountRepository: IAccountRepository,
+        pnutRepository: IPnutRepository
+    ): VerifyTokenUseCase = VerifyTokenUseCase(accountRepository, pnutRepository)
 
     @Provides
     fun provideGetPostUseCase(pnutRepository: IPnutRepository): GetPostUseCase = GetPostUseCase(pnutRepository)
@@ -23,9 +25,9 @@ class UseCaseModule {
 
     @Provides
     fun provideSetUpTokenUseCase(
-        pnutRepository: IPnutRepository,
+        providePnutServiceService: IProvidePnutServiceService,
         preferenceRepository: IPreferenceRepository
-    ): SetupTokenUseCase = SetupTokenUseCase(pnutRepository, preferenceRepository)
+    ): SetupTokenUseCase = SetupTokenUseCase(providePnutServiceService, preferenceRepository)
 
     @Provides
     fun provideGetAuthenticatedUserUseCase(

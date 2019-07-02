@@ -1,17 +1,20 @@
 package net.unsweets.gamma.domain.usecases
 
 import net.unsweets.gamma.domain.model.io.SetupTokenOutputData
-import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
-import net.unsweets.gamma.domain.repository.PnutRepository
+import net.unsweets.gamma.domain.service.IProvidePnutServiceService
 
-class SetupTokenUseCase(val pnutRepository: IPnutRepository, private val preferenceRepository: IPreferenceRepository) :
+class SetupTokenUseCase(
+    private val providePnutServiceService: IProvidePnutServiceService,
+    private val preferenceRepository: IPreferenceRepository
+) :
     AsyncUseCase<SetupTokenOutputData, Unit>() {
     override suspend fun run(params: Unit): SetupTokenOutputData {
-        val token = preferenceRepository.getDefaultAccountToken() ?: return SetupTokenOutputData(
+
+        val id = preferenceRepository.getDefaultAccountID() ?: return SetupTokenOutputData(
             false
         )
-        if(pnutRepository is PnutRepository) pnutRepository.updateDefaultPnutService(token)
-        return SetupTokenOutputData(true)
+        val res = providePnutServiceService.updateDefaultPnutService(id)
+        return SetupTokenOutputData(res)
     }
 }
