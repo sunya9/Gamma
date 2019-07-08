@@ -32,9 +32,7 @@ import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
 import net.unsweets.gamma.domain.usecases.GetCurrentUserIdUseCase
 import net.unsweets.gamma.presentation.activity.ComposePostActivity
-import net.unsweets.gamma.presentation.util.GlideApp
-import net.unsweets.gamma.presentation.util.hideKeyboard
-import net.unsweets.gamma.presentation.util.showKeyboard
+import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService
 import net.unsweets.gamma.util.observeOnce
@@ -146,12 +144,14 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
         viewModel.event.observe(this, eventObserver)
         viewModel.enableSendButton.observe(this, enableSendButtonObserver)
-        view.composeTextEditText.setOnFocusChangeListener { editText, b ->
+        view.composeTextEditText.onFocusChangeListener = { editText, b ->
             if (!b) return@setOnFocusChangeListener
             showKeyboard(editText)
         }
         adapter = ThumbnailAdapter(thumbnailAdapterListener)
         thumbnailRecyclerView.adapter = adapter
+
+        setTintForToolbarIcons(binding.viewLeftActionMenuView.context, binding.viewLeftActionMenuView.menu)
 
         binding.viewLeftActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
         binding.viewRightActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
@@ -305,9 +305,17 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         when (item.itemId) {
             android.R.id.home -> cancelToCompose()
             R.id.menuInsertPhoto -> requestGalleryDialog()
+            R.id.menuNsfw -> toggleNSFW(item)
             R.id.menuPost -> send()
         }
         return true
+    }
+
+    private fun toggleNSFW(item: MenuItem) {
+        val nextValue = !item.isChecked
+        item.isChecked = nextValue
+        setTintForCheckableMenuItem(context!!, item)
+        viewModel.nsfw.value = nextValue
     }
 
     private fun cancelToCompose() {
@@ -370,6 +378,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         replyTargetArg: Post?,
         mentionToMyself: Boolean
     ) : BaseViewModel<Event>(app) {
+        val nsfw = MutableLiveData<Boolean>().apply { value = false }
         val replyTarget = MutableLiveData<Post>().apply { value = replyTargetArg }
         val replyTargetVisibility = Transformations.map(replyTarget) {
             if (it != null) View.VISIBLE else View.GONE

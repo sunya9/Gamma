@@ -10,4 +10,11 @@
         android:title="@string/attach_photos"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
+    <item
+        android:id="@+id/menuNsfw"
+        android:checkable="true"
+        android:checked="false"
+        android:icon="@drawable/ic_warning_black_24dp"
+        android:title="@string/set_as_nsfw"
+        app:showAsAction="always" />
 </menu>

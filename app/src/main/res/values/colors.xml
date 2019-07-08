@@ -41,4 +41,5 @@
     <color name="yellow">#cbc36f</color>
     <color name="green">#90cb6f</color>
     <color name="colorAvatarBorder">@android:color/white</color>
+    <color name="toolbarIconDisabled">#a555</color>
 </resources>

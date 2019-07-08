@@ -119,4 +119,5 @@
     <string name="users">users</string>
     <string name="closed_poll">Closed poll: %s</string>
     <string name="thread">Thread</string>
+    <string name="set_as_nsfw">Set as NSFW</string>
 </resources>
