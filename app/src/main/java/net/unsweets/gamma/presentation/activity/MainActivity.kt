@@ -151,7 +151,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         ViewModelProviders.of(this, MainActivityViewModel.Factory(getAuthenticatedUseCase))
             .get(MainActivityViewModel::class.java)
     }
-    private val fragmentMap = hashMapOf(
+    private val fragmentMap: HashMap<Int, () -> PostItemFragment> = hashMapOf(
         R.id.conversations to { PostItemFragment.getConversationInstance() },
         R.id.missedConversations to { PostItemFragment.getMissedConversationInstance() },
         R.id.newcomers to { PostItemFragment.getNewcomersInstance() },
