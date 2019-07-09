@@ -70,5 +70,28 @@
             app:layout_constraintStart_toStartOf="@+id/navigationDrawerScreenNameTextView"
             app:layout_constraintTop_toTopOf="@+id/navigationDrawerHeaderImageView"
             tools:src="@tools:sample/avatars" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:onClick="@{() -> viewModel.toggleNavigationViewMenu()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/navigationDrawerHandleNameTextView">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="@dimen/margin_regular"
+                android:scaleType="center"
+                android:src="@drawable/ic_arrow_drop_vertical"
+                android:tint="@android:color/white"
+                tools:ignore="ContentDescription" />
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.account_list_item.view.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.broadcast.PostReceiver
@@ -22,13 +23,17 @@ import net.unsweets.gamma.databinding.ActivityMainBinding
 import net.unsweets.gamma.databinding.NavigationDrawerHeaderBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.model.io.UpdateDefaultAccountInputData
+import net.unsweets.gamma.domain.usecases.GetAccountListUseCase
 import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
+import net.unsweets.gamma.domain.usecases.UpdateDefaultAccountUseCase
 import net.unsweets.gamma.presentation.fragment.ComposePostFragment
 import net.unsweets.gamma.presentation.fragment.HomeFragment
 import net.unsweets.gamma.presentation.fragment.PostItemFragment
 import net.unsweets.gamma.presentation.fragment.ProfileFragment
 import net.unsweets.gamma.presentation.util.DrawerContentFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper.addFragment
+import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel
 import net.unsweets.gamma.service.PostService
 import javax.inject.Inject
@@ -44,6 +49,14 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     }
 
     private enum class Action { Star, Repost }
+
+    @Inject
+    lateinit var getAccountListUseCase: GetAccountListUseCase
+    @Inject
+    lateinit var updateDefaultAccountUseCase: UpdateDefaultAccountUseCase
+
+    private val accounts
+        get() = getAccountListUseCase.run(Unit).accounts
 
     private fun showActionResultSnackbar(post: Post, action: Action) {
         val actionNameRes = when (action) {
@@ -69,12 +82,59 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         }.show()
     }
 
+    private lateinit var binding: ActivityMainBinding
+    private val accountViews by lazy {
+        accounts.map { account ->
+            layoutInflater.inflate(R.layout.account_list_item, binding.navigationView, false).also { view ->
+                GlideApp.with(this).load(account.getAvatarUrl()).into(view.accountListItemAvatarImageView)
+                view.accountListItemScreenNameTextView.text = account.screenNameWithAt
+                view.accountListItemNameTextView.text = account.name
+                view.useThisAccountMarkImageView.visibility =
+                    if (viewModel.user.value?.id == account.id) View.VISIBLE else View.GONE
+
+                view.setOnClickListener { changeAccount(account.id) }
+            }
+        }
+    }
+
+    private val accountListFooterView by lazy {
+        layoutInflater.inflate(R.layout.account_list_footer_item, binding.navigationView, false)
+    }
+
+    private fun changeAccount(id: String) {
+        closeDrawer()
+        if (viewModel.user.value?.id == id) return
+        updateDefaultAccountUseCase.run(UpdateDefaultAccountInputData(id))
+        recreate()
+    }
+
+    private val showAccountMenuObserver = Observer<Boolean> {
+        val menu = binding.navigationView.menu
+
+        menu.clear()
+        when (it) {
+            true -> {
+                accountViews.forEach { view -> binding.navigationView.addHeaderView(view) }
+                binding.navigationView.addHeaderView(accountListFooterView)
+            }
+            false -> {
+                accountViews.forEach { view -> binding.navigationView.removeHeaderView(view) }
+                binding.navigationView.removeHeaderView(accountListFooterView)
+                menuInflater.inflate(R.menu.navigation_drawer, menu)
+            }
+        }
+    }
     private val drawerToggle: ActionBarDrawerToggle by lazy {
-        ActionBarDrawerToggle(
+        object : ActionBarDrawerToggle(
             this, drawerLayout, bottomAppBar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
-        )
+        ) {
+            override fun onDrawerClosed(drawerView: View) {
+                super.onDrawerClosed(drawerView)
+                viewModel.showAccountMenu.value = false
+            }
+        }
     }
     @Inject
     lateinit var getAuthenticatedUseCase: GetAuthenticatedUserUseCase
@@ -108,10 +168,11 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         viewModel.event.observe(this, eventObserver)
+        viewModel.showAccountMenu.observe(this, showAccountMenuObserver)
 
         setupNavigationView()
         setupFragment(savedInstanceState == null)
@@ -156,7 +217,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         uncheckMenuItem(navigationView.menu)
         val fragment =
             supportFragmentManager.findFragmentById(R.id.fragmentPlaceholder) as? DrawerContentFragment ?: return
-        navigationView.menu.findItem(fragment.menuItemId).isChecked = true
+        navigationView.menu.findItem(fragment.menuItemId)?.isChecked = true
     }
 
     private fun uncheckMenuItem(menu: Menu) {
