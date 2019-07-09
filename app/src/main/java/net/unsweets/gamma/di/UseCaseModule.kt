@@ -71,7 +71,7 @@ class UseCaseModule {
     ): GetCurrentUserIdUseCase = GetCurrentUserIdUseCase(preferenceRepository)
 
     @Provides
-    fun updateProfileUseCase(
+    fun provideUpdateProfileUseCase(
         pnutRepository: IPnutRepository
     ): UpdateProfileUseCase = UpdateProfileUseCase(pnutRepository)
 
@@ -79,4 +79,14 @@ class UseCaseModule {
     fun provideFollowUseCase(
         pnutRepository: IPnutRepository
     ): FollowUseCase = FollowUseCase(pnutRepository)
+
+    @Provides
+    fun provideGetAccountListUseCase(
+        accountRepository: IAccountRepository
+    ): GetAccountListUseCase = GetAccountListUseCase(accountRepository)
+
+    @Provides
+    fun provideUpdateDefaultAccountUseCase(
+        accountRepository: IAccountRepository
+    ): UpdateDefaultAccountUseCase = UpdateDefaultAccountUseCase(accountRepository)
 }
