@@ -12,7 +12,8 @@ class VerifyTokenUseCase(
     override suspend fun run(params: VerifyTokenInputData): VerifyTokenOutputData {
         val token = params.token
         val res = pnutRepository.verifyToken(token)
-        accountRepository.addAccount(res.data.user.id, token)
+        accountRepository.addAccount(res.data.user.id, res.data.user.username, res.data.user.name ?: "", token)
+        accountRepository.updateDefaultAccount(res.data.user.id)
         pnutRepository.updateDefaultPnutService(token)
 
         return VerifyTokenOutputData(res.data)

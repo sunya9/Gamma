@@ -13,11 +13,10 @@ class SetupTokenUseCase(
     AsyncUseCase<SetupTokenOutputData, Unit>() {
     override suspend fun run(params: Unit): SetupTokenOutputData {
 
-        val id = preferenceRepository.getDefaultAccountID() ?: return SetupTokenOutputData(
+        val account = accountRepository.getDefaultAccount() ?: return SetupTokenOutputData(
             false
         )
-        val token = accountRepository.getToken(id) ?: return SetupTokenOutputData(false)
-        pnutRepository.updateDefaultPnutService(token)
+        pnutRepository.updateDefaultPnutService(account.token)
         return SetupTokenOutputData(true)
     }
 }
