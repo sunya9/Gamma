@@ -70,7 +70,9 @@ class VerifyTokenActivity : BaseActivity() {
     }
 
     private fun success() {
-        val mainIntent = Intent(this, MainActivity::class.java)
+        val mainIntent = Intent(this, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         startActivity(mainIntent)
         finish()
     }
