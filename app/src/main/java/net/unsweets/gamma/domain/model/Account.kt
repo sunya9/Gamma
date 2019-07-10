@@ -7,5 +7,5 @@ data class Account(
     val name: String
 ) {
     fun getAvatarUrl(size: Int = 96) = "https://api.pnut.io/v0/users/$id/avatar?h=$size&w=$size"
-    val screenNameWithAt = "@$screenName"
+    val usernameWithAt = "@$screenName"
 }

@@ -15,7 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.account_list_item.view.*
+import kotlinx.android.synthetic.main.account_list.view.*
 import kotlinx.android.synthetic.main.activity_main.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.broadcast.PostReceiver
@@ -23,23 +23,41 @@ import net.unsweets.gamma.databinding.ActivityMainBinding
 import net.unsweets.gamma.databinding.NavigationDrawerHeaderBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.model.Account
 import net.unsweets.gamma.domain.model.io.UpdateDefaultAccountInputData
 import net.unsweets.gamma.domain.usecases.GetAccountListUseCase
 import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
+import net.unsweets.gamma.domain.usecases.GetCurrentUserIdUseCase
 import net.unsweets.gamma.domain.usecases.UpdateDefaultAccountUseCase
+import net.unsweets.gamma.presentation.adapter.AccountListAdapter
 import net.unsweets.gamma.presentation.fragment.ComposePostFragment
 import net.unsweets.gamma.presentation.fragment.HomeFragment
 import net.unsweets.gamma.presentation.fragment.PostItemFragment
 import net.unsweets.gamma.presentation.fragment.ProfileFragment
 import net.unsweets.gamma.presentation.util.DrawerContentFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper.addFragment
-import net.unsweets.gamma.presentation.util.GlideApp
+import net.unsweets.gamma.presentation.util.LoginUtil
 import net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel
 import net.unsweets.gamma.service.PostService
 import javax.inject.Inject
 
 
-class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback {
+class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback, AccountListAdapter.Listener {
+    override fun onAccountClick(account: Account) {
+        if (currentUserId == account.id) return closeDrawer()
+        updateDefaultAccountUseCase.run(UpdateDefaultAccountInputData(account.id))
+        val restartIntent = intent
+        finish()
+        overridePendingTransition(R.anim.scale_up, R.anim.scale_down)
+        startActivity(restartIntent)
+    }
+
+    override fun onAddAccount() {
+        closeDrawer()
+        val newIntent = LoginUtil.getLoginIntent(this)
+        startActivity(newIntent)
+    }
+
     override fun onRepostReceive(post: Post) {
         showActionResultSnackbar(post, Action.Repost)
     }
@@ -54,7 +72,12 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     lateinit var getAccountListUseCase: GetAccountListUseCase
     @Inject
     lateinit var updateDefaultAccountUseCase: UpdateDefaultAccountUseCase
+    @Inject
+    lateinit var getCurrentUserIdUseCase: GetCurrentUserIdUseCase
 
+    private val currentUserId: String by lazy {
+        getCurrentUserIdUseCase.run(Unit).id
+    }
     private val accounts
         get() = getAccountListUseCase.run(Unit).accounts
 
@@ -83,30 +106,14 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     }
 
     private lateinit var binding: ActivityMainBinding
-    private val accountViews by lazy {
-        accounts.map { account ->
-            layoutInflater.inflate(R.layout.account_list_item, binding.navigationView, false).also { view ->
-                GlideApp.with(this).load(account.getAvatarUrl()).into(view.accountListItemAvatarImageView)
-                view.accountListItemScreenNameTextView.text = account.screenNameWithAt
-                view.accountListItemNameTextView.text = account.name
-                view.useThisAccountMarkImageView.visibility =
-                    if (viewModel.user.value?.id == account.id) View.VISIBLE else View.GONE
 
-                view.setOnClickListener { changeAccount(account.id) }
-            }
+    private val accountListView by lazy {
+        val view = layoutInflater.inflate(R.layout.account_list, binding.navigationView, false)
+        view.accountList.also { accountList ->
+            accountList.adapter = AccountListAdapter(accounts, currentUserId, this)
         }
     }
 
-    private val accountListFooterView by lazy {
-        layoutInflater.inflate(R.layout.account_list_footer_item, binding.navigationView, false)
-    }
-
-    private fun changeAccount(id: String) {
-        closeDrawer()
-        if (viewModel.user.value?.id == id) return
-        updateDefaultAccountUseCase.run(UpdateDefaultAccountInputData(id))
-        recreate()
-    }
 
     private val showAccountMenuObserver = Observer<Boolean> {
         val menu = binding.navigationView.menu
@@ -114,12 +121,10 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         menu.clear()
         when (it) {
             true -> {
-                accountViews.forEach { view -> binding.navigationView.addHeaderView(view) }
-                binding.navigationView.addHeaderView(accountListFooterView)
+                binding.navigationView.addHeaderView(accountListView)
             }
             false -> {
-                accountViews.forEach { view -> binding.navigationView.removeHeaderView(view) }
-                binding.navigationView.removeHeaderView(accountListFooterView)
+                binding.navigationView.removeHeaderView(accountListView)
                 menuInflater.inflate(R.menu.navigation_drawer, menu)
             }
         }

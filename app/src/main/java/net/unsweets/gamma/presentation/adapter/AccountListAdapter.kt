@@ -1,0 +1,77 @@
+package net.unsweets.gamma.presentation.adapter
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import kotlinx.android.synthetic.main.account_list_footer_item.view.*
+import kotlinx.android.synthetic.main.account_list_item.view.*
+import net.unsweets.gamma.R
+import net.unsweets.gamma.domain.model.Account
+import net.unsweets.gamma.presentation.util.GlideApp
+
+class AccountListAdapter(
+    private val accounts: List<Account>,
+    private val currentAccountId: String,
+    private val listener: Listener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private enum class ItemViewType { Body, Footer }
+
+    interface Listener {
+        fun onAccountClick(account: Account)
+        fun onAddAccount()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (ItemViewType.values()[viewType]) {
+            ItemViewType.Body -> ItemViewHolder(inflater.inflate(R.layout.account_list_item, parent, false))
+            ItemViewType.Footer -> FooterViewHolder(inflater.inflate(R.layout.account_list_footer_item, parent, false))
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val type = if (itemCount - 1 > position) ItemViewType.Body else ItemViewType.Footer
+        return type.ordinal
+    }
+
+    override fun getItemCount(): Int = accounts.size + 1 // item + footer
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val ordinal = getItemViewType(position)
+        when (ItemViewType.values()[ordinal]) {
+            ItemViewType.Body -> {
+                (holder as? ItemViewHolder)?.also {
+                    val account = accounts[position]
+                    it.bindTo(account, currentAccountId)
+                    it.itemView.setOnClickListener { listener.onAccountClick(account) }
+                }
+            }
+            ItemViewType.Footer -> (holder as? FooterViewHolder)?.also {
+                it.addAccountButton.setOnClickListener { listener.onAddAccount() }
+            }
+        }
+    }
+
+
+    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val avatarView: ImageView = itemView.accountListItemAvatarImageView
+        private val usernameView: TextView = itemView.accountListItemScreenNameTextView
+        private val nameView: TextView = itemView.accountListItemNameTextView
+        private val checkMarkView: ImageView = itemView.useThisAccountMarkImageView
+        fun bindTo(account: Account, currentAccountId: String) {
+            GlideApp.with(itemView.context).load(account.getAvatarUrl()).into(avatarView)
+            usernameView.text = account.usernameWithAt
+            nameView.text = account.name
+            checkMarkView.visibility = if (account.id == currentAccountId) View.VISIBLE else View.GONE
+        }
+    }
+
+    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val addAccountButton: MaterialButton = itemView.addAccountButton
+    }
+}
