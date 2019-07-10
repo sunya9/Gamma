@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.*
 import net.unsweets.gamma.R
-import net.unsweets.gamma.domain.entity.Token
+import net.unsweets.gamma.presentation.util.LoginUtil
 import net.unsweets.gamma.util.showAsError
 
 class LoginActivity : AppCompatActivity() {
@@ -21,17 +21,6 @@ class LoginActivity : AppCompatActivity() {
             putExtra(IntentKey.Error.name, message)
         }
     }
-    private val scopes = arrayOf(
-        Token.Scope.BASIC,
-        Token.Scope.STREAM,
-        Token.Scope.WRITE_POST,
-        Token.Scope.FOLLOW,
-        Token.Scope.UPDATE_PROFILE,
-        Token.Scope.PRESENCE,
-        Token.Scope.MESSAGES,
-        Token.Scope.FILES,
-        Token.Scope.POLLS
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +40,7 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun launchLoginBrowserActivity() {
-        val url = createLoginURL()
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val intent = LoginUtil.getLoginIntent(this)
         startActivity(intent)
         finish()
     }
@@ -62,9 +50,4 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun createLoginURL(): String {
-        val clientId = getString(R.string.client_id)
-        val scopeStr = scopes.joinToString(",")
-        return getString(R.string.authenticate_url, clientId, scopeStr)
-    }
 }
