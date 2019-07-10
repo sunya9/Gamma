@@ -87,6 +87,7 @@ class UseCaseModule {
 
     @Provides
     fun provideUpdateDefaultAccountUseCase(
-        accountRepository: IAccountRepository
-    ): UpdateDefaultAccountUseCase = UpdateDefaultAccountUseCase(accountRepository)
+        accountRepository: IAccountRepository,
+        pnutRepository: IPnutRepository
+    ): UpdateDefaultAccountUseCase = UpdateDefaultAccountUseCase(accountRepository, pnutRepository)
 }
