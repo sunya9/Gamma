@@ -31,9 +31,8 @@ class UseCaseModule {
 
     @Provides
     fun provideGetAuthenticatedUserUseCase(
-        pnutRepository: IPnutRepository,
-        preferenceRepository: IPreferenceRepository
-    ): GetAuthenticatedUserUseCase = GetAuthenticatedUserUseCase(pnutRepository, preferenceRepository)
+        pnutRepository: IPnutRepository
+    ): GetAuthenticatedUserUseCase = GetAuthenticatedUserUseCase(pnutRepository)
 
     @Provides
     fun provideGetFilesUseCase(
