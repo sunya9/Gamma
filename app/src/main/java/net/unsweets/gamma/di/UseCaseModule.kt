@@ -66,8 +66,8 @@ class UseCaseModule {
 
     @Provides
     fun provideGetCurrentUserIdUseCase(
-        preferenceRepository: IPreferenceRepository
-    ): GetCurrentUserIdUseCase = GetCurrentUserIdUseCase(preferenceRepository)
+        accountRepository: IAccountRepository
+    ): GetCurrentUserIdUseCase = GetCurrentUserIdUseCase(accountRepository)
 
     @Provides
     fun provideUpdateProfileUseCase(

@@ -1,13 +1,12 @@
 package net.unsweets.gamma.domain.usecases
 
 import net.unsweets.gamma.domain.model.io.GetCurrentUserIdOutputData
-import net.unsweets.gamma.domain.repository.IPreferenceRepository
+import net.unsweets.gamma.domain.repository.IAccountRepository
 
-class GetCurrentUserIdUseCase(val preferenceRepository: IPreferenceRepository) :
+class GetCurrentUserIdUseCase(private val accountRepository: IAccountRepository) :
     UseCase<GetCurrentUserIdOutputData, Unit>() {
     override fun run(params: Unit): GetCurrentUserIdOutputData {
-        val id = preferenceRepository.getDefaultAccountID()
-        return GetCurrentUserIdOutputData(id ?: "")
+        val account = accountRepository.getDefaultAccount()
+        return GetCurrentUserIdOutputData(account?.id ?: "")
     }
-
 }
