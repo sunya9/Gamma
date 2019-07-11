@@ -89,7 +89,8 @@
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="@dimen/margin_regular"
                 android:scaleType="center"
-                android:src="@drawable/ic_arrow_drop_vertical"
+                android:id="@+id/switchAccountIndicatorImageView"
+                android:src="@drawable/ic_arrow_drop_down_to_up"
                 android:tint="@android:color/white"
                 tools:ignore="ContentDescription" />
         </FrameLayout>

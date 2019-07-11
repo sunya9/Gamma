@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -14,9 +15,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.account_list.view.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.broadcast.PostReceiver
 import net.unsweets.gamma.databinding.ActivityMainBinding
@@ -117,7 +120,13 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
 
     private val showAccountMenuObserver = Observer<Boolean> {
         val menu = binding.navigationView.menu
-
+        val indicatorView: ImageView? = binding.navigationView.switchAccountIndicatorImageView
+        indicatorView?.let { imageView ->
+            val res = if (it) R.drawable.ic_arrow_drop_down_to_up else R.drawable.ic_arrow_drop_up_to_down
+            val avd = AnimatedVectorDrawableCompat.create(this, res) ?: return@let
+            imageView.setImageDrawable(avd)
+            avd.start()
+        }
         menu.clear()
         when (it) {
             true -> {
