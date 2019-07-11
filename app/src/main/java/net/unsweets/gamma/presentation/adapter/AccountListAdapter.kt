@@ -15,7 +15,6 @@ import net.unsweets.gamma.presentation.util.GlideApp
 
 class AccountListAdapter(
     private val accounts: List<Account>,
-    private val currentAccountId: String,
     private val listener: Listener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -47,7 +46,7 @@ class AccountListAdapter(
             ItemViewType.Body -> {
                 (holder as? ItemViewHolder)?.also {
                     val account = accounts[position]
-                    it.bindTo(account, currentAccountId)
+                    it.bindTo(account)
                     it.itemView.setOnClickListener { listener.onAccountClick(account) }
                 }
             }
@@ -62,12 +61,10 @@ class AccountListAdapter(
         private val avatarView: ImageView = itemView.accountListItemAvatarImageView
         private val usernameView: TextView = itemView.accountListItemScreenNameTextView
         private val nameView: TextView = itemView.accountListItemNameTextView
-        private val checkMarkView: ImageView = itemView.useThisAccountMarkImageView
-        fun bindTo(account: Account, currentAccountId: String) {
+        fun bindTo(account: Account) {
             GlideApp.with(itemView.context).load(account.getAvatarUrl()).into(avatarView)
             usernameView.text = account.usernameWithAt
             nameView.text = account.name
-            checkMarkView.visibility = if (account.id == currentAccountId) View.VISIBLE else View.GONE
         }
     }
 

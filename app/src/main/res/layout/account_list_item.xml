@@ -48,15 +48,4 @@
         app:layout_constraintTop_toBottomOf="@id/accountListItemNameTextView"
         tools:text="@tools:sample/lorem[0]" />
 
-    <ImageView
-        android:id="@+id/useThisAccountMarkImageView"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="@dimen/margin_regular"
-        android:contentDescription="@string/use_this_account_currently"
-        android:src="@drawable/ic_check_black_24dp"
-        android:tint="@color/colorGray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

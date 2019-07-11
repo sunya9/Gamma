@@ -82,7 +82,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         getCurrentUserIdUseCase.run(Unit).id
     }
     private val accounts
-        get() = getAccountListUseCase.run(Unit).accounts
+        get() = getAccountListUseCase.run(Unit).accounts.filterNot { it.id == currentUserId }
 
     private fun showActionResultSnackbar(post: Post, action: Action) {
         val actionNameRes = when (action) {
@@ -113,7 +113,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     private val accountListView by lazy {
         val view = layoutInflater.inflate(R.layout.account_list, binding.navigationView, false)
         view.accountList.also { accountList ->
-            accountList.adapter = AccountListAdapter(accounts, currentUserId, this)
+            accountList.adapter = AccountListAdapter(accounts, this)
         }
     }
 
