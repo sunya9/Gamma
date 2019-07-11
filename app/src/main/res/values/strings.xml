@@ -121,5 +121,5 @@
     <string name="thread">Thread</string>
     <string name="set_as_nsfw">Set as NSFW</string>
     <string name="use_this_account_currently">Use this account currently</string>
-    <string name="add_account">Add account</string>
+    <string name="add_an_account">Add an account</string>
 </resources>
