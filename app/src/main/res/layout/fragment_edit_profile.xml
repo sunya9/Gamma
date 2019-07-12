@@ -125,7 +125,7 @@
                             android:layout_height="wrap_content"
                             android:inputType="text"
                             android:maxLines="1"
-                            android:text="@{viewModel.name}" />
+                            android:text="@={viewModel.name}" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -148,52 +148,57 @@
                             android:gravity="top|start"
                             android:inputType="textMultiLine"
                             android:minLines="5"
-                            android:text="@{viewModel.description}" />
+                            android:text="@={viewModel.description}" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        android:id="@+id/viewTimezoneLabel"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/timezoneLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_activity_horizontal"
                         android:layout_marginTop="@dimen/margin_regular"
-                        android:layout_marginEnd="@dimen/margin_activity_horizontal_half"
-                        android:text="@string/timezone"
-                        app:layout_constraintEnd_toStartOf="@id/viewLocaleLabel"
+                        android:layout_marginEnd="@dimen/margin_activity_horizontal"
+                        android:hint="@string/timezone"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/viewDescriptionLayout" />
+                        app:layout_constraintTop_toBottomOf="@id/viewDescriptionLayout">
 
-                    <Spinner
-                        android:id="@+id/viewTimezoneSpinner"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/timezoneEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:longClickable="false"
+                            android:maxLines="1"
+                            android:text="@{viewModel.timezone}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/localeLayout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_activity_horizontal"
-                        android:layout_marginEnd="@dimen/margin_activity_horizontal_half"
-                        app:layout_constraintEnd_toStartOf="@id/viewLocaleSpinner"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/viewTimezoneLabel" />
-
-                    <TextView
-                        android:id="@+id/viewLocaleLabel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_activity_horizontal_half"
                         android:layout_marginTop="@dimen/margin_regular"
                         android:layout_marginEnd="@dimen/margin_activity_horizontal"
-                        android:text="@string/locale"
+                        android:hint="@string/locale"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/viewTimezoneLabel"
-                        app:layout_constraintTop_toBottomOf="@+id/viewDescriptionLayout" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/timezoneLayout">
 
-                    <Spinner
-                        android:id="@+id/viewLocaleSpinner"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_activity_horizontal_half"
-                        android:layout_marginEnd="@dimen/margin_activity_horizontal"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/viewTimezoneSpinner"
-                        app:layout_constraintTop_toBottomOf="@+id/viewLocaleLabel" />
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/localeEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:longClickable="false"
+                            android:text="@{viewModel.locale}" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </ScrollView>
         </LinearLayout>

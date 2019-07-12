@@ -1,11 +1,14 @@
 package net.unsweets.gamma.presentation.fragment
 
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.*
 import dagger.android.support.DaggerAppCompatDialogFragment
@@ -16,14 +19,32 @@ import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.model.io.UpdateProfileInputData
 import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
 import net.unsweets.gamma.domain.usecases.UpdateProfileUseCase
+import net.unsweets.gamma.presentation.util.hideKeyboard
 import net.unsweets.gamma.util.SingleLiveEvent
 import javax.inject.Inject
 
 class EditProfileFragment : DaggerAppCompatDialogFragment() {
+    private val loadingObserver = Observer<Boolean> {
+        binding.toolbar.menu?.let { menu ->
+            val saveItem = menu.findItem(R.id.menuSave) ?: return@let
+            saveItem.isVisible = it == false
+        }
+    }
     private val eventObserver = Observer<Event> {
         when (it) {
             is Event.ChangeImage -> changeImage(it.imageType)
+            is Event.Saved -> saved(it.user)
         }
+    }
+
+    private enum class IntentKey { User }
+
+    private fun saved(user: User) {
+        val data = Intent().apply {
+            putExtra(IntentKey.User.name, user)
+        }
+        targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, data)
+        dismiss()
     }
 
     private fun changeImage(imageType: Event.ChangeImage.ImageType) {
@@ -65,6 +86,7 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
         viewModel.saving.observe(this, savingObserver)
         viewModel.event.observe(this, eventObserver)
+        viewModel.loading.observe(this, loadingObserver)
     }
 
     override fun onCreateView(
@@ -79,19 +101,10 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val timezoneAdapter =
-            ArrayAdapter.createFromResource(context!!, R.array.timezones, android.R.layout.simple_spinner_dropdown_item)
-                .also {
-                    it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                }
-        binding.viewTimezoneSpinner.adapter = timezoneAdapter
 
-        val localeAdapter =
-            ArrayAdapter.createFromResource(context!!, R.array.locales, android.R.layout.simple_spinner_dropdown_item)
-                .also {
-                    it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                }
-        binding.viewLocaleSpinner.adapter = localeAdapter
+        setupTimezoneView()
+        setupLocaleView()
+
         binding.toolbar.setNavigationOnClickListener {
             discard()
         }
@@ -103,13 +116,41 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupLocaleView() {
+        PopupMenu(binding.localeLayout.context, binding.localeLayout).also { popupMenu ->
+            binding.localeEditText.setOnTouchListener(popupMenu.dragToOpenListener)
+            binding.localeEditText.setOnClickListener { popupMenu.show() }
+            val locales = resources.getStringArray(R.array.locales)
+            locales.iterator().forEach { popupMenu.menu.add(it) }
+            popupMenu.setOnMenuItemClickListener {
+                viewModel.locale.value = it.title.toString()
+                true
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupTimezoneView() {
+        PopupMenu(binding.timezoneLayout.context, binding.timezoneLayout).also { popupMenu ->
+            binding.timezoneEditText.setOnTouchListener(popupMenu.dragToOpenListener)
+            binding.timezoneEditText.setOnClickListener { popupMenu.show() }
+            val timezones = resources.getStringArray(R.array.timezones)
+            timezones.iterator().forEach { popupMenu.menu.add(it) }
+            popupMenu.setOnMenuItemClickListener {
+                viewModel.timezone.value = it.title.toString()
+                true
+            }
+        }
+    }
+
     private fun discard() {
         // TODO: show confirmation dialog
         dismiss()
     }
 
     private fun save() {
-        // TODO: show progress bar and save
+        hideKeyboard(view!!)
         viewModel.save()
     }
 
@@ -117,8 +158,9 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
     sealed class Event {
         data class ChangeImage(val imageType: ImageType) : Event() {
             enum class ImageType { Avatar, Cover }
-
         }
+
+        data class Saved(val user: User) : Event()
     }
 
     class EditProfileViewModel(
@@ -154,10 +196,11 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
 
         fun show(show: Boolean) = if (show) View.VISIBLE else View.GONE
         fun save() {
-            val name = this.name.value ?: return
-            val description = this.description.value ?: return
-            val timezone = this.timezone.value ?: return
-            val locale = this.locale.value ?: return
+            val name = this.name.value.orEmpty()
+            val description = this.description.value.orEmpty()
+            val timezone = this.timezone.value.orEmpty()
+            val locale = this.locale.value.orEmpty()
+            loading.value = true
             viewModelScope.launch {
                 runCatching {
                     updateProfileUseCase.run(
@@ -166,9 +209,11 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
                         )
                     )
                 }.onSuccess {
+                    event.emit(Event.Saved(it.user))
                 }.onFailure {
 
                 }
+                loading.value = false
             }
         }
 
@@ -201,5 +246,7 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
                 putString(BundleKey.User.name, userId)
             }
         }
+
+        fun parseResultIntent(intent: Intent): User = intent.getParcelableExtra(IntentKey.User.name)
     }
 }
