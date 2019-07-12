@@ -30,7 +30,7 @@ import net.unsweets.gamma.domain.model.Account
 import net.unsweets.gamma.domain.model.io.UpdateDefaultAccountInputData
 import net.unsweets.gamma.domain.usecases.GetAccountListUseCase
 import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
-import net.unsweets.gamma.domain.usecases.GetCurrentUserIdUseCase
+import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.domain.usecases.UpdateDefaultAccountUseCase
 import net.unsweets.gamma.presentation.adapter.AccountListAdapter
 import net.unsweets.gamma.presentation.fragment.ComposePostFragment
@@ -47,7 +47,7 @@ import javax.inject.Inject
 
 class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback, AccountListAdapter.Listener {
     override fun onAccountClick(account: Account) {
-        if (currentUserId == account.id) return closeDrawer()
+        if (currentAccount == account) return closeDrawer()
         updateDefaultAccountUseCase.run(UpdateDefaultAccountInputData(account.id))
         val restartIntent = intent
         finish()
@@ -76,13 +76,13 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     @Inject
     lateinit var updateDefaultAccountUseCase: UpdateDefaultAccountUseCase
     @Inject
-    lateinit var getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    lateinit var getCurrentAccountUseCase: GetCurrentAccountUseCase
 
-    private val currentUserId: String by lazy {
-        getCurrentUserIdUseCase.run(Unit).id
+    private val currentAccount: Account? by lazy {
+        getCurrentAccountUseCase.run(Unit).account
     }
     private val accounts
-        get() = getAccountListUseCase.run(Unit).accounts.filterNot { it.id == currentUserId }
+        get() = getAccountListUseCase.run(Unit).accounts.filterNot { it == currentAccount }
 
     private fun showActionResultSnackbar(post: Post, action: Action) {
         val actionNameRes = when (action) {

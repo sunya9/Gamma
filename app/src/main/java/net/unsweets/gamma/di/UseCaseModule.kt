@@ -65,9 +65,9 @@ class UseCaseModule {
     ): RepostUseCase = RepostUseCase(pnutRepository)
 
     @Provides
-    fun provideGetCurrentUserIdUseCase(
+    fun provideGetCurrentAccountUseCase(
         accountRepository: IAccountRepository
-    ): GetCurrentUserIdUseCase = GetCurrentUserIdUseCase(accountRepository)
+    ): GetCurrentAccountUseCase = GetCurrentAccountUseCase(accountRepository)
 
     @Provides
     fun provideUpdateProfileUseCase(

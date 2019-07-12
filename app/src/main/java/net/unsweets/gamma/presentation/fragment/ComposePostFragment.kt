@@ -30,7 +30,7 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.ActivityComposePostBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
-import net.unsweets.gamma.domain.usecases.GetCurrentUserIdUseCase
+import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.presentation.activity.ComposePostActivity
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
@@ -107,10 +107,10 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     }
 
     @Inject
-    lateinit var getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    lateinit var getCurrentAccountUseCase: GetCurrentAccountUseCase
 
     private val currentUserId: String by lazy {
-        getCurrentUserIdUseCase.run(Unit).id
+        getCurrentAccountUseCase.run(Unit).account?.id ?: ""
     }
 
     private val mentionToMyself: Boolean by lazy {
@@ -144,7 +144,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
         viewModel.event.observe(this, eventObserver)
         viewModel.enableSendButton.observe(this, enableSendButtonObserver)
-        view.composeTextEditText.onFocusChangeListener = { editText, b ->
+        view.composeTextEditText.setOnFocusChangeListener { editText, b ->
             if (!b) return@setOnFocusChangeListener
             showKeyboard(editText)
         }
