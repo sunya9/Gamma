@@ -69,28 +69,8 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
-    <style name="AppTheme.WithActionBar">
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="windowActionBar">true</item>
-        <item name="windowNoTitle">false</item>
-    </style>
-
-    <style name="AppTheme.WithActionBar.Modal">
-        <item name="navigationIcon">@drawable/ic_close_black_24dp</item>
-    </style>
-
     <style name="BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="toolbarStyle">@style/Toolbar</item>
-    </style>
-
-    <style name="PreferenceTheme" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/colorWindowBackground</item>
-        <item name="colorControlHighlight">@color/colorGrayLight</item>
-        <item name="android:textAppearance">@style/TextAppearance</item>
-        <item name="android:statusBarColor">@color/colorStatusBar</item>
-        <item name="android:windowActionBar">true</item>
-        <item name="android:windowNoTitle">false</item>
     </style>
 
     <style name="FloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
@@ -230,7 +210,8 @@
         <item name="android:windowExitTransition">@null</item>
         <item name="toolbarStyle">@style/Toolbar.Child</item>
     </style>
-    <style name="FullScreenDialogStyle" parent="BaseFullScreenDialogStyle"/>
+
+    <style name="FullScreenDialogStyle" parent="BaseFullScreenDialogStyle" />
 
     <style name="NavigationDrawerStyle">
         <item name="android:fontFamily">@font/montserrat</item>
