@@ -5,53 +5,87 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.ListPreference
-import android.preference.PreferenceActivity
 import android.preference.PreferenceManager
 import android.view.MenuItem
 import androidx.annotation.StringRes
-import androidx.core.app.NavUtils
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragment
+import androidx.preference.PreferenceFragmentCompat
+import kotlinx.android.synthetic.main.activity_settings.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
+import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import javax.inject.Inject
 
 
-class SettingsActivity : PreferenceActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setupActionBar()
-        super.onCreate(savedInstanceState)
-    }
-
-    private fun setupActionBar() {
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onMenuItemSelected(featureId: Int, item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == android.R.id.home) {
-            if (!super.onMenuItemSelected(featureId, item)) {
-                NavUtils.navigateUpFromSameTask(this)
-            }
-            return true
+class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference): Boolean {
+        val args = pref.extras
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(
+            classLoader,
+            pref.fragment
+        ).apply {
+            arguments = args
+            setTargetFragment(caller, 0)
         }
-        return super.onMenuItemSelected(featureId, item)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.content, fragment)
+            .addToBackStack(null)
+            .commit()
+        return true
     }
 
-    override fun onIsMultiPane(): Boolean {
-        return isXLargeTablet(this)
+    @Inject
+    lateinit var getCurrentAccountUseCase: GetCurrentAccountUseCase
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_settings)
+        setSupportActionBar(toolbar)
+        val currentAccount = getCurrentAccountUseCase.run(Unit).account ?: return
+
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.content, SettingsFragment.newInstance(currentAccount.screenName))
+                .commit()
+        }
     }
 
-    override fun onBuildHeaders(target: List<PreferenceActivity.Header>) {
-        loadHeadersFromResource(R.xml.pref_headers, target)
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
-    override fun isValidFragment(fragmentName: String): Boolean {
-        return PreferenceFragment::class.java.name == fragmentName
-                || AccountPreferenceFragment::class.java.name == fragmentName
+    // settings list fragment
+    class SettingsFragment : BasePreferenceFragment() {
+        val username by lazy {
+            "@${arguments?.getString(BundleKey.Username.name, "")}"
+        }
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.pref_headers, rootKey)
+            findPreference(getString(R.string.pref_account_header_title_key))?.let {
+                it.title = username
+            }
+        }
+
+        private enum class BundleKey { Username }
+        companion object {
+            fun newInstance(username: String) = SettingsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(BundleKey.Username.name, username)
+                }
+            }
+        }
     }
 
-    abstract class BasePreferenceFragment : PreferenceFragment() {
+    abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         }
 
@@ -65,6 +99,12 @@ class SettingsActivity : PreferenceActivity() {
         }
 
         fun findPreference(@StringRes id: Int): Preference? = findPreference(getString(id))
+
+        override fun onResume() {
+            super.onResume()
+            val rootKey = arguments?.getString(ARG_PREFERENCE_ROOT)
+            activity?.title = findPreference(rootKey).title
+        }
     }
 
     class AccountPreferenceFragment : BasePreferenceFragment() {
@@ -73,16 +113,18 @@ class SettingsActivity : PreferenceActivity() {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            addPreferencesFromResource(R.xml.pref_account)
-            setHasOptionsMenu(true)
             findPreference(R.string.pref_logout_account_key)?.apply {
                 setOnPreferenceClickListener { logout() }
             }
         }
 
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.pref_account, rootKey)
+        }
+
         private fun logout(): Boolean {
             preferenceRepository.removeDefaultAccountIDAndToken()
-            activity.finish()
+            activity?.finish()
             val intent = Intent(activity, LoginActivity::class.java)
             startActivity(intent)
             return true

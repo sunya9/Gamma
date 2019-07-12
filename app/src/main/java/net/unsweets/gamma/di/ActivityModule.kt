@@ -19,6 +19,7 @@ abstract class ActivityModule {
     abstract fun contributeComposePostActivity(): ComposePostActivity
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeFilesActivity(): FilesActivity
-//    @ContributesAndroidInjector
-//    abstract fun contributeBaseFragment(): BaseFragment
+
+    @ContributesAndroidInjector(modules = [FragmentModule::class])
+    abstract fun contributeSettingsActivity(): SettingsActivity
 }

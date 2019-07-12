@@ -56,8 +56,7 @@
         <activity
             android:name=".presentation.activity.SettingsActivity"
             android:exported="true"
-            android:parentActivityName=".presentation.activity.MainActivity"
-            android:theme="@style/PreferenceTheme">
+            android:parentActivityName=".presentation.activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.unsweets.gamma.presentation.activity.MainActivity" />
