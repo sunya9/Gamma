@@ -38,10 +38,14 @@ class AccountRepository(context: Context) : AbstractPreferenceRepository(context
     }
 
     override fun getStoredIds(): List<String> {
-        val refined = (sharedPreferences.getString(Key.AccountList.name, "") ?: "").split(delimiter).toSet().toList()
+        val refined =
+            (sharedPreferences.getString(Key.AccountList.name, "") ?: "").split(delimiter).toSet()
+                .filterNot { it.isEmpty() }
+                .toList()
         setAccountIds(refined)
         return refined
     }
+
     override fun getToken(id: String): String? {
         return sharedPreferences.getString(AccountKey.Token.getKey(id), null)
     }
@@ -59,8 +63,7 @@ class AccountRepository(context: Context) : AbstractPreferenceRepository(context
         setAccountIds(newList)
     }
 
-    override fun deleteAccount(account: Account) {
-        val id = account.id
+    override fun deleteAccount(id: String) {
         editor.remove(AccountKey.ID.getKey(id))
             .remove(AccountKey.Token.getKey(id))
             .remove(AccountKey.ScreenName.getKey(id))

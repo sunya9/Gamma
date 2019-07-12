@@ -8,12 +8,17 @@ import android.preference.ListPreference
 import android.preference.PreferenceManager
 import android.view.MenuItem
 import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_settings.*
 import net.unsweets.gamma.R
-import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
+import net.unsweets.gamma.domain.usecases.LogoutUseCase
 import javax.inject.Inject
 
 
@@ -85,8 +90,16 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
         }
     }
 
-    abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    abstract class BasePreferenceFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector {
+        @Inject
+        lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+
+
+        override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            AndroidSupportInjection.inject(this)
+            super.onCreate(savedInstanceState)
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -109,7 +122,7 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
 
     class AccountPreferenceFragment : BasePreferenceFragment() {
         @Inject
-        lateinit var preferenceRepository: IPreferenceRepository
+        lateinit var logoutUseCase: LogoutUseCase
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -123,10 +136,18 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
         }
 
         private fun logout(): Boolean {
-            preferenceRepository.removeDefaultAccountIDAndToken()
+            val anotherAccountId = logoutUseCase.run(Unit).anotherAccountId
             activity?.finish()
-            val intent = Intent(activity, LoginActivity::class.java)
-            startActivity(intent)
+            val intentClass = if (anotherAccountId != null) {
+                activity?.overridePendingTransition(R.anim.scale_up, R.anim.scale_down)
+                MainActivity::class
+            } else {
+                LoginActivity::class
+            }
+            val newIntent = Intent(activity, intentClass.java).also {
+                it.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            startActivity(newIntent)
             return true
         }
     }

@@ -89,4 +89,10 @@ class UseCaseModule {
         accountRepository: IAccountRepository,
         pnutRepository: IPnutRepository
     ): UpdateDefaultAccountUseCase = UpdateDefaultAccountUseCase(accountRepository, pnutRepository)
+
+    @Provides
+    fun provideLogoutUseCase(
+        accountRepository: IAccountRepository,
+        pnutRepository: IPnutRepository
+    ): LogoutUseCase = LogoutUseCase(accountRepository, pnutRepository)
 }
