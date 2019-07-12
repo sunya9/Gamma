@@ -2,7 +2,9 @@ package net.unsweets.gamma.presentation.fragment
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Application
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -199,6 +201,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private enum class DialogKey { EditProfile }
+    private enum class RequestCode { UpdateProfile }
 
     private fun showEditProfileDialog() {
         val fm = fragmentManager ?: return
@@ -206,10 +209,21 @@ class ProfileFragment : BaseFragment() {
             //            val transition = TransitionInflater.from(context).inflateTransition(R.transition.edit_profile)
             sharedElementEnterTransition = ChangeBounds()
         }
+        fragment.setTargetFragment(this, RequestCode.UpdateProfile.ordinal)
         // TODO: fix fragment transition
         val ft = fm.beginTransaction()
             .addSharedElement(binding.userMainActionButton, binding.userMainActionButton.transitionName)
         fragment.show(ft, DialogKey.EditProfile.name)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            RequestCode.UpdateProfile.ordinal -> {
+                if (resultCode != Activity.RESULT_OK || data == null) return
+                viewModel.user.value = EditProfileFragment.parseResultIntent(data)
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     class ProfileViewModel(
