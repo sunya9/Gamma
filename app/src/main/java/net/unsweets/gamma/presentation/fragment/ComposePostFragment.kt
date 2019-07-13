@@ -4,13 +4,14 @@ import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
 import android.app.Application
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AccelerateInterpolator
@@ -23,14 +24,15 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import dagger.android.support.DaggerAppCompatDialogFragment
-import kotlinx.android.synthetic.main.activity_compose_post.*
-import kotlinx.android.synthetic.main.activity_compose_post.view.*
 import kotlinx.android.synthetic.main.compose_thumbnail_image.view.*
+import kotlinx.android.synthetic.main.fragment_compose_post.*
+import kotlinx.android.synthetic.main.fragment_compose_post.view.*
 import net.unsweets.gamma.R
-import net.unsweets.gamma.databinding.ActivityComposePostBinding
+import net.unsweets.gamma.databinding.FragmentComposePostBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
+import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService
@@ -65,15 +67,16 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
                 putParcelable(BundleKey.ReplyTarget.name, post)
             }
         }
-
-        fun shareUrlIntent(context: Context, title: String?, link: String) =
-            Intent(context, ComposePostActivity::class.java).apply {
-                val text = context.getString(R.string.markdown_link, title, link)
-                putExtra(BundleKey.Text.name, text)
-            }
     }
 
+    private enum class RequestCode { EditPhoto }
+
     private val thumbnailAdapterListener = object : ThumbnailAdapter.Callback {
+        override fun onClick(uri: Uri, index: Int) {
+            val newIntent = EditPhotoActivity.newIntent(context, uri, index)
+            startActivityForResult(newIntent, RequestCode.EditPhoto.ordinal)
+        }
+
         override fun onRemove() {
             if (adapter.getItems().size > 0) return
             viewModel.previewAttachmentsVisibility.value = View.GONE
@@ -134,6 +137,21 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            RequestCode.EditPhoto.ordinal -> {
+                if (resultCode != Activity.RESULT_OK || data == null) return
+                updatePhoto(data)
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun updatePhoto(data: Intent) {
+        val editPhotoResult = EditPhotoActivity.parseIntent(data)
+        adapter.replace(editPhotoResult.uri, editPhotoResult.index)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -329,6 +347,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     class ThumbnailAdapter(private val listener: Callback) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
         interface Callback {
             fun onRemove()
+            fun onClick(uri: Uri, index: Int)
         }
         private val items = ArrayList<String>()
 
@@ -348,7 +367,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
                 .into(holder.thumbnailView)
 
             holder.removeButton.setOnClickListener { remove(holder.adapterPosition) }
-            holder.thumbnailView.setOnClickListener { }
+            holder.thumbnailView.setOnClickListener { listener.onClick(url, position) }
         }
 
         private fun remove(index: Int) {
@@ -361,6 +380,11 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             val index = items.size
             items.add(index, path)
             notifyItemInserted(index)
+        }
+
+        fun replace(uri: Uri, index: Int) {
+            items[index] = uri
+            notifyItemChanged(index)
         }
 
         fun getItems() = items

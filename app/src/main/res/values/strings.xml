@@ -123,4 +123,7 @@
     <string name="use_this_account_currently">Use this account currently</string>
     <string name="add_an_account">Add an account</string>
     <string name="pref_account_header_title_key">pref_account_header_title_key</string>
+    <string name="edit_image">Edit image</string>
+    <string name="rotate_right">Rotate right</string>
+    <string name="crop">Crop</string>
 </resources>
