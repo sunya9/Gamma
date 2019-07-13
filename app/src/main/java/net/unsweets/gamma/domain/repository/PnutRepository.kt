@@ -236,6 +236,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
                 PolymorphicJsonAdapterFactory.of(OEmbed.BaseOEmbedRawValue::class.java, "type")
                     .withSubtype(OEmbed.Photo.PhotoValue::class.java, "photo")
                     .withSubtype(OEmbed.Video.VideoValue::class.java, "video")
+                    .withDefaultValue(OEmbed.OEmbedValueImpl())
             )
             .add(KotlinJsonAdapterFactory())
             .build()

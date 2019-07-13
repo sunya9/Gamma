@@ -23,6 +23,9 @@ open class OEmbed(override val value: BaseOEmbedRawValue) : Raw<OEmbed.BaseOEmbe
         open val version: String
     ) : RawValue, Parcelable
 
+    // for fallback
+    class OEmbedValueImpl : BaseOEmbedRawValue("", "")
+
     @Parcelize
     class Photo(
         override val value: PhotoValue
