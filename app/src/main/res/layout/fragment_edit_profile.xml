@@ -160,6 +160,8 @@
                         android:layout_marginTop="@dimen/margin_regular"
                         android:layout_marginEnd="@dimen/margin_activity_horizontal"
                         android:hint="@string/timezone"
+                        app:endIconDrawable="@drawable/ic_arrow_drop_down_black_24dp"
+                        app:endIconMode="custom"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/viewDescriptionLayout">
@@ -169,6 +171,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="false"
+                            android:cursorVisible="false"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
                             android:longClickable="false"
@@ -185,6 +188,8 @@
                         android:layout_marginTop="@dimen/margin_regular"
                         android:layout_marginEnd="@dimen/margin_activity_horizontal"
                         android:hint="@string/locale"
+                        app:endIconDrawable="@drawable/ic_arrow_drop_down_black_24dp"
+                        app:endIconMode="custom"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/timezoneLayout">
@@ -194,9 +199,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="false"
+                            android:cursorVisible="false"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
                             android:longClickable="false"
+                            android:maxLines="1"
                             android:text="@{viewModel.locale}" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
