@@ -55,7 +55,16 @@
         <item name="android:windowExitTransition">@null</item>
         <item name="toolbarStyle">@style/Toolbar.Child</item>
     </style>
-    s
+    f
+
+    <style name="AppTheme.PhotoView">
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/colorPhotoViewBackground</item>
+    </style>
 
     <style name="AppTheme.Translucent.FullScreen">
         <item name="android:windowActionBarOverlay">true</item>
@@ -222,4 +231,6 @@
         <item name="android:insetBottom">0dp</item>
         <item name="cornerRadius">0dp</item>
     </style>
+
+    <color name="colorPhotoViewBackground">#8000</color>
 </resources>

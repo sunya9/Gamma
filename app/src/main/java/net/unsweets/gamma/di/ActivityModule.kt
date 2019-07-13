@@ -22,4 +22,7 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeSettingsActivity(): SettingsActivity
+
+    @ContributesAndroidInjector(modules = [FragmentModule::class])
+    abstract fun contributePhotoViewActivity(): PhotoViewActivity
 }

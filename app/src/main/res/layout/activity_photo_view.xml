@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.thefuntasty.hauler.HaulerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/haulerView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".presentation.activity.PhotoViewActivity">
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/mediaViewPager"
+    app:dragUpEnabled="true">
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <com.github.chrisbanes.photoview.PhotoView
-        android:layout_width="match_parent"
-        android:id="@+id/photoView"
-        android:layout_height="match_parent" />
-</FrameLayout>
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/mediaViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/mediaviewPagerIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@android:color/transparent"
+                app:tabBackground="@android:color/transparent"
+                app:tabIndicatorFullWidth="true"
+                app:tabIndicatorGravity="bottom"
+                app:tabIndicatorHeight="2dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</com.thefuntasty.hauler.HaulerView>

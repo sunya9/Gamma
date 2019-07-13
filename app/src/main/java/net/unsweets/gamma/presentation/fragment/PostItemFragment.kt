@@ -30,6 +30,7 @@ import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.GetPostUseCase
+import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.adapter.ThumbnailViewPagerAdapter
 import net.unsweets.gamma.presentation.util.*
@@ -41,7 +42,13 @@ import javax.inject.Inject
 
 
 abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder.Exist>(),
-    BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder.Exist> {
+    BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder.Exist>,
+    ThumbnailViewPagerAdapter.Listener {
+    override fun onClick(path: String, position: Int, items: List<String>) {
+        val newIntent = PhotoViewActivity.photoViewInstance(context!!, items, position)
+        startActivity(newIntent)
+    }
+
     override val itemNameRes: Int = R.string.posts
 
     private val itemTouchHelper: ItemTouchHelper by lazy {
@@ -185,7 +192,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val photos = OEmbed.Photo.getPhotos(raw)
         if (photos.isNotEmpty()) {
             viewHolder.thumbnailViewPagerFrameLayout.visibility = View.VISIBLE
-            viewHolder.thumbnailViewPager.adapter = ThumbnailViewPagerAdapter(photos)
+            viewHolder.thumbnailViewPager.adapter = ThumbnailViewPagerAdapter(photos, this)
             TabLayoutMediator(
                 viewHolder.thumbnailTabLayout,
                 viewHolder.thumbnailViewPager
