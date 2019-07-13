@@ -1,6 +1,5 @@
 package net.unsweets.gamma.domain.entity.entities
 
-import android.app.PendingIntent
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -11,7 +10,6 @@ import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.res.ResourcesCompat
 import net.unsweets.gamma.R
-import net.unsweets.gamma.presentation.activity.ComposePostActivity
 import net.unsweets.gamma.presentation.fragment.PostItemFragment
 import net.unsweets.gamma.presentation.fragment.ProfileFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper
@@ -70,14 +68,14 @@ interface HaveEntities {
             val menuLabel = context.getString(R.string.post)
             val packageName = CustomTabsClient.getPackageName(context, arrayListOf(context.packageName))
 
-            val pendingIntent = ComposePostActivity.shareUrlIntent(context, null, link).run {
-                PendingIntent.getActivity(context, 0, this, 0)
-            }
+//            val pendingIntent = ComposePostActivity.shareUrlIntent(context, null, link).run {
+//                PendingIntent.getActivity(context, 0, this, 0)
+//            }
             val icon = BitmapFactory.decodeResource(context.resources, R.drawable.ic_create_black_24dp)
             CustomTabsIntent
                 .Builder()
                 .setShowTitle(true)
-                .setActionButton(icon, menuLabel, pendingIntent, false)
+//                .setActionButton(icon, menuLabel, pendingIntent, false)
                 .addDefaultShareMenuItem()
                 .enableUrlBarHiding()
                 .build()

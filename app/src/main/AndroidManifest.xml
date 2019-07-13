@@ -25,11 +25,6 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".presentation.activity.ComposePostActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.Translucent"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity android:name=".presentation.activity.LoginActivity" />
         <activity
             android:name=".presentation.activity.EntryActivity"

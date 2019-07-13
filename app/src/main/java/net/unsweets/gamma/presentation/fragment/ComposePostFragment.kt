@@ -31,7 +31,6 @@ import net.unsweets.gamma.databinding.ActivityComposePostBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
-import net.unsweets.gamma.presentation.activity.ComposePostActivity
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService

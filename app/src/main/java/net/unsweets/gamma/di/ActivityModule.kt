@@ -16,8 +16,6 @@ abstract class ActivityModule {
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeMainActivity(): MainActivity
     @ContributesAndroidInjector(modules = [FragmentModule::class])
-    abstract fun contributeComposePostActivity(): ComposePostActivity
-    @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeFilesActivity(): FilesActivity
 
     @ContributesAndroidInjector(modules = [FragmentModule::class])
