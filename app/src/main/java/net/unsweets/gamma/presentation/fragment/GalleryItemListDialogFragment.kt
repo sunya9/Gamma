@@ -3,6 +3,7 @@ package net.unsweets.gamma.presentation.fragment
 import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -20,6 +21,8 @@ import kotlinx.android.synthetic.main.fragment_gallery_item_list_dialog.*
 import kotlinx.android.synthetic.main.fragment_gallery_item_list_dialog_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.presentation.util.GlideApp
+import java.io.File
+
 
 class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
     private var listener: Listener? = null
@@ -32,6 +35,9 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
     }
 
     private val galleryItemList: ArrayList<GalleryItem> = ArrayList()
+    private val mode by lazy {
+        arguments?.getSerializable(BundleKey.Mode.name) as? Mode ?: Mode.Single
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,7 +62,7 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
     }
 
     interface Listener {
-        fun onGalleryItemClicked(path: String)
+        fun onGalleryItemClicked(uri: Uri)
         fun onShow()
         fun onDismiss()
     }
@@ -79,7 +85,7 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
         init {
             imageView.setOnClickListener {
                 listener?.let { listener ->
-                    listener.onGalleryItemClicked(galleryItemList[adapterPosition].path)
+                    listener.onGalleryItemClicked(galleryItemList[adapterPosition].uri)
                     dismiss()
                 }
             }
@@ -96,13 +102,13 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
         while (cursor.moveToNext()) {
             val pathIdx = cursor.getColumnIndex(MediaStore.MediaColumns.DATA)
             val path = cursor.getString(pathIdx)
-            res.add(GalleryItem(path))
+            res.add(GalleryItem(Uri.fromFile(File(path))))
         }
         cursor.close()
         return res
     }
 
-    data class GalleryItem(val path: String)
+    data class GalleryItem(val uri: Uri)
 
     private inner class GalleryItemAdapter internal constructor(val items: ArrayList<GalleryItem>) :
         RecyclerView.Adapter<ViewHolder>() {
@@ -138,8 +144,9 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
+
             GlideApp.with(holder.itemView)
-                .load(item.path)
+                .load(item.uri)
                 .thumbnail(.1f)
                 .listener(ErrorHandling(position))
                 .into(holder.imageView)
@@ -148,7 +155,19 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
         override fun getItemCount(): Int = items.size
     }
 
+    private enum class Mode { Single, Multiple }
+    private enum class BundleKey { Mode }
     companion object {
-        fun newInstance(): GalleryItemListDialogFragment = GalleryItemListDialogFragment()
+        fun chooseMultiple() = GalleryItemListDialogFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(BundleKey.Mode.name, Mode.Multiple)
+            }
+        }
+
+        fun chooseSingle() = GalleryItemListDialogFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(BundleKey.Mode.name, Mode.Single)
+            }
+        }
     }
 }

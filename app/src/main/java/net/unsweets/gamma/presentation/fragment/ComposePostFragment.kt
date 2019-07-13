@@ -100,7 +100,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         arguments?.getParcelable<Post>(BundleKey.ReplyTarget.name)
     }
 
-    private lateinit var binding: ActivityComposePostBinding
+    private lateinit var binding: FragmentComposePostBinding
 
     private lateinit var adapter: ThumbnailAdapter
 
@@ -133,7 +133,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.activity_compose_post, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_compose_post, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         return binding.root
@@ -245,12 +245,12 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
     private fun showGalleryDialog() {
         hideKeyboard(binding.composeTextEditText)
-        val fragment = GalleryItemListDialogFragment.newInstance()
+        val fragment = GalleryItemListDialogFragment.chooseMultiple()
         fragment.show(childFragmentManager, FragmentKey.Gallery.name)
     }
 
-    override fun onGalleryItemClicked(path: String) {
-        adapter.add(path)
+    override fun onGalleryItemClicked(uri: Uri) {
+        adapter.add(uri)
         viewModel.previewAttachmentsVisibility.value = View.VISIBLE
     }
 
@@ -349,7 +349,8 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             fun onRemove()
             fun onClick(uri: Uri, index: Int)
         }
-        private val items = ArrayList<String>()
+
+        private val items = ArrayList<Uri>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.compose_thumbnail_image, parent, false)
@@ -376,9 +377,9 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             notifyItemRemoved(index)
         }
 
-        fun add(path: String) {
+        fun add(uri: Uri) {
             val index = items.size
-            items.add(index, path)
+            items.add(index, uri)
             notifyItemInserted(index)
         }
 
