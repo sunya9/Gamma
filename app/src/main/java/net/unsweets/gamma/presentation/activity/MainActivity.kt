@@ -140,6 +140,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
             false -> {
                 binding.navigationView.removeHeaderView(accountListView)
                 menuInflater.inflate(R.menu.navigation_drawer, menu)
+                syncMenu()
             }
         }
     }
