@@ -31,6 +31,7 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentComposePostBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
+import net.unsweets.gamma.domain.entity.PostBodyOuter
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.*
@@ -122,8 +123,11 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     private fun send() {
         val text = viewModel.text.value ?: return
         val isNsfw = viewModel.nsfw.value ?: false
-        val postBody = PostBody(text, replyTarget?.id, isNsfw = isNsfw, files = adapter.getItems())
-        PostService.newPostIntent(context, postBody)
+        val postBodyOuter = PostBodyOuter(
+            PostBody(text, replyTarget?.id, isNsfw = isNsfw),
+            adapter.getItems()
+        )
+        PostService.newPostIntent(context, postBodyOuter)
         finishWithAnim()
     }
 

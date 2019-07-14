@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import dagger.android.AndroidInjection
 import net.unsweets.gamma.domain.entity.Post
-import net.unsweets.gamma.domain.entity.PostBody
+import net.unsweets.gamma.domain.entity.PostBodyOuter
 import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.model.io.PostInputData
 import net.unsweets.gamma.domain.model.io.RepostInputData
@@ -66,12 +66,12 @@ class PostService : IntentService("PostService") {
         }
         when (intent.action) {
             Actions.SendPost.getActionName() -> {
-                val postBody = intent.getSerializableExtra(IntentKey.PostBody.name) as? PostBody ?: return
+                val postBodyOuter = intent.getParcelableExtra<PostBodyOuter>(IntentKey.PostBody.name) ?: return
                 val raw = mutableListOf<PostRaw<*>>()
-                val replacementFileRawList = postBody.files
+                val replacementFileRawList = postBodyOuter.files
                     .map { uploadFileUseCase.run(UploadFileInputData(it)).postOEmbedRaw }
                 raw.addAll(replacementFileRawList)
-                val modifiedPostBody = postBody.copy(raw = raw)
+                val modifiedPostBody = postBodyOuter.postBody.copy(raw = raw)
                 val postOutputData = postUseCase.run(PostInputData(modifiedPostBody))
                 resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
             }
@@ -101,11 +101,11 @@ class PostService : IntentService("PostService") {
         @JvmStatic
         fun newPostIntent(
             context: Context?,
-            postBody: PostBody
+            postBodyOuter: PostBodyOuter
         ) {
             val intent = Intent(context, PostService::class.java).apply {
                 action = Actions.SendPost.getActionName()
-                putExtra(IntentKey.PostBody.name, postBody)
+                putExtra(IntentKey.PostBody.name, postBodyOuter)
             }
             context?.startService(intent)
         }
