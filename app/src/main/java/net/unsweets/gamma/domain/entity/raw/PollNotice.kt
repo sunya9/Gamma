@@ -9,7 +9,7 @@ import net.unsweets.gamma.domain.entity.Poll
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class PollNotice(override val value: PollValue) : Raw<PollNotice.PollValue>(), Parcelable {
+data class PollNotice(override val value: PollValue) : Raw<PollNotice.PollValue>, Parcelable {
     @IgnoredOnParcel
     override val type: String = "io.pnut.core.poll-notice"
 

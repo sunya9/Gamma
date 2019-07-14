@@ -5,7 +5,7 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ChatSettings(override val value: ChatSettingsValue) : Raw<ChatSettings.ChatSettingsValue>(), Parcelable {
+data class ChatSettings(override val value: ChatSettingsValue) : Raw<ChatSettings.ChatSettingsValue>, Parcelable {
     @IgnoredOnParcel
     override val type: String = "io.pnut.core.chat-settings"
 

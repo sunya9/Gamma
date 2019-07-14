@@ -9,7 +9,8 @@ import java.util.*
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class Spoiler(override val value: SpoilerValue) : Raw<Spoiler.SpoilerValue>(), Parcelable {
+data class Spoiler(override val value: SpoilerValue) : Raw<Spoiler.SpoilerValue>, PostRaw<Spoiler.SpoilerValue>,
+    Parcelable {
     @IgnoredOnParcel
     override val type: String = "shawn.spoiler"
 

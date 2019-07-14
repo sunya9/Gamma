@@ -7,7 +7,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class LongPost(override val value: LongPostValue) : Raw<LongPost.LongPostValue>(), Parcelable {
+data class LongPost(override val value: LongPostValue) : Raw<LongPost.LongPostValue>, PostRaw<LongPost.LongPostValue>,
+    Parcelable {
     @IgnoredOnParcel
     override val type: String = "nl.chimpnut.blog.post"
 

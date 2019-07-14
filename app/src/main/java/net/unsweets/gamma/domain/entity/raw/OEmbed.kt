@@ -7,9 +7,9 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Suppress("UNCHECKED_CAST")
-@Parcelize
 @JsonClass(generateAdapter = true)
-open class OEmbed(override val value: BaseOEmbedRawValue) : Raw<OEmbed.BaseOEmbedRawValue>() {
+@Parcelize
+open class OEmbed(override val value: OEmbedRawValue) : Raw<Raw.RawValue>, Parcelable {
     @IgnoredOnParcel
     override val type: String = "io.pnut.core.oembed"
 
@@ -18,16 +18,19 @@ open class OEmbed(override val value: BaseOEmbedRawValue) : Raw<OEmbed.BaseOEmbe
     }
 
     @Parcelize
-    open class BaseOEmbedRawValue(
-        val type: String,
+    @JsonClass(generateAdapter = true)
+    open class OEmbedRawValue(
+        open val type: String,
         open val version: String
-    ) : RawValue, Parcelable
+    ) : Raw.RawValue, Parcelable
+
 
     // for fallback
-    class OEmbedValueImpl : BaseOEmbedRawValue("", "")
+    object OEmbedValueImpl : OEmbedRawValue("", "")
 
     @Parcelize
-    class Photo(
+    @JsonClass(generateAdapter = true)
+    data class Photo(
         override val value: PhotoValue
     ) : OEmbed(value) {
         @Parcelize
@@ -47,7 +50,7 @@ open class OEmbed(override val value: BaseOEmbedRawValue) : Raw<OEmbed.BaseOEmbe
             @Json(name = "thumbnail_url") val thumbnailUrl: String?,
             @Json(name = "thumbnail_height") val thumbnailHeight: String?,
             @Json(name = "thumbnail_width") val thumbnailWidth: String?
-        ) : BaseOEmbedRawValue("photo", version), Parcelable
+        ) : OEmbedRawValue("photo", version), Parcelable
 
         companion object {
             fun isPhoto(raw: Raw<*>) = raw.value is PhotoValue
@@ -60,14 +63,15 @@ open class OEmbed(override val value: BaseOEmbedRawValue) : Raw<OEmbed.BaseOEmbe
 
     // TODO: implement missing fields
     @Parcelize
-    class Video(
+    @JsonClass(generateAdapter = true)
+    data class Video(
         override val value: VideoValue
     ) : OEmbed(value) {
         @Parcelize
         @JsonClass(generateAdapter = true)
         data class VideoValue(
             override val version: String
-        ) : BaseOEmbedRawValue("video", version), Parcelable
+        ) : OEmbedRawValue("video", version), Parcelable
 
         companion object {
             fun isVideo(raw: Raw<*>) = raw.value is VideoValue

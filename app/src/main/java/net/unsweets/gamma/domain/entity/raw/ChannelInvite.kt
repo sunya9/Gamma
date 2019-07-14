@@ -6,7 +6,8 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ChannelInvite(override val value: ChannelInviteValue) : Raw<ChannelInvite.ChannelInviteValue>(), Parcelable {
+data class ChannelInvite(override val value: ChannelInviteValue) : Raw<ChannelInvite.ChannelInviteValue>,
+    PostRaw<ChannelInvite.ChannelInviteValue>, Parcelable {
     @IgnoredOnParcel
     override val type: String = "io.pnut.core.channel.invite"
 
