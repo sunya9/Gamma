@@ -133,6 +133,12 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
 
     }
 
+    fun removeItem(index: Int) {
+        listLiveData.value?.removeAt(index)
+        notifyItemRemoved(index)
+
+    }
+
     class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val loadingIndicatorProgressBar: ProgressBar = itemView.loadingIndicatorProgressBar
         val noItemsMessageTextView: TextView = itemView.noItemsMessageTextView

@@ -100,4 +100,9 @@ class UseCaseModule {
     fun provideUploadFileUseCase(
         pnutRepository: IPnutRepository
     ): UploadFileUseCase = UploadFileUseCase(pnutRepository)
+
+    @Provides
+    fun provideDeletePostUseCase(
+        pnutRepository: IPnutRepository
+    ): DeletePostUseCase = DeletePostUseCase(pnutRepository)
 }

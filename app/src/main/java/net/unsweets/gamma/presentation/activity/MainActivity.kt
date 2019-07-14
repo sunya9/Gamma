@@ -46,6 +46,10 @@ import javax.inject.Inject
 
 
 class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback, AccountListAdapter.Listener {
+    override fun onDeletePostReceive(post: Post) {
+        showActionResultSnackbar(post, Action.Delete)
+    }
+
     override fun onAccountClick(account: Account) {
         if (currentAccount == account) return closeDrawer()
         updateDefaultAccountUseCase.run(UpdateDefaultAccountInputData(account.id))
@@ -69,7 +73,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         showActionResultSnackbar(post, Action.Star)
     }
 
-    private enum class Action { Star, Repost }
+    private enum class Action { Star, Repost, Delete }
 
     @Inject
     lateinit var getAccountListUseCase: GetAccountListUseCase
@@ -88,6 +92,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         val actionNameRes = when (action) {
             Action.Star -> if (post.mainPost.youBookmarked == true) R.string.stars else R.string.unstar
             Action.Repost -> if (post.mainPost.youReposted == true) R.string.repost else R.string.delete_repost
+            Action.Delete -> R.string.delete
         }
         val actionName = getString(actionNameRes)
         val username = post.mainPost.user?.username ?: return

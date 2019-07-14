@@ -131,8 +131,8 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         return defaultPnutService.editPost(postId, postBody).await()
     }
 
-    override suspend fun deletePost(postId: String): PnutResponse<Post> {
-        return defaultPnutService.deletePost(postId).await()
+    override fun deletePost(postId: String): PnutResponse<Post> {
+        return defaultPnutService.deletePost(postId).execute().body()!!
     }
 
     override suspend fun getUserProfile(userId: String): PnutResponse<User> {

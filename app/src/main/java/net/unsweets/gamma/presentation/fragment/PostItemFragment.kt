@@ -43,7 +43,14 @@ import javax.inject.Inject
 
 abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder.Exist>(),
     BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder.Exist>,
-    ThumbnailViewPagerAdapter.Listener {
+    ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback {
+    override fun ok(position: Int, post: Post) {
+        PostService.newDeletePostIntent(context, post.id)
+        adapter.removeItem(position)
+    }
+
+    override fun cancel() {}
+
     override fun onClick(path: String, position: Int, items: List<String>) {
         val newIntent = PhotoViewActivity.photoViewInstance(context!!, items, position)
         startActivity(newIntent)
@@ -89,7 +96,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         addFragment(fragment, item.id)
     }
 
-    private enum class DialogKey { Compose }
+    private enum class DialogKey { Compose, DeletePost }
 
     override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder.Exist, position: Int) {
         val url = item.mainPost.user?.let {
@@ -167,7 +174,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 it.setOnClickListener {
                     when (repostType) {
                         RepostButtonType.DeletePost -> {
-                            TODO()
+                            if (item.mainPost.user?.me == false) return@setOnClickListener
+                            val dialog = DeletePostDialogFragment.newInstance(position, item.mainPost)
+                            dialog.show(childFragmentManager, DialogKey.DeletePost.name)
                         }
                         RepostButtonType.DeleteRepost,
                         RepostButtonType.Repost -> {

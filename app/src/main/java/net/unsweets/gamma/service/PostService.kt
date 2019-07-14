@@ -9,14 +9,8 @@ import dagger.android.AndroidInjection
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBodyOuter
 import net.unsweets.gamma.domain.entity.raw.PostRaw
-import net.unsweets.gamma.domain.model.io.PostInputData
-import net.unsweets.gamma.domain.model.io.RepostInputData
-import net.unsweets.gamma.domain.model.io.StarInputData
-import net.unsweets.gamma.domain.model.io.UploadFileInputData
-import net.unsweets.gamma.domain.usecases.PostUseCase
-import net.unsweets.gamma.domain.usecases.RepostUseCase
-import net.unsweets.gamma.domain.usecases.StarUseCase
-import net.unsweets.gamma.domain.usecases.UploadFileUseCase
+import net.unsweets.gamma.domain.model.io.*
+import net.unsweets.gamma.domain.usecases.*
 import javax.inject.Inject
 
 private const val actionPrefix = "net.unsweets.gamma.service.PostService"
@@ -24,7 +18,7 @@ private const val actionPrefix = "net.unsweets.gamma.service.PostService"
 class PostService : IntentService("PostService") {
     private enum class IntentKey { PostBody, PostId, NewState }
     enum class Actions {
-        SendPost, Star, Repost;
+        SendPost, Star, Repost, DeletePost;
 
         fun getActionName() = "$actionPrefix.$name"
 
@@ -50,6 +44,8 @@ class PostService : IntentService("PostService") {
     lateinit var repostUseCase: RepostUseCase
     @Inject
     lateinit var uploadFileUseCase: UploadFileUseCase
+    @Inject
+    lateinit var deletePostUseCase: DeletePostUseCase
 
     override fun onCreate() {
         AndroidInjection.inject(this)
@@ -90,6 +86,11 @@ class PostService : IntentService("PostService") {
                         newState
                     )
                 )
+                resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
+            }
+            Actions.DeletePost.getActionName() -> {
+                val postId = intent.getStringExtra(IntentKey.PostId.name) ?: return
+                val postOutputData = deletePostUseCase.run(DeletePostInputData(postId))
                 resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
             }
             else -> return
@@ -134,6 +135,14 @@ class PostService : IntentService("PostService") {
             Actions.values().forEach {
                 intentFilter.addAction(it.getActionName())
             }
+        }
+
+        fun newDeletePostIntent(context: Context?, postId: String) {
+            val intent = Intent(context, PostService::class.java).apply {
+                action = Actions.DeletePost.getActionName()
+                putExtra(IntentKey.PostId.name, postId)
+            }
+            context?.startService(intent)
         }
     }
 }
