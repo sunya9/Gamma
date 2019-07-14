@@ -1,6 +1,7 @@
 package net.unsweets.gamma.domain.usecases
 
 import net.unsweets.gamma.domain.entity.FileBody
+import net.unsweets.gamma.domain.entity.raw.replacement.PostOEmbed
 import net.unsweets.gamma.domain.model.io.UploadFileInputData
 import net.unsweets.gamma.domain.model.io.UploadFileOutputData
 import net.unsweets.gamma.domain.repository.IPnutRepository
@@ -21,7 +22,15 @@ class UploadFileUseCase(private val pnutRepository: IPnutRepository) :
                 file.name
             )
         )
-        return UploadFileOutputData(res.data.id, res.data.fileToken ?: "")
+        val oEmbedRaw = PostOEmbed(
+            PostOEmbed.OEmbedRawValue(
+                PostOEmbed.OEmbedRawValue.FileValue(
+                    res.data.id,
+                    res.data.fileToken ?: ""
+                )
+            )
+        )
+        return UploadFileOutputData(oEmbedRaw)
 
     }
 }

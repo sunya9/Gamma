@@ -121,9 +121,9 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
     private fun send() {
         val text = viewModel.text.value ?: return
-        val postBody = PostBody(text, replyTarget?.id)
-        val files = adapter.getItems()
-        PostService.newPostIntent(context, postBody, files)
+        val isNsfw = viewModel.nsfw.value ?: false
+        val postBody = PostBody(text, replyTarget?.id, isNsfw = isNsfw, files = adapter.getItems())
+        PostService.newPostIntent(context, postBody)
         finishWithAnim()
     }
 
