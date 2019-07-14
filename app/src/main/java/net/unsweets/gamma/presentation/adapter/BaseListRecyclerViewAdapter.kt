@@ -133,7 +133,9 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
 
     }
 
-    fun removeItem(index: Int) {
+    fun removeItem(item: T) {
+        val index = listLiveData.value?.indexOf(item) ?: -1
+        if (index < 0) return
         listLiveData.value?.removeAt(index)
         notifyItemRemoved(index)
 

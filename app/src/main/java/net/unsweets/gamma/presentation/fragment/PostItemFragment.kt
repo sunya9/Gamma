@@ -46,7 +46,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback {
     override fun ok(position: Int, post: Post) {
         PostService.newDeletePostIntent(context, post.id)
-        adapter.removeItem(position)
+        adapter.removeItem(post)
     }
 
     override fun cancel() {}
