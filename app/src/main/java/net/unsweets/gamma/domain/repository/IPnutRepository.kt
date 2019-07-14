@@ -3,6 +3,7 @@ package net.unsweets.gamma.domain.repository
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.composed.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import okhttp3.RequestBody
 
 interface IPnutRepository {
     // posts
@@ -56,6 +57,7 @@ interface IPnutRepository {
     suspend fun getFiles(getFilesParam: GetFilesParam): PnutResponse<List<File>>
     suspend fun getToken(): PnutResponse<Token>
     suspend fun verifyToken(token: String): PnutResponse<Token>
+    fun createFile(content: RequestBody, fileBody: FileBody): PnutResponse<File>
 
     fun updateDefaultPnutService(token: String)
 }

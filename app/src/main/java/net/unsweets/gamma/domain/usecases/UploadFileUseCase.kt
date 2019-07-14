@@ -1,0 +1,27 @@
+package net.unsweets.gamma.domain.usecases
+
+import net.unsweets.gamma.domain.entity.FileBody
+import net.unsweets.gamma.domain.model.io.UploadFileInputData
+import net.unsweets.gamma.domain.model.io.UploadFileOutputData
+import net.unsweets.gamma.domain.repository.IPnutRepository
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import java.io.File
+
+
+class UploadFileUseCase(private val pnutRepository: IPnutRepository) :
+    UseCase<UploadFileOutputData, UploadFileInputData>() {
+    override fun run(params: UploadFileInputData): UploadFileOutputData {
+        val file = File(params.uri.path)
+        val content = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val res = pnutRepository.createFile(
+            content,
+            FileBody(
+                FileBody.Kind.image,
+                file.name
+            )
+        )
+        return UploadFileOutputData(res.data.id, res.data.fileToken ?: "")
+
+    }
+}

@@ -2,6 +2,8 @@ package net.unsweets.gamma.data
 
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -10,7 +12,7 @@ interface PnutService {
     fun token(): Call<PnutResponse<Token>>
 
     // Post resources
-    @POST("posts")
+    @POST("posts?include_post_raw=1")
     fun createPost(@Body postBody: PostBody): Call<PnutResponse<Post>>
 
     @PUT("posts/{postId}")
@@ -165,4 +167,14 @@ interface PnutService {
 
     @GET("users/me/files")
     fun getFiles(@QueryMap paging: Map<String, String>): Call<PnutResponse<List<File>>>
+
+    @Multipart
+    @POST("files")
+    fun createFile(
+        @Part content: MultipartBody.Part,
+        @Part("name") name: RequestBody,
+        @Part("kind") kind: RequestBody,
+        @Part("type") type: RequestBody,
+        @Part("is_public") isPublic: RequestBody
+    ): Call<PnutResponse<File>>
 }

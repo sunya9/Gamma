@@ -4,22 +4,27 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import dagger.android.AndroidInjection
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
+import net.unsweets.gamma.domain.entity.raw.PostRaw
+import net.unsweets.gamma.domain.entity.raw.replacement.PostOEmbed
 import net.unsweets.gamma.domain.model.io.PostInputData
 import net.unsweets.gamma.domain.model.io.RepostInputData
 import net.unsweets.gamma.domain.model.io.StarInputData
+import net.unsweets.gamma.domain.model.io.UploadFileInputData
 import net.unsweets.gamma.domain.usecases.PostUseCase
 import net.unsweets.gamma.domain.usecases.RepostUseCase
 import net.unsweets.gamma.domain.usecases.StarUseCase
+import net.unsweets.gamma.domain.usecases.UploadFileUseCase
 import javax.inject.Inject
 
 private const val actionPrefix = "net.unsweets.gamma.service.PostService"
 
 class PostService : IntentService("PostService") {
-    private enum class IntentKey { PostBody, PostId, NewState }
+    private enum class IntentKey { PostBody, PostId, NewState, Files }
     enum class Actions {
         SendPost, Star, Repost;
 
@@ -45,6 +50,8 @@ class PostService : IntentService("PostService") {
     lateinit var starUseCase: StarUseCase
     @Inject
     lateinit var repostUseCase: RepostUseCase
+    @Inject
+    lateinit var uploadFileUseCase: UploadFileUseCase
 
     override fun onCreate() {
         AndroidInjection.inject(this)
@@ -62,7 +69,24 @@ class PostService : IntentService("PostService") {
         when (intent.action) {
             Actions.SendPost.getActionName() -> {
                 val postBody = intent.getSerializableExtra(IntentKey.PostBody.name) as? PostBody ?: return
-                val postOutputData = postUseCase.run(PostInputData(postBody))
+                val raw = mutableListOf<PostRaw<*>>()
+                intent.getParcelableArrayListExtra<Uri>(IntentKey.Files.name)?.let { files ->
+                    val replacementFileRawList = files
+                        .map { uploadFileUseCase.run(UploadFileInputData(it)) }
+                        .map {
+                            PostOEmbed(
+                                PostOEmbed.OEmbedRawValue(
+                                    PostOEmbed.OEmbedRawValue.FileValue(
+                                        it.fileId,
+                                        it.fileToken
+                                    )
+                                )
+                            )
+                        }
+                    raw.addAll(replacementFileRawList)
+                }
+                val modifiedPostBody = postBody.copy(raw = raw)
+                val postOutputData = postUseCase.run(PostInputData(modifiedPostBody))
                 resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
             }
             Actions.Star.getActionName() -> {
@@ -89,10 +113,16 @@ class PostService : IntentService("PostService") {
 
     companion object {
         @JvmStatic
-        fun newPostIntent(context: Context?, postBody: PostBody) {
+        fun newPostIntent(
+            context: Context?,
+            postBody: PostBody,
+            files: List<Uri> = emptyList(),
+            raws: List<PostRaw<*>> = emptyList()
+        ) {
             val intent = Intent(context, PostService::class.java).apply {
                 action = Actions.SendPost.getActionName()
                 putExtra(IntentKey.PostBody.name, postBody)
+                putParcelableArrayListExtra(IntentKey.Files.name, ArrayList(files))
             }
             context?.startService(intent)
         }

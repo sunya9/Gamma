@@ -95,4 +95,9 @@ class UseCaseModule {
         accountRepository: IAccountRepository,
         pnutRepository: IPnutRepository
     ): LogoutUseCase = LogoutUseCase(accountRepository, pnutRepository)
+
+    @Provides
+    fun provideUploadFileUseCase(
+        pnutRepository: IPnutRepository
+    ): UploadFileUseCase = UploadFileUseCase(pnutRepository)
 }

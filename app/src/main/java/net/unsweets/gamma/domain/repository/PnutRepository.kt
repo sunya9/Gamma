@@ -9,18 +9,28 @@ import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.data.PnutService
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.entity.raw.*
+import net.unsweets.gamma.domain.entity.raw.replacement.PostOEmbed
 import net.unsweets.gamma.domain.model.params.composed.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import net.unsweets.gamma.util.Constants
 import net.unsweets.gamma.util.await
-import okhttp3.Cache
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 
 class PnutRepository(private val context: Context) : IPnutRepository {
+    override fun createFile(content: RequestBody, fileBody: FileBody): PnutResponse<File> {
+        return defaultPnutService.createFile(
+            MultipartBody.Part.createFormData("content", fileBody.name, content),
+            RequestBody.create(MediaType.parse("text/plain"), fileBody.name),
+            RequestBody.create(MediaType.parse("text/plain"), fileBody.kind.name),
+            RequestBody.create(MediaType.parse("text/plain"), Constants.ReverseDomain),
+            RequestBody.create(MediaType.parse("text/plain"), "true")
+        ).execute().body()!!
+    }
+
     override suspend fun getThread(postId: String, params: GetPostsParam): PnutResponse<List<Post>> {
         return defaultPnutService.getThread(postId, params.toMap()).await()
     }
@@ -194,7 +204,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
 
         if (BuildConfig.DEBUG) {
             val logging = HttpLoggingInterceptor()
-            logging.level = HttpLoggingInterceptor.Level.BASIC
+            logging.level = HttpLoggingInterceptor.Level.HEADERS
             client.addInterceptor(logging)
         }
         val cache = Cache(context.cacheDir, cacheSize)
@@ -230,13 +240,23 @@ class PnutRepository(private val context: Context) : IPnutRepository {
                     .withSubtype(Spoiler::class.java, "shawn.spoiler")
                     .withSubtype(LongPost::class.java, "nl.chimpnut.blog.post")
                     .withSubtype(PollNotice::class.java, "io.pnut.core.poll-notice")
-                    .withDefaultValue(RawImpl())
+                    .withSubtype(ChannelInvite::class.java, "io.pnut.core.channel.invite")
+                    .withDefaultValue(RawImpl)
+            )
+            // for create post
+            .add(
+                PolymorphicJsonAdapterFactory.of(PostRaw::class.java, "type")
+                    .withSubtype(PostOEmbed::class.java, "io.pnut.core.oembed")
+                    .withSubtype(Spoiler::class.java, "shawn.spoiler")
+                    .withSubtype(LongPost::class.java, "nl.chimpnut.blog.post")
+                    .withSubtype(ChannelInvite::class.java, "io.pnut.core.channel.invite")
             )
             .add(
-                PolymorphicJsonAdapterFactory.of(OEmbed.BaseOEmbedRawValue::class.java, "type")
+                PolymorphicJsonAdapterFactory.of(OEmbed.OEmbedRawValue::class.java, "type")
                     .withSubtype(OEmbed.Photo.PhotoValue::class.java, "photo")
                     .withSubtype(OEmbed.Video.VideoValue::class.java, "video")
-                    .withDefaultValue(OEmbed.OEmbedValueImpl())
+                    .withSubtype(OEmbed.OEmbedRawValue::class.java, "")
+                    .withDefaultValue(OEmbed.OEmbedValueImpl)
             )
             .add(KotlinJsonAdapterFactory())
             .build()
