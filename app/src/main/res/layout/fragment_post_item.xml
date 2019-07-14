@@ -83,7 +83,7 @@
         android:animateLayoutChanges="true"
         android:background="@color/colorWindowBackground"
         android:elevation="@dimen/elevation_list_item_elevation"
-        tools:translationX="100dp">
+        tools:translationX="0dp">
 
         <View
             android:id="@+id/starStateView"
@@ -152,12 +152,16 @@
             tools:text="@tools:sample/lorem" />
 
         <TextView
+            android:layout_width="0dp"
             android:id="@+id/handleNameTextView"
-            android:layout_width="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             app:layout_constraintBaseline_toBaselineOf="@id/screenNameTextView"
             app:layout_constraintStart_toEndOf="@+id/screenNameTextView"
+            app:layout_constraintEnd_toStartOf="@id/chatIconImageView"
+            app:layout_constraintHorizontal_bias="0"
             tools:text="@tools:sample/full_names" />
 
         <TextView
@@ -168,6 +172,19 @@
             app:layout_constraintBottom_toBottomOf="@+id/handleNameTextView"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="5s" />
+
+        <ImageView
+            android:id="@+id/chatIconImageView"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginEnd="@dimen/margin_half"
+            android:contentDescription="@string/conversation_mark"
+            android:scaleType="centerInside"
+            android:tint="@color/colorGrayLight"
+            app:layout_constraintBottom_toBottomOf="@id/relativeTimeTextView"
+            app:layout_constraintEnd_toStartOf="@id/relativeTimeTextView"
+            app:layout_constraintTop_toTopOf="@id/relativeTimeTextView"
+            tools:src="@drawable/ic_chat_bubble_black_24dp" />
 
         <FrameLayout
             android:id="@+id/thumbnailViewPagerFrameLayout"

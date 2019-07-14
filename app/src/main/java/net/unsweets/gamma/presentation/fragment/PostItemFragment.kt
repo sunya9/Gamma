@@ -175,7 +175,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                     when (repostType) {
                         RepostButtonType.DeletePost -> {
                             if (item.mainPost.user?.me == false) return@setOnClickListener
-                            val dialog = DeletePostDialogFragment.newInstance(position, item.mainPost)
+                            val dialog = DeletePostDialogFragment.newInstance(viewHolder.adapterPosition, item.mainPost)
                             dialog.show(childFragmentManager, DialogKey.DeletePost.name)
                         }
                         RepostButtonType.DeleteRepost,
@@ -190,6 +190,15 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 }
             }
             setupRepostView(item, viewHolder.repostedByTextView)
+            val hasConversation = item.mainPost.replyTo != null || (item.mainPost.counts?.replies ?: 0) > 0
+            viewHolder.chatIconImageView.visibility =
+                if (hasConversation) View.VISIBLE else View.GONE
+            if (hasConversation) {
+                val res =
+                    if (item.mainPost.replyTo != null) R.drawable.ic_chat_bubble_black_24dp else R.drawable.ic_chat_bubble_outline_black_24dp
+                viewHolder.chatIconImageView.setImageResource(res)
+
+            }
 
         }
         viewHolder.starStateView.visibility = if (item.mainPost.youBookmarked == true) View.VISIBLE else View.GONE
@@ -263,6 +272,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val thumbnailViewPager: ViewPager2 = itemView.thumbnailViewPager
         val thumbnailViewPagerFrameLayout: FrameLayout = itemView.thumbnailViewPagerFrameLayout
         val thumbnailTabLayout: TabLayout = itemView.thumbnailTabLayout
+        val chatIconImageView: ImageView = itemView.chatIconImageView
 
         class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
             val replyTextView: TextView = itemView.replyTextView
