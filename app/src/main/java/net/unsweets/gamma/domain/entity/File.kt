@@ -10,17 +10,17 @@ import java.util.*
 data class File(
     @Json(name = "audio_info") val audioInfo: AudioInfo?,
     @Json(name = "created_at") val createdAt: Date,
-    @Json(name = "file_token") val fileToken: String,
+    @Json(name = "file_token") val fileToken: String?,
     @Json(name = "file_token_read") val fileTokenRead: String?,
     val id: String,
     @Json(name =  "image_info") val imageInfo: ImageInfo?,
     @Json(name = "is_complete") val isComplete: Boolean,
     @Json(name = "is_public") val isPublic: Boolean,
     val kind: FileKind,
-    val link: String,
-    @Json(name = "link_expires_at") val linkExpiresAt: Date,
+    val link: String?,
+    @Json(name = "link_expires_at") val linkExpiresAt: Date?,
     @Json(name = "link_short") val linkShort: String?,
-    @Json(name = "mime_type") val mimeType: String,
+    @Json(name = "mime_type") val mimeType: String?,
     val name: String,
     val sha256: String,
     val size: Int,
@@ -30,7 +30,7 @@ data class File(
 //    TODO: implement derivativeFiles
 //    val derivativeFiles: List<DerivativeFiles>,
     val user: User?,
-    @Json(name = "pagination_id") override val paginationId: String
+    @Json(name = "pagination_id") override val paginationId: String?
 ) : Parcelable, Pageable, Unique {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
