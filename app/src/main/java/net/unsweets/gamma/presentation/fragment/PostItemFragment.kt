@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
@@ -206,6 +208,24 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
         viewHolder.dateTextView.text = getShortDateStr(viewHolder.itemView.context, item.mainPost.createdAt)
 
+        viewHolder.contentsWrapperLayout.visibility = getVisibility(item.mainPost.showContents)
+
+        val isNsfw = item.mainPost.nsfwMask
+        viewHolder.nsfwMaskLayout.visibility = getVisibility(isNsfw)
+        viewHolder.showNsfwButton.setOnClickListener {
+            item.mainPost.nsfwMask = false
+            adapter.notifyItemChanged(viewHolder.adapterPosition)
+        }
+
+        val isSpoiler = item.mainPost.spoilerMask
+        viewHolder.spoilerMaskLayout.visibility = getVisibility(isSpoiler)
+        val spoilerTopic = item.mainPost.spoiler?.value?.topic ?: ""
+        viewHolder.showSpoilerButton.text = context.getString(R.string.show_spoiler, spoilerTopic)
+        viewHolder.showSpoilerButton.setOnClickListener {
+            item.mainPost.spoilerMask = false
+            adapter.notifyItemChanged(viewHolder.adapterPosition)
+        }
+
         val raw = item.raw
         val photos = OEmbed.Photo.getPhotos(raw)
         if (photos.isNotEmpty()) {
@@ -222,6 +242,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewHolder.thumbnailViewPager.adapter = null
         }
     }
+
+    private fun getVisibility(b: Boolean): Int = if (b) View.VISIBLE else View.GONE
 
     private enum class RepostButtonType(@StringRes val textRes: Int, @DrawableRes val iconRes: Int) {
         DeleteRepost(R.string.delete_repost, R.drawable.ic_repeat_black_24dp),
@@ -273,6 +295,11 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val thumbnailViewPagerFrameLayout: FrameLayout = itemView.thumbnailViewPagerFrameLayout
         val thumbnailTabLayout: TabLayout = itemView.thumbnailTabLayout
         val chatIconImageView: ImageView = itemView.chatIconImageView
+        val nsfwMaskLayout: FrameLayout = itemView.nsfwMaskLayout
+        val showNsfwButton: MaterialButton = itemView.showNsfwButton
+        val spoilerMaskLayout: FrameLayout = itemView.spoilerMaskLayout
+        val showSpoilerButton: MaterialButton = itemView.showSpoilerButton
+        val contentsWrapperLayout: LinearLayout = itemView.contentsWrapperLayout
 
         class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
             val replyTextView: TextView = itemView.replyTextView

@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.domain.entity.entities.Entities
 import net.unsweets.gamma.domain.entity.entities.HaveEntities
 import net.unsweets.gamma.domain.entity.raw.Raw
+import net.unsweets.gamma.domain.entity.raw.Spoiler
 import java.util.*
 
 @Parcelize
@@ -50,5 +51,20 @@ data class Post(
 
     @IgnoredOnParcel
     val mainPost: Post = repostOf ?: this
+    @IgnoredOnParcel
+    var nsfwMask = isNsfw ?: false
+    @IgnoredOnParcel
+    var spoilerMask = false
+    @IgnoredOnParcel
+    val showContents: Boolean
+        get() = !nsfwMask && !spoilerMask
+    @IgnoredOnParcel
+    val spoiler = raw?.let { Spoiler.getSpoilerRaw(it) }
 
+    init {
+        spoilerMask = spoiler?.let {
+            val spoilerDate = it.value.expiredAt ?: return@let true
+            spoilerDate.time > Calendar.getInstance().time.time
+        } ?: false
+    }
 }

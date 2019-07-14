@@ -131,4 +131,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="conversation_mark">conversation mark</string>
+    <string name="show_nsfw_contents">Show NFSW contents</string>
+    <string name="show_spoiler">Spoiler: %s</string>
 </resources>

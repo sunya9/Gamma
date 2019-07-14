@@ -137,31 +137,65 @@
             app:layout_goneMarginTop="@dimen/margin_regular"
             tools:text="@tools:sample/first_names" />
 
-        <TextView
-            android:id="@+id/bodyTextView"
+        <LinearLayout
+            android:id="@+id/contentsWrapperLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_quoter"
             android:layout_marginEnd="@dimen/margin_regular"
-            android:gravity="top|start"
-            android:paddingBottom="@dimen/margin_half"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:layout_marginBottom="@dimen/margin_regular"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/screenNameTextView"
-            app:layout_constraintTop_toBottomOf="@+id/screenNameTextView"
-            tools:text="@tools:sample/lorem" />
+            app:layout_constraintTop_toBottomOf="@+id/screenNameTextView">
+
+            <TextView
+                android:id="@+id/bodyTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                tools:text="@tools:sample/lorem" />
+
+            <FrameLayout
+                android:id="@+id/thumbnailViewPagerFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:paddingTop="@dimen/margin_half">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/thumbnailViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/thumbnailTabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_thumbnail_tab"
+                    android:layout_gravity="bottom"
+                    android:background="@android:color/transparent"
+                    app:tabBackground="@drawable/bg_thumbnail_tab_item"
+                    app:tabGravity="center"
+                    app:tabIndicator="@drawable/bg_thumbnail_tab_indicator"
+                    app:tabIndicatorGravity="center"
+                    app:tabMaxWidth="@dimen/width_thumbnail_tab_item"
+                    app:tabRippleColor="@null" />
+            </FrameLayout>
+        </LinearLayout>
 
         <TextView
-            android:layout_width="0dp"
             android:id="@+id/handleNameTextView"
-            android:ellipsize="end"
-            android:singleLine="true"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"
             app:layout_constraintBaseline_toBaselineOf="@id/screenNameTextView"
-            app:layout_constraintStart_toEndOf="@+id/screenNameTextView"
             app:layout_constraintEnd_toStartOf="@id/chatIconImageView"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/screenNameTextView"
             tools:text="@tools:sample/full_names" />
 
         <TextView
@@ -187,34 +221,49 @@
             tools:src="@drawable/ic_chat_bubble_black_24dp" />
 
         <FrameLayout
-            android:id="@+id/thumbnailViewPagerFrameLayout"
+            android:id="@+id/spoilerMaskLayout"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_quoter"
             android:layout_marginEnd="@dimen/margin_regular"
             android:layout_marginBottom="@dimen/margin_regular"
+            android:background="@color/colorWindowBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/bodyTextView"
-            app:layout_constraintTop_toBottomOf="@id/bodyTextView">
+            app:layout_constraintStart_toStartOf="@id/screenNameTextView"
+            app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
+            app:layout_constraintVertical_bias="0">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/thumbnailViewPager"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/showSpoilerButton"
+                style="@style/Button.Outlined"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/show_spoiler" />
+        </FrameLayout>
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/thumbnailTabLayout"
+        <FrameLayout
+            android:id="@+id/nsfwMaskLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_quoter"
+            android:layout_marginEnd="@dimen/margin_regular"
+            android:layout_marginBottom="@dimen/margin_regular"
+            android:background="@color/colorWindowBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/screenNameTextView"
+            app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
+            app:layout_constraintVertical_bias="0">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/showNsfwButton"
+                style="@style/Button.Outlined"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/height_thumbnail_tab"
-                android:layout_gravity="bottom"
-                android:background="@android:color/transparent"
-                app:tabBackground="@drawable/bg_thumbnail_tab_item"
-                app:tabGravity="center"
-                app:tabIndicator="@drawable/bg_thumbnail_tab_indicator"
-                app:tabIndicatorGravity="center"
-                app:tabMaxWidth="@dimen/width_thumbnail_tab_item"
-                app:tabRippleColor="@null" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/show_nsfw_contents" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -18,4 +18,7 @@ data class Spoiler(override val value: SpoilerValue) : Raw<Spoiler.SpoilerValue>
     data class SpoilerValue(val topic: String, @Json(name = "expired_at") val expiredAt: Date?) : Raw.RawValue,
         Parcelable
 
+    companion object {
+        fun getSpoilerRaw(rawList: List<Raw<*>>): Spoiler? = rawList.find { it is Spoiler } as? Spoiler
+    }
 }
