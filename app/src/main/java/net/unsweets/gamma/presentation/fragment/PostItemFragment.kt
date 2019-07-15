@@ -43,8 +43,8 @@ import java.util.*
 import javax.inject.Inject
 
 
-abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder.Exist>(),
-    BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder.Exist>,
+abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder>(),
+    BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder>,
     ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback {
     override fun ok(position: Int, post: Post) {
         PostService.newDeletePostIntent(context, post.id)
@@ -90,8 +90,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     override val baseListListener by lazy { this }
 
-    override fun createViewHolder(mView: View, viewType: Int): PostViewHolder.Exist =
-        PostViewHolder.Exist(mView, itemTouchHelper)
+    override fun createViewHolder(mView: View, viewType: Int): PostViewHolder =
+        PostViewHolder(mView, itemTouchHelper)
 
     override fun onClickItemListener(item: Post) {
         val fragment = getThreadInstance(item)
@@ -100,7 +100,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     private enum class DialogKey { Compose, DeletePost }
 
-    override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder.Exist, position: Int) {
+    override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder, position: Int) {
         val url = item.mainPost.user?.let {
             "${it.content.avatarImage.link}?w=96"
         } ?: "" //
@@ -112,8 +112,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewHolder.handleNameTextView.text = ""
             viewHolder.bodyTextView.setText(R.string.this_post_has_deleted)
             viewHolder.avatarView.setImageResource(R.drawable.ic_delete_black_24dp)
+            viewHolder.avatarView.isEnabled = false
         } else {
             viewHolder.itemView.alpha = 1f
+            viewHolder.avatarView.isEnabled = true
             GlideApp.with(this).load(url).into(viewHolder.avatarView)
             val iconTransition = getString(R.string.icon_transition)
             val profileTransition = getString(R.string.profile_transition)
@@ -275,10 +277,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
 
     // TODO: create the view holder for deleted post
-    sealed class PostViewHolder(mView: View, itemTouchHelper: ItemTouchHelper) : RecyclerView.ViewHolder(mView) {
+    class PostViewHolder(mView: View, itemTouchHelper: ItemTouchHelper) : RecyclerView.ViewHolder(mView) {
         val avatarView: CircleImageView = itemView.avatarImageView.also {
-            it.setOnTouchListener { _, motionEvent ->
-                if (motionEvent.actionMasked == MotionEvent.ACTION_MOVE) {
+            it.setOnTouchListener { view, motionEvent ->
+                if (view.isEnabled && motionEvent.actionMasked == MotionEvent.ACTION_MOVE) {
                     itemTouchHelper.startSwipe(this)
                 }
                 false
@@ -291,6 +293,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val repostedByTextView: TextView = itemView.repostedByTextView
         val starStateView: View = itemView.starStateView
         val repostStateView: View = itemView.repostStateView
+        val replyTextView: TextView = itemView.replyTextView
+        val starTextView: TextView = itemView.starTextView
+        val repostTextView: TextView = itemView.repostTextView
+        val moreImageView: ImageView = itemView.moreImageView
         val thumbnailViewPager: ViewPager2 = itemView.thumbnailViewPager
         val thumbnailViewPagerFrameLayout: FrameLayout = itemView.thumbnailViewPagerFrameLayout
         val thumbnailTabLayout: TabLayout = itemView.thumbnailTabLayout
@@ -300,15 +306,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val spoilerMaskLayout: FrameLayout = itemView.spoilerMaskLayout
         val showSpoilerButton: MaterialButton = itemView.showSpoilerButton
         val contentsWrapperLayout: LinearLayout = itemView.contentsWrapperLayout
-
-        class Exist(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper) {
-            val replyTextView: TextView = itemView.replyTextView
-            val starTextView: TextView = itemView.starTextView
-            val repostTextView: TextView = itemView.repostTextView
-            val moreImageView: ImageView = itemView.moreImageView
-        }
-
-        class Deleted(itemView: View, itemTouchHelper: ItemTouchHelper) : PostViewHolder(itemView, itemTouchHelper)
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
