@@ -3,8 +3,10 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -116,6 +118,16 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            RequestCode.Discard.ordinal -> {
+                if (resultCode != Activity.RESULT_OK) return
+                dismiss()
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setupLocaleView() {
         PopupMenu(binding.localeLayout.context, binding.localeLayout).also { popupMenu ->
@@ -144,16 +156,46 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
         }
     }
 
+    private enum class RequestCode { Discard }
+    private enum class DialogKey { Discard }
+
+    private val changed: Boolean
+        get() =
+            viewModel.beforeEditingProfile?.name != viewModel.name.value ||
+                    viewModel.beforeEditingProfile?.timezone != viewModel.timezone.value ||
+                    viewModel.beforeEditingProfile?.locale != viewModel.locale.value ||
+                    viewModel.beforeEditingProfile?.content?.text != viewModel.description.value
+
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.setOnKeyListener { _, keyCode, _ ->
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                discard()
+                true
+            } else {
+                false
+            }
+        }
+        return dialog
+    }
+
     private fun discard() {
-        // TODO: show confirmation dialog
-        dismiss()
+        if (changed) {
+            val fragment = BasicDialogFragment.Builder()
+                .setMessage(R.string.discard_changes)
+                .setPositive(R.string.discard)
+                .build(RequestCode.Discard.ordinal)
+            fragment.show(childFragmentManager, DialogKey.Discard.name)
+        } else {
+            dismiss()
+        }
     }
 
     private fun save() {
         hideKeyboard(view!!)
         viewModel.save()
     }
-
 
     sealed class Event {
         data class ChangeImage(val imageType: ImageType) : Event() {
@@ -176,12 +218,14 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
         val locale = MutableLiveData<String>()
         val user = MutableLiveData<User>()
         val saving = MutableLiveData<Boolean>()
+        var beforeEditingProfile: User? = null
 
         init {
             viewModelScope.launch {
                 runCatching {
                     getAuthenticatedUseCase.run(Unit)
                 }.onSuccess {
+                    beforeEditingProfile = it.token.user
                     user.value = it.token.user
                     name.value = it.token.user.name
                     description.value = it.token.user.content.text
