@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorControlHighlight">
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/white" />
+        </shape>
+    </item>
     <item>
-        <shape>
-            <solid android:color="#0000" />
-        </shape>
+        <layer-list>
+            <item>
+                <shape>
+                    <solid android:color="#0000" />
+                </shape>
+            </item>
+            <item android:gravity="top">
+                <shape>
+                    <gradient
+                        android:angle="270"
+                        android:endColor="#0000"
+                        android:startColor="#8000" />
+                    <size android:height="?attr/actionBarSize" />
+                </shape>
+            </item>
+            <item android:gravity="bottom">
+                <shape>
+                    <gradient
+                        android:angle="90"
+                        android:endColor="#0000"
+                        android:startColor="#8000" />
+                    <size android:height="@dimen/margin_profile_card_negative" />
+                </shape>
+            </item>
+        </layer-list>
     </item>
-    <item android:gravity="top">
-        <shape>
-            <gradient
-                android:startColor="#8000"
-                android:endColor="#0000"
-                android:angle="270"
-                />
-            <size android:height="?attr/actionBarSize" />
-        </shape>
-    </item>
-    <item android:gravity="bottom">
-        <shape>
-            <gradient
-                android:startColor="#8000"
-                android:endColor="#0000"
-                android:angle="90"
-                />
-            <size android:height="@dimen/margin_profile_card_negative" />
-        </shape>
-    </item>
-</layer-list>
+</ripple>

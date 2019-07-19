@@ -29,6 +29,7 @@ import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.model.io.FollowInputData
 import net.unsweets.gamma.domain.usecases.FollowUseCase
 import net.unsweets.gamma.domain.usecases.GetProfileUseCase
+import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.ProfilePagerAdapter
 import net.unsweets.gamma.presentation.util.EntityOnTouchListener
 import net.unsweets.gamma.presentation.util.GlideApp
@@ -197,7 +198,19 @@ class ProfileFragment : BaseFragment() {
             is Event.FollowingList -> openFollowingList(it.user)
             is Event.FollowerList -> openFollowerList(it.user)
             is Event.EditProfile -> showEditProfileDialog()
+            is Event.ShowAvatar -> it.url?.let { url -> showAvatar(url) }
+            is Event.ShowCover -> it.url?.let { url -> showCover(url) }
         }
+    }
+
+    private fun showCover(url: String) {
+        val newIntent = PhotoViewActivity.photoViewInstance(context, url)
+        startActivity(newIntent)
+    }
+
+    private fun showAvatar(url: String) {
+        val newIntent = PhotoViewActivity.photoViewInstance(context, url)
+        startActivity(newIntent)
     }
 
     private enum class DialogKey { EditProfile }
@@ -286,6 +299,8 @@ class ProfileFragment : BaseFragment() {
             }
         }
 
+        fun showAvatar() = event.emit(Event.ShowAvatar(iconUrl.value))
+        fun showCover() = event.emit(Event.ShowCover(user.value?.content?.coverImage?.link))
         private fun follow() = updateRelationship(true)
         private fun unfollow() = updateRelationship(false)
         private fun updateRelationship(follow: Boolean) {
@@ -318,7 +333,8 @@ class ProfileFragment : BaseFragment() {
         object EditProfile : ProfileFragment.Event()
         data class FollowerList(val user: User) : Event()
         data class FollowingList(val user: User) : Event()
-
+        data class ShowAvatar(val url: String?) : Event()
+        data class ShowCover(val url: String?) : Event()
     }
 
     companion object {
