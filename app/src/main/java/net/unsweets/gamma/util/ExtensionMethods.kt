@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -25,33 +24,6 @@ fun Snackbar.showAsError() {
     val textView = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     textView.setTextColor(Color.WHITE)
     show()
-}
-
-
-fun <T> Call<PnutResponse<T>>.toLiveData(mutableLiveDataValue: MutableLiveData<T>) {
-    this.enqueue(object : Callback<PnutResponse<T>> {
-        override fun onFailure(call: Call<PnutResponse<T>>, t: Throwable) {
-            LogUtil.e(t.message)
-        }
-
-        override fun onResponse(call: Call<PnutResponse<T>>, response: Response<PnutResponse<T>>) {
-            val body = response.body() ?: return onFailure(call, Throwable("body is empty"))
-            mutableLiveDataValue.postValue(body.data)
-        }
-    })
-}
-
-fun <T> Call<PnutResponse<List<T>>>.toArrayListLiveData(mutableLiveDataValue: MutableLiveData<ArrayList<T>>) {
-    this.enqueue(object : Callback<PnutResponse<List<T>>> {
-        override fun onFailure(call: Call<PnutResponse<List<T>>>, t: Throwable) {
-            LogUtil.e(t.message)
-        }
-
-        override fun onResponse(call: Call<PnutResponse<List<T>>>, response: Response<PnutResponse<List<T>>>) {
-            val body = response.body() ?: return onFailure(call, Throwable("body is empty"))
-            mutableLiveDataValue.postValue(ArrayList(body.data))
-        }
-    })
 }
 
 suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> = suspendCancellableCoroutine { cont ->
