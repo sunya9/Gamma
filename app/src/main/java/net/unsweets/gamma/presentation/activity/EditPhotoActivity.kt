@@ -26,6 +26,10 @@ class EditPhotoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_photo)
         setSupportActionBar(toolbar)
+        if (mode == Mode.Square) {
+            cropImageView.setAspectRatio(1, 1)
+            cropImageView.setFixedAspectRatio(true)
+        }
         cropImageView.setImageUriAsync(uri)
         cropImageView.setOnCropImageCompleteListener { _, result -> cropped(result) }
     }
@@ -66,14 +70,23 @@ class EditPhotoActivity : BaseActivity() {
         finish()
     }
 
-    private enum class IntentKey { Uri, Index }
+    private val mode by lazy {
+        intent.getSerializableExtra(IntentKey.Mode.name) as? Mode ?: Mode.Free
+    }
+
+    private enum class IntentKey { Uri, Index, Mode }
+    enum class Mode { Free, Square }
     data class EditPhotoResult(val uri: Uri, val index: Int)
     companion object {
-        fun newIntent(context: Context?, uri: Uri, index: Int) = Intent(context, EditPhotoActivity::class.java).apply {
+        fun newIntentSquareMode(context: Context?, uri: Uri) = newIntent(context, uri).apply {
+            putExtra(IntentKey.Mode.name, Mode.Square)
+        }
+
+        fun newIntent(context: Context?, uri: Uri, index: Int = -1) =
+            Intent(context, EditPhotoActivity::class.java).apply {
             putExtra(IntentKey.Uri.name, uri)
             putExtra(IntentKey.Index.name, index)
         }
-
         fun parseIntent(intent: Intent): EditPhotoResult {
             val uri = intent.getParcelableExtra<Uri>(IntentKey.Uri.name)
             val index = intent.getIntExtra(IntentKey.Index.name, -1)
