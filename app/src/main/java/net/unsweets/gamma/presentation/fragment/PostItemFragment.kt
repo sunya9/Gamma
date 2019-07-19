@@ -228,7 +228,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             adapter.notifyItemChanged(viewHolder.adapterPosition)
         }
 
-        val raw = item.raw
+        val raw = item.mainPost.raw
         val photos = OEmbed.Photo.getPhotos(raw)
         if (photos.isNotEmpty()) {
             viewHolder.thumbnailViewPagerFrameLayout.visibility = View.VISIBLE
