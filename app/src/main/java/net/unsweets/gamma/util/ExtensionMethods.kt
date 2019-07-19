@@ -64,8 +64,9 @@ suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> = suspendCancella
 
         override fun onResponse(call: Call<PnutResponse<T>>, response: Response<PnutResponse<T>>) {
             Log.e("response", response.toString())
-            val body = response.body() ?: return cont.resumeWithException(Throwable())
-            cont.resume(body)
+            response.body()?.let { cont.resume(it) }
+                ?: response.errorBody()?.let { cont.cancel(Throwable(it.string())) }
+
         }
     })
 
@@ -74,7 +75,7 @@ suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> = suspendCancella
     }
 }
 
-fun Boolean.toInt(): Int = if(this) 1 else 0
+fun Boolean.toInt(): Int = if (this) 1 else 0
 
 fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
     observe(lifecycleOwner, object : Observer<T> {
