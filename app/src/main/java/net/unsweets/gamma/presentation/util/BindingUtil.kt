@@ -22,7 +22,10 @@ object BindingUtil {
     @BindingAdapter("glideSrc")
     @JvmStatic
     fun ImageView.glideSrc(url: String?) {
-        if (url?.isBlank() == true) return
+        if (url.isNullOrEmpty()) {
+            setImageDrawable(null)
+            return
+        }
         val placeholder = this.drawable
         val request = GlideApp
             .with(this)
