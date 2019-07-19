@@ -14,7 +14,8 @@ import net.unsweets.gamma.presentation.fragment.PhotoViewItemFragment
 class PhotoViewActivity : BaseActivity() {
     private enum class IntentKey { Photos, Index }
     companion object {
-        fun photoViewInstance(context: Context, items: List<String>, index: Int) =
+        fun photoViewInstance(context: Context?, item: String) = photoViewInstance(context, listOf(item))
+        fun photoViewInstance(context: Context?, items: List<String>, index: Int = -1) =
             Intent(context, PhotoViewActivity::class.java).apply {
                 putStringArrayListExtra(IntentKey.Photos.name, ArrayList(items))
                 putExtra(IntentKey.Index.name, index)
