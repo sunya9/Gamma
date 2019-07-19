@@ -254,7 +254,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         fragment.show(childFragmentManager, FragmentKey.Gallery.name)
     }
 
-    override fun onGalleryItemClicked(uri: Uri) {
+    override fun onGalleryItemClicked(uri: Uri, tag: String?) {
         adapter.add(uri)
         viewModel.previewAttachmentsVisibility.value = View.VISIBLE
     }

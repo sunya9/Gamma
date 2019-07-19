@@ -62,7 +62,7 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
     }
 
     interface Listener {
-        fun onGalleryItemClicked(uri: Uri)
+        fun onGalleryItemClicked(uri: Uri, tag: String?)
         fun onShow()
         fun onDismiss()
     }
@@ -85,7 +85,7 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
         init {
             imageView.setOnClickListener {
                 listener?.let { listener ->
-                    listener.onGalleryItemClicked(galleryItemList[adapterPosition].uri)
+                    listener.onGalleryItemClicked(galleryItemList[adapterPosition].uri, tag)
                     dismiss()
                 }
             }
