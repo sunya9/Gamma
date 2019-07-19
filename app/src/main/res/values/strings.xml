@@ -135,4 +135,8 @@
     <string name="show_spoiler">Spoiler: %s</string>
     <string name="discard_changes">Discard changes?</string>
     <string name="discard">Discard</string>
+    <string name="choose_a_image">Choose a image</string>
+    <string name="delete_the_image">Delete the image</string>
+    <string name="undo">Undo</string>
+    <string name="error_template">error: %s</string>
 </resources>

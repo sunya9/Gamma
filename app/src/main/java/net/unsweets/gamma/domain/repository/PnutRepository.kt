@@ -1,6 +1,7 @@
 package net.unsweets.gamma.domain.repository
 
 import android.content.Context
+import android.net.Uri
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
@@ -18,9 +19,27 @@ import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.net.URLConnection
 import java.util.*
 
 class PnutRepository(private val context: Context) : IPnutRepository {
+    override suspend fun updateCover(uri: Uri): PnutResponse<User> {
+        return defaultPnutService.updateCover(createUserImageRequestBody(uri, UserImageKey.Cover)).await()
+    }
+
+    override suspend fun updateAvatar(uri: Uri): PnutResponse<User> {
+        return defaultPnutService.updateAvatar(createUserImageRequestBody(uri, UserImageKey.Avatar)).await()
+    }
+
+    private enum class UserImageKey { Avatar, Cover }
+
+    private fun createUserImageRequestBody(uri: Uri, key: UserImageKey): MultipartBody.Part {
+        val file = java.io.File(uri.path)
+        val mimeType = URLConnection.guessContentTypeFromName(file.path)
+        val content = RequestBody.create(MediaType.parse(mimeType), file)
+        return MultipartBody.Part.createFormData(key.name.toLowerCase(), file.name, content)
+    }
+
     override fun createFile(content: RequestBody, fileBody: FileBody): PnutResponse<File> {
         return defaultPnutService.createFile(
             MultipartBody.Part.createFormData("content", fileBody.name, content),

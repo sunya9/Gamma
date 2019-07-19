@@ -1,5 +1,6 @@
 package net.unsweets.gamma.domain.repository
 
+import android.net.Uri
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.composed.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
@@ -46,6 +47,8 @@ interface IPnutRepository {
     suspend fun unMute(userId: String): PnutResponse<User>
     suspend fun block(userId: String): PnutResponse<User>
     suspend fun unBlock(userId: String): PnutResponse<User>
+    suspend fun updateCover(uri: Uri): PnutResponse<User>
+    suspend fun updateAvatar(uri: Uri): PnutResponse<User>
 
     // channel and messages
     suspend fun getChannels(paginationParam: PaginationParam): PnutResponse<List<Channel>>

@@ -118,6 +118,14 @@ interface PnutService {
     @PATCH("users/me")
     fun patchMyProfile(@Body profileBody: ProfileBody): Call<PnutResponse<User>>
 
+    @POST("users/me/avatar")
+    @Multipart
+    fun updateAvatar(@Part avatar: MultipartBody.Part): Call<PnutResponse<User>>
+
+    @POST("users/me/cover")
+    @Multipart
+    fun updateCover(@Part cover: MultipartBody.Part): Call<PnutResponse<User>>
+
     @GET("users/{userId}/following")
     fun getFollowing(@Path("userId") userId: String, @QueryMap pagination: Map<String, String>): Call<PnutResponse<List<User>>>
 

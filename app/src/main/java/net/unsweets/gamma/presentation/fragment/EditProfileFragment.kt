@@ -5,27 +5,87 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.*
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatDialogFragment
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentEditProfileBinding
 import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.model.io.UpdateProfileInputData
+import net.unsweets.gamma.domain.model.io.UpdateUserImageInputData
 import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
 import net.unsweets.gamma.domain.usecases.UpdateProfileUseCase
+import net.unsweets.gamma.domain.usecases.UpdateUserImageUseCase
+import net.unsweets.gamma.presentation.activity.EditPhotoActivity
+import net.unsweets.gamma.presentation.util.ComputedLiveData
 import net.unsweets.gamma.presentation.util.hideKeyboard
 import net.unsweets.gamma.util.SingleLiveEvent
+import net.unsweets.gamma.util.showAsError
 import javax.inject.Inject
 
-class EditProfileFragment : DaggerAppCompatDialogFragment() {
+class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemListDialogFragment.Listener,
+    DaggerAppCompatDialogFragment() {
+    override fun onMenuShow(menu: Menu, tag: String?) {
+        val imageState = when (tag) {
+            DialogKey.Avatar.name -> viewModel.newAvatarUri.value
+            DialogKey.Cover.name -> viewModel.newCoverUri.value
+            else -> null
+        }
+        when (imageState) {
+            is ImageState.Keep -> {
+                menu.findItem(R.id.menuUndo).isVisible = false
+            }
+            is ImageState.NewImage -> {
+                menu.findItem(R.id.menuUndo).isVisible = true
+            }
+        }
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem, tag: String?) {
+        if (tag == null) return
+        when (menuItem.itemId) {
+            R.id.menuUndo -> undoImage(tag)
+            R.id.menuChooseImage -> when (tag) {
+                DialogKey.Avatar.name -> changeAvatar()
+                DialogKey.Cover.name -> changeCover()
+            }
+        }
+    }
+
+    private fun undoImage(tag: String) = newImageState(tag, ImageState.Keep)
+    private fun newImageState(tag: String, imageState: ImageState) {
+        when (tag) {
+            DialogKey.Avatar.name -> viewModel.newAvatarUri.value = imageState
+            DialogKey.Cover.name -> viewModel.newCoverUri.value = imageState
+        }
+    }
+
+    override fun onGalleryItemClicked(uri: Uri, tag: String?) {
+        when (tag) {
+            DialogKey.Cover.name -> {
+                val newIntent = EditPhotoActivity.newIntent(context, uri)
+                startActivityForResult(newIntent, RequestCode.Cover.ordinal)
+            }
+            DialogKey.Avatar.name -> {
+                val newIntent = EditPhotoActivity.newIntentSquareMode(context, uri)
+                startActivityForResult(newIntent, RequestCode.Avatar.ordinal)
+            }
+        }
+    }
+
+    override fun onShow() {
+    }
+
+    override fun onDismiss() {
+    }
+
     private val loadingObserver = Observer<Boolean> {
         binding.toolbar.menu?.let { menu ->
             val saveItem = menu.findItem(R.id.menuSave) ?: return@let
@@ -34,9 +94,15 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
     }
     private val eventObserver = Observer<Event> {
         when (it) {
-            is Event.ChangeImage -> changeImage(it.imageType)
+            is Event.ShowUpdatePhotoMenu -> showUpdatePhotoMenu(it.imageType)
             is Event.Saved -> saved(it.user)
+            is Event.Failed -> showErrorSnackBar(it.t)
         }
+    }
+
+    private fun showErrorSnackBar(t: Throwable?) {
+        val errorMessage = getString(R.string.error_template, t?.message.orEmpty())
+        Snackbar.make(view!!, errorMessage, Snackbar.LENGTH_SHORT).showAsError()
     }
 
     private enum class IntentKey { User }
@@ -49,17 +115,23 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
         dismiss()
     }
 
-    private fun changeImage(imageType: Event.ChangeImage.ImageType) {
-        when (imageType) {
-            Event.ChangeImage.ImageType.Avatar -> changeAvatar()
-            Event.ChangeImage.ImageType.Cover -> changeCover()
+    private fun showUpdatePhotoMenu(imageType: Event.ShowUpdatePhotoMenu.ImageType) {
+        val key = when (imageType) {
+            Event.ShowUpdatePhotoMenu.ImageType.Avatar -> DialogKey.Avatar
+            Event.ShowUpdatePhotoMenu.ImageType.Cover -> DialogKey.Cover
         }
+        val fragment = SimpleBottomSheetMenuFragment.newInstance(R.menu.update_photo)
+        fragment.show(childFragmentManager, key.name)
     }
 
     private fun changeCover() {
+        val fragment = GalleryItemListDialogFragment.chooseSingle()
+        fragment.show(childFragmentManager, DialogKey.Cover.name)
     }
 
     private fun changeAvatar() {
+        val fragment = GalleryItemListDialogFragment.chooseSingle()
+        fragment.show(childFragmentManager, DialogKey.Avatar.name)
     }
 
     private val savingObserver = Observer<Boolean> {
@@ -74,7 +146,10 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
     }
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this, EditProfileViewModel.Factory(userId, getAuthenticatedUseCase, updateProfileUseCase))
+        ViewModelProviders.of(
+            this,
+            EditProfileViewModel.Factory(userId, getAuthenticatedUseCase, updateProfileUseCase, updateUserImageUseCase)
+        )
             .get(EditProfileViewModel::class.java)
     }
 
@@ -82,6 +157,8 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
     lateinit var getAuthenticatedUseCase: GetAuthenticatedUserUseCase
     @Inject
     lateinit var updateProfileUseCase: UpdateProfileUseCase
+    @Inject
+    lateinit var updateUserImageUseCase: UpdateUserImageUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,6 +201,16 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
                 if (resultCode != Activity.RESULT_OK) return
                 dismiss()
             }
+            RequestCode.Avatar.ordinal -> {
+                if (resultCode != Activity.RESULT_OK || data == null) return
+                val res = EditPhotoActivity.parseIntent(data)
+                viewModel.newAvatarUri.value = ImageState.NewImage(res.uri)
+            }
+            RequestCode.Cover.ordinal -> {
+                if (resultCode != Activity.RESULT_OK || data == null) return
+                val res = EditPhotoActivity.parseIntent(data)
+                viewModel.newCoverUri.value = ImageState.NewImage(res.uri)
+            }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -156,8 +243,8 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
         }
     }
 
-    private enum class RequestCode { Discard }
-    private enum class DialogKey { Discard }
+    private enum class RequestCode { Discard, Avatar, Cover }
+    private enum class DialogKey { Discard, Avatar, Cover }
 
     private val changed: Boolean
         get() =
@@ -198,17 +285,24 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
     }
 
     sealed class Event {
-        data class ChangeImage(val imageType: ImageType) : Event() {
+        data class ShowUpdatePhotoMenu(val imageType: ImageType) : Event() {
             enum class ImageType { Avatar, Cover }
         }
 
         data class Saved(val user: User) : Event()
+        data class Failed(val t: Throwable?) : Event()
     }
 
-    class EditProfileViewModel(
+    sealed class ImageState {
+        object Keep : ImageState()
+        data class NewImage(val uri: Uri) : ImageState()
+    }
+
+    class EditProfileViewModel private constructor(
         userId: String,
         getAuthenticatedUseCase: GetAuthenticatedUserUseCase,
-        private val updateProfileUseCase: UpdateProfileUseCase
+        private val updateProfileUseCase: UpdateProfileUseCase,
+        private val updateUserImageUseCase: UpdateUserImageUseCase
     ) : ViewModel() {
         val event = SingleLiveEvent<Event>()
         val loading = MutableLiveData<Boolean>().apply { value = true }
@@ -219,6 +313,22 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
         val user = MutableLiveData<User>()
         val saving = MutableLiveData<Boolean>()
         var beforeEditingProfile: User? = null
+        val newAvatarUri = MutableLiveData<ImageState>().apply { value = ImageState.Keep }
+        val newCoverUri = MutableLiveData<ImageState>().apply { value = ImageState.Keep }
+        val coverUri: LiveData<String?> = ComputedLiveData.of(user, newCoverUri) { user, newCoverUri ->
+            when (newCoverUri) {
+                is ImageState.NewImage -> newCoverUri.uri.path
+                is ImageState.Keep -> user?.content?.coverImage?.link
+                else -> null
+            }
+        }
+        val avatarUri: LiveData<String?> = ComputedLiveData.of(user, newAvatarUri) { user, newAvatarUri ->
+            when (newAvatarUri) {
+                is ImageState.NewImage -> newAvatarUri.uri.path
+                is ImageState.Keep -> user?.content?.avatarImage?.link
+                else -> null
+            }
+        }
 
         init {
             viewModelScope.launch {
@@ -246,39 +356,82 @@ class EditProfileFragment : DaggerAppCompatDialogFragment() {
             val locale = this.locale.value.orEmpty()
             loading.value = true
             viewModelScope.launch {
-                runCatching {
-                    updateProfileUseCase.run(
-                        UpdateProfileInputData(
-                            name, description, timezone, locale
-                        )
-                    )
-                }.onSuccess {
-                    event.emit(Event.Saved(it.user))
-                }.onFailure {
-
+                val avatarTask = async {
+                    val newAvatarUriValue = newAvatarUri.value
+                    if (newAvatarUriValue is ImageState.NewImage) {
+                        runCatching {
+                            updateUserImageUseCase.run(
+                                UpdateUserImageInputData(
+                                    newAvatarUriValue.uri,
+                                    UpdateUserImageInputData.Type.Avatar
+                                )
+                            )
+                        }
+                    } else Result.success(null)
                 }
+                val coverTask = async {
+                    val newCoverUriValue = newCoverUri.value
+                    runCatching {
+                        if (newCoverUriValue is ImageState.NewImage) {
+                            updateUserImageUseCase.run(
+                                UpdateUserImageInputData(
+                                    newCoverUriValue.uri,
+                                    UpdateUserImageInputData.Type.Cover
+                                )
+                            )
+                        } else Result.success(null)
+                    }
+                }
+                val profileTask = async {
+                    runCatching {
+                        updateProfileUseCase.run(
+                            UpdateProfileInputData(
+                                name, description, timezone, locale
+                            )
+                        )
+                    }
+                }
+                val avatarRes = avatarTask.await()
+                val coverRes = coverTask.await()
+                val profileRes = profileTask.await()
+
+                val eventVal = if (avatarRes.isFailure || coverRes.isFailure || profileRes.isFailure) {
+                    val t = avatarRes.exceptionOrNull() ?: coverRes.exceptionOrNull() ?: profileRes.exceptionOrNull()
+                    Event.Failed(t)
+                } else {
+                    Event.Saved(profileRes.getOrNull()!!.user)
+                }
+                event.emit(eventVal)
                 loading.value = false
             }
+
+
         }
 
         fun showDialogToChangeAvatar() {
-            event.emit(Event.ChangeImage(Event.ChangeImage.ImageType.Avatar))
+            event.emit(Event.ShowUpdatePhotoMenu(Event.ShowUpdatePhotoMenu.ImageType.Avatar))
         }
 
         fun showDialogToChangeCover() {
-            event.emit(Event.ChangeImage(Event.ChangeImage.ImageType.Cover))
+            event.emit(Event.ShowUpdatePhotoMenu(Event.ShowUpdatePhotoMenu.ImageType.Cover))
 
         }
 
         class Factory(
             private val userId: String,
             private val getAuthenticatedUseCase: GetAuthenticatedUserUseCase,
-            private val updateProfileUseCase: UpdateProfileUseCase
+            private val updateProfileUseCase: UpdateProfileUseCase,
+            private val updateUserImageUseCase: UpdateUserImageUseCase
         ) :
             ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return EditProfileViewModel(userId, getAuthenticatedUseCase, updateProfileUseCase) as T
+                return EditProfileViewModel(
+                    userId,
+                    getAuthenticatedUseCase,
+                    updateProfileUseCase,
+                    updateUserImageUseCase
+                ) as T
             }
 
         }
