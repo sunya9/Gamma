@@ -250,7 +250,9 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
             viewModel.beforeEditingProfile?.name != viewModel.name.value ||
                     viewModel.beforeEditingProfile?.timezone != viewModel.timezone.value ||
                     viewModel.beforeEditingProfile?.locale != viewModel.locale.value ||
-                    viewModel.beforeEditingProfile?.content?.text != viewModel.description.value
+                    viewModel.beforeEditingProfile?.content?.text != viewModel.description.value ||
+                    viewModel.newAvatarUri.value !is ImageState.Keep ||
+                    viewModel.newCoverUri.value !is ImageState.Keep
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
