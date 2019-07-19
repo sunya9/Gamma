@@ -105,4 +105,9 @@ class UseCaseModule {
     fun provideDeletePostUseCase(
         pnutRepository: IPnutRepository
     ): DeletePostUseCase = DeletePostUseCase(pnutRepository)
+
+    @Provides
+    fun provideUpdateUserImageUseCase(
+        pnutRepository: IPnutRepository
+    ): UpdateUserImageUseCase = UpdateUserImageUseCase(pnutRepository)
 }
