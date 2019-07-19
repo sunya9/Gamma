@@ -13,8 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatDialogFragment
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentEditProfileBinding
 import net.unsweets.gamma.domain.entity.User
@@ -356,7 +355,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
             val locale = this.locale.value.orEmpty()
             loading.value = true
             viewModelScope.launch {
-                val avatarTask = async {
+                val avatarTask = async(start = CoroutineStart.LAZY) {
                     val newAvatarUriValue = newAvatarUri.value
                     if (newAvatarUriValue is ImageState.NewImage) {
                         runCatching {
@@ -369,7 +368,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                         }
                     } else Result.success(null)
                 }
-                val coverTask = async {
+                val coverTask = async(start = CoroutineStart.LAZY) {
                     val newCoverUriValue = newCoverUri.value
                     runCatching {
                         if (newCoverUriValue is ImageState.NewImage) {
@@ -382,7 +381,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                         } else Result.success(null)
                     }
                 }
-                val profileTask = async {
+                val profileTask = async(start = CoroutineStart.LAZY) {
                     runCatching {
                         updateProfileUseCase.run(
                             UpdateProfileInputData(
@@ -390,6 +389,10 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                             )
                         )
                     }
+                }
+                withContext(Dispatchers.Default) {
+                    avatarTask.await()
+                    coverTask.await()
                 }
                 val avatarRes = avatarTask.await()
                 val coverRes = coverTask.await()
@@ -399,10 +402,11 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                     val t = avatarRes.exceptionOrNull() ?: coverRes.exceptionOrNull() ?: profileRes.exceptionOrNull()
                     Event.Failed(t)
                 } else {
-                    Event.Saved(profileRes.getOrNull()!!.user)
+                    profileRes.getOrNull()?.let { Event.Saved(it.user) }
                 }
                 event.emit(eventVal)
                 loading.value = false
+
             }
 
 
