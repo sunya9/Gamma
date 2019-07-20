@@ -50,13 +50,14 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     private fun receiveNewItems(items: List<T>, insertPosition: Int?) {
         val currentItems = viewModel.items.value ?: ArrayList()
         val insertPos = insertPosition ?: 0
+        val isFirstTime = insertPos == 0 && currentItems.isEmpty()
         viewModel.items.value = currentItems.also { it.addAll(insertPos, items) }
-        adapter.notifyItemRangeInserted(insertPos, items.size)
-        adapter.updateFooter()
         // scroll to top when insert in first time
-        if (currentItems.isEmpty()) {
-            getRecyclerView(view!!).scrollToPosition(0)
-        }
+        if (isFirstTime)
+            adapter.notifyItemRangeChanged(insertPos, items.size)
+        else
+            adapter.notifyItemRangeInserted(insertPos, items.size)
+        adapter.updateFooter()
         viewModel.loading.postValue(false)
 
         getSwipeRefreshLayout(view ?: return).isRefreshing = false
