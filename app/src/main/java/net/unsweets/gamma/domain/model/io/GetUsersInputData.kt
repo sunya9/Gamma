@@ -4,7 +4,6 @@ import net.unsweets.gamma.domain.model.UserListType
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 
 data class GetUsersInputData(
-    val userId: String,
     val userListType: UserListType,
     val getUsersParam: GetUsersParam
 )

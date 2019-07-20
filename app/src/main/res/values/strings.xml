@@ -139,4 +139,6 @@
     <string name="delete_the_image">Delete the image</string>
     <string name="undo">Undo</string>
     <string name="error_template">error: %s</string>
+    <string name="keyword_search">Keyword search</string>
+    <string name="clear_text">Clear text</string>
 </resources>

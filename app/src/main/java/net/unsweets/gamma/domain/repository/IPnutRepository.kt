@@ -2,7 +2,10 @@ package net.unsweets.gamma.domain.repository
 
 import android.net.Uri
 import net.unsweets.gamma.domain.entity.*
-import net.unsweets.gamma.domain.model.params.composed.*
+import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
+import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
+import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
+import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import okhttp3.RequestBody
 
@@ -19,7 +22,7 @@ interface IPnutRepository {
     suspend fun getTrending(getPostsParam: GetPostsParam): PnutResponse<List<Post>>
     suspend fun getGlobal(getPostsParam: GetPostsParam): PnutResponse<List<Post>>
     suspend fun getTagStream(tag: String, getPostsParam: GetPostsParam): PnutResponse<List<Post>>
-    suspend fun searchPosts(params: SearchParam): PnutResponse<List<Post>>
+    suspend fun searchPosts(params: GetPostsParam): PnutResponse<List<Post>>
     suspend fun getThread(postId: String, params: GetPostsParam): PnutResponse<List<Post>>
 
     suspend fun createPost(postBody: PostBody): PnutResponse<Post>
@@ -41,6 +44,7 @@ interface IPnutRepository {
     suspend fun getFollowers(userId: String, getUsersParam: GetUsersParam): PnutResponse<List<User>>
     suspend fun getBlockedUsers(getUsersParam: GetUsersParam): PnutResponse<List<User>>
     suspend fun getMutedUsers(getUsersParam: GetUsersParam): PnutResponse<List<User>>
+    suspend fun searchUsers(getSearchUsersParam: GetUsersParam): PnutResponse<List<User>>
     suspend fun follow(userId: String): PnutResponse<User>
     suspend fun unFollow(userId: String): PnutResponse<User>
     suspend fun mute(userId: String): PnutResponse<User>

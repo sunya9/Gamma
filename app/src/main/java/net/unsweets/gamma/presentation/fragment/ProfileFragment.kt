@@ -184,12 +184,12 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun openFollowerList(user: User) {
-        val fragment = UserListFragment.FollowerListFragment.newInstance(user)
+        val fragment = FollowingFollowerListFragment.FollowerListFragment.newInstance(user)
         addFragment(fragment, "follower")
     }
 
     private fun openFollowingList(user: User) {
-        val fragment = UserListFragment.FollowingListFragment.newInstance(user)
+        val fragment = FollowingFollowerListFragment.FollowingListFragment.newInstance(user)
         addFragment(fragment, "following")
     }
 

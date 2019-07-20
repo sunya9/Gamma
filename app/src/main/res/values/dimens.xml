@@ -39,4 +39,5 @@
     <dimen name="pad_preview_thumbnail">4dp</dimen>
     <dimen name="size_button_loading_indicator">24dp</dimen>
     <dimen name="size_avatar_mini">40dp</dimen>
+    <dimen name="size_normal_icon">24dp</dimen>
 </resources>

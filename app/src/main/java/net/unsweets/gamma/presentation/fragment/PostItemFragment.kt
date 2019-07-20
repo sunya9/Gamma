@@ -311,7 +311,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
         BaseListFragment.BaseListViewModel<Post>() {
         override suspend fun getItems(params: PaginationParam): PnutResponse<List<Post>> {
-            val getPostParam = GetPostsParam().also { it.add(params) }
+            val getPostParam = GetPostsParam(params.toMap()).also { it.add(params) }
             return getPostUseCase.run(GetPostInputData(streamType, getPostParam)).res
         }
 
@@ -337,6 +337,25 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         override val streamType = StreamType.Mentions
     }
 
+    class SearchPostsFragment : PostItemFragment() {
+        private val keyword by lazy {
+            arguments?.getString(BundleKey.Keyword.name, "").orEmpty()
+        }
+
+        private enum class BundleKey { Keyword }
+
+        override val streamType by lazy {
+            StreamType.Search(keyword)
+        }
+
+        companion object {
+            fun newInstance(keyword: String) = SearchPostsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(BundleKey.Keyword.name, keyword)
+                }
+            }
+        }
+    }
 
     companion object {
         fun getHomeStreamInstance() = HomeStream()

@@ -151,7 +151,7 @@ interface PnutService {
     fun unBlock(@Path("userId") userId: String): Call<PnutResponse<User>>
 
     @GET("users/search")
-    fun searchUsers(@Query("q") q: String, @QueryMap queries: Map<String, String>): Call<PnutResponse<List<User>>>
+    fun searchUsers(@QueryMap queries: Map<String, String>): Call<PnutResponse<List<User>>>
 
     // Channel resources
     @GET("channels/{channelId}")

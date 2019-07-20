@@ -18,4 +18,6 @@ sealed class StreamType {
         object Trending : Explore(R.string.trending)
         object Global : Explore(R.string.global)
     }
+
+    data class Search(val keyword: String) : StreamType()
 }

@@ -33,10 +33,7 @@ import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.domain.usecases.UpdateDefaultAccountUseCase
 import net.unsweets.gamma.presentation.adapter.AccountListAdapter
-import net.unsweets.gamma.presentation.fragment.ComposePostFragment
-import net.unsweets.gamma.presentation.fragment.HomeFragment
-import net.unsweets.gamma.presentation.fragment.PostItemFragment
-import net.unsweets.gamma.presentation.fragment.ProfileFragment
+import net.unsweets.gamma.presentation.fragment.*
 import net.unsweets.gamma.presentation.util.DrawerContentFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper.addFragment
 import net.unsweets.gamma.presentation.util.LoginUtil
@@ -197,8 +194,25 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         setupNavigationView()
         setupFragment(savedInstanceState == null)
         setupNavigation()
-        bottomAppBar.inflateMenu(R.menu.main)
+        setupBottomAppBar()
     }
+
+    private fun setupBottomAppBar() {
+        bottomAppBar.inflateMenu(R.menu.main)
+        bottomAppBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menuSearch -> showSearchFragment()
+            }
+            true
+        }
+    }
+
+    private fun showSearchFragment() {
+        val existFragment =
+            addFragment(supportFragmentManager, SearchFragment.newInstance(), SearchFragment::class.java.simpleName)
+        (existFragment as? SearchFragment)?.focusToEditText()
+    }
+
 
     override fun onStart() {
         super.onStart()

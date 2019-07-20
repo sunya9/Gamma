@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="net.unsweets.gamma.presentation.fragment.SearchFragment.SearchViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".presentation.fragment.SearchFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/searchAppBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/toolbarBg">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/bg_search_toolbar"
+                android:elevation="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:navigationIcon="@drawable/ic_arrow_back_white_24dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false">
+
+                    <EditText
+                        android:id="@+id/keywordEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/keyword_search"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@={viewModel.keyword}"
+                        tools:ignore="Autofill" />
+
+                    <ImageView
+                        android:layout_width="@dimen/size_normal_icon"
+                        android:layout_height="@dimen/size_normal_icon"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="@dimen/margin_regular"
+                        android:clickable="true"
+                        android:contentDescription="@string/clear_text"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:onClick="@{() -> viewModel.clear()}"
+                        android:src="@drawable/ic_close_black_24dp"
+                        android:tint="@color/toolbarIcon"
+                        android:visibility="@{safeUnbox(viewModel.clearButtonVisibility)}" />
+                </FrameLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/searchTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:tabGravity="center"
+                app:tabIndicatorColor="@color/colorPrimary"
+                app:tabMode="auto" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/searchViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

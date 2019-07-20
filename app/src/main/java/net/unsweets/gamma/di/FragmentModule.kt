@@ -35,10 +35,10 @@ abstract class FragmentModule {
     abstract fun contributeUserPostFragment(): SpecificUserPostFragment.UserPostFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFollowerListFragment(): UserListFragment.FollowerListFragment
+    abstract fun contributeFollowerListFragment(): FollowingFollowerListFragment.FollowerListFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeFollowingListFragment(): UserListFragment.FollowingListFragment
+    abstract fun contributeFollowingListFragment(): FollowingFollowerListFragment.FollowingListFragment
 
     // other streams
     @ContributesAndroidInjector
@@ -74,4 +74,12 @@ abstract class FragmentModule {
     @ContributesAndroidInjector
     abstract fun contributeAccountPreferenceFragment(): SettingsActivity.AccountPreferenceFragment
 
+    @ContributesAndroidInjector
+    abstract fun contributeSearchFragment(): SearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSearchPostsFragment(): PostItemFragment.SearchPostsFragment
+
+    @ContributesAndroidInjector
+    abstract fun conrtirbuteSearchUserListFragment(): UserListFragment.SearchUserListFragment
 }
