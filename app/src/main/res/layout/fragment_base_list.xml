@@ -36,11 +36,4 @@
             tools:context=".presentation.fragment.PostItemFragment"
             tools:listitem="@layout/fragment_post_item" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:layout_width="match_parent"
-        android:layout_gravity="bottom"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminate="true"
-        android:id="@+id/progressBar"
-        android:layout_height="wrap_content" />
 </FrameLayout>
