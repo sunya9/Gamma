@@ -23,9 +23,9 @@ object FragmentHelper {
         fragment: Fragment,
         tag: String,
         transitionMap: Map<View, String>?
-    ) {
-        val fm = getFragmentManagerFromContext(context) ?: return
-        addFragment(fm, fragment, tag, transitionMap)
+    ): Fragment? {
+        val fm = getFragmentManagerFromContext(context) ?: return null
+        return addFragment(fm, fragment, tag, transitionMap)
     }
 
     fun addFragment(
@@ -34,8 +34,8 @@ object FragmentHelper {
         tag: String,
         sharedElement: View? = null,
         transitionName: String? = null
-    ) {
-        addFragment(fm, fragment, tag, createTransitionMap(sharedElement, transitionName))
+    ): Fragment? {
+        return addFragment(fm, fragment, tag, createTransitionMap(sharedElement, transitionName))
     }
 
     private fun createTransitionMap(sharedElement: View?, transitionName: String?): Map<View, String> {
@@ -59,9 +59,9 @@ object FragmentHelper {
         fragment: Fragment,
         tag: String,
         transitionMap: Map<View, String>?
-    ) {
+    ): Fragment? {
         val foundFragment = fm.findFragmentById(R.id.fragmentPlaceholder)
-        if (foundFragment == null || foundFragment == fragment || foundFragment.tag == tag) return
+        if (foundFragment == null || foundFragment == fragment || foundFragment.tag == tag) return foundFragment
         val ft = fm
             .beginTransaction()
 //            .setReorderingAllowed(true)
@@ -92,6 +92,7 @@ object FragmentHelper {
 //        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         ft.addToBackStack(tag)
         ft.commit()
+        return null
     }
 
     private fun getFragmentTag(tag: String, index: Int): String = "$tag-$index"
