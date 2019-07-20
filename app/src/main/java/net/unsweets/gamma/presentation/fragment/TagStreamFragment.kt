@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import kotlinx.android.synthetic.main.fragment_explore.view.*
+import kotlinx.android.synthetic.main.list_with_toolbar.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.model.StreamType
 
@@ -14,8 +14,8 @@ class TagStreamFragment : PostItemFragment() {
         StreamType.Tag(hashTag)
     }
 
-    override fun getFragmentLayout(): Int = R.layout.fragment_explore
-    override fun getRecyclerView(view: View): RecyclerView = view.exploreList
+    override fun getFragmentLayout(): Int = R.layout.list_with_toolbar
+    override fun getRecyclerView(view: View): RecyclerView = view.itemList
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout = view.swipeRefreshLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
