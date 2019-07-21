@@ -137,7 +137,7 @@ class SearchFragment : BaseFragment() {
 
         override fun getPageTitle(position: Int): CharSequence? = context.getString(fragments[position].titleRes)
 
-        override fun getCount(): Int = fragments.size
+        override fun getCount(): Int = if (pagerInfo.keyword.isNotEmpty()) fragments.size else 0
         override fun getItemId(position: Int): Long {
             return pagerInfo.time + position
         }
