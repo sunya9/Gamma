@@ -42,9 +42,10 @@ class ThreadFragment : PostItemFragment() {
     }
 
     companion object {
-        fun newInstance(post: Post) = ThreadFragment().apply {
+        fun newInstance(post: Post, mainPostId: String = "") = ThreadFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(BundleKey.Post.name, post)
+                putString(PostItemFragment.BundleKey.MainPostId.name, mainPostId)
             }
         }
     }

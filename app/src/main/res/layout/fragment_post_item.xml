@@ -145,6 +145,7 @@
             android:layout_marginEnd="@dimen/margin_regular"
             android:layout_marginBottom="@dimen/margin_regular"
             android:orientation="vertical"
+            app:layout_constraintVertical_bias="0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/screenNameTextView"
@@ -183,6 +184,36 @@
                     app:tabMaxWidth="@dimen/width_thumbnail_tab_item"
                     app:tabRippleColor="@null" />
             </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/detailInfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_regular"
+                android:background="@drawable/divider_top"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/margin_regular">
+
+                <TextView
+                    android:id="@+id/replyCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    tools:text="0\nReplies" />
+
+                <TextView
+                    android:id="@+id/repostCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/margin_half"
+                    tools:text="0\nReposts" />
+
+                <TextView
+                    android:id="@+id/starCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/margin_half"
+                    tools:text="0\nStars" />
+            </LinearLayout>
         </LinearLayout>
 
         <TextView

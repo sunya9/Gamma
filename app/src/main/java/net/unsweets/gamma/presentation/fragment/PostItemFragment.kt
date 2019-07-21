@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -47,6 +48,17 @@ import javax.inject.Inject
 abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder>,
     ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback {
+    enum class BundleKey { MainPostId }
+
+    private val mainPostId by lazy {
+        arguments?.getString(BundleKey.MainPostId.name, "") ?: ""
+    }
+
+    override fun overrideOptions(options: BaseListRecyclerViewAdapter.BaseListRecyclerViewAdapterOptions<Post, PostViewHolder>): BaseListRecyclerViewAdapter.BaseListRecyclerViewAdapterOptions<Post, PostViewHolder> {
+        val defaultOptions = super.overrideOptions(options)
+        return defaultOptions.copy(mainItemId = mainPostId)
+    }
+
     override fun ok(position: Int, post: Post) {
         PostService.newDeletePostIntent(context, post.id)
         adapter.removeItem(post)
@@ -105,13 +117,13 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         PostViewHolder(mView, itemTouchHelper)
 
     override fun onClickItemListener(item: Post) {
-        val fragment = getThreadInstance(item)
+        val fragment = getThreadInstance(item, item.id)
         addFragment(fragment, item.id)
     }
 
     private enum class DialogKey { Compose, DeletePost }
 
-    override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder, position: Int) {
+    override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder, position: Int, isMainItem: Boolean) {
         val url = item.mainPost.user?.let {
             "${it.content.avatarImage.link}?w=96"
         } ?: "" //
@@ -251,6 +263,21 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewHolder.thumbnailViewPagerFrameLayout.visibility = View.GONE
             viewHolder.thumbnailViewPager.adapter = null
         }
+        viewHolder.detailInfoLayout.visibility = getVisibility(isMainItem)
+        val replyCount = item.mainPost.counts?.replies ?: 0
+        val repostCount = item.mainPost.counts?.reposts ?: 0
+        val starCount = item.mainPost.counts?.bookmarks ?: 0
+        val replyText = resources.getQuantityString(R.plurals.reply_count_template, replyCount, replyCount)
+        val repostText = resources.getQuantityString(R.plurals.repost_count_template, repostCount, repostCount)
+        val starText = resources.getQuantityString(R.plurals.star_count_template, starCount, starCount)
+        viewHolder.replyCountTextView.text = replyText
+        viewHolder.repostCountTextView.text = repostText
+        viewHolder.starCountTextView.text = starText
+
+        viewHolder.itemView.let {
+            it.isClickable = !isMainItem
+            it.isFocusable = !isMainItem
+        }
     }
 
     private fun getVisibility(b: Boolean): Int = if (b) View.VISIBLE else View.GONE
@@ -286,6 +313,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
 
     private enum class StateKey { CurrentPosition }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = getRecyclerView(view)
@@ -330,6 +358,11 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val spoilerMaskLayout: FrameLayout = itemView.spoilerMaskLayout
         val showSpoilerButton: MaterialButton = itemView.showSpoilerButton
         val contentsWrapperLayout: LinearLayout = itemView.contentsWrapperLayout
+        val detailInfoLayout: LinearLayout = itemView.detailInfoLayout
+        val replyCountTextView: TextView = itemView.replyCountTextView
+        val repostCountTextView: TextView = itemView.repostCountTextView
+        val starCountTextView: TextView = itemView.starCountTextView
+        val postItemForegroundView: ConstraintLayout = itemView.postItemForegroundView
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
@@ -395,6 +428,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         fun getUserPostInstance(userId: String) = SpecificUserPostFragment.UserPostFragment.newInstance(userId)
         fun getStarInstance(userId: String = "me") = SpecificUserPostFragment.StarsPostFragment.newInstance(userId)
 
-        fun getThreadInstance(post: Post) = ThreadFragment.newInstance(post)
+        fun getThreadInstance(post: Post, mainPostId: String = "") = ThreadFragment.newInstance(post, mainPostId)
     }
 }

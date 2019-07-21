@@ -141,4 +141,19 @@
     <string name="error_template">error: %s</string>
     <string name="keyword_search">Keyword search</string>
     <string name="clear_text">Clear text</string>
+    <plurals name="reply_count_template">
+        <item quantity="zero">%d\nreplies</item>
+        <item quantity="one">%d\nreply</item>
+        <item quantity="other">%d\nreplies</item>
+    </plurals>
+    <plurals name="repost_count_template">
+        <item quantity="zero">%d\nreposts</item>
+        <item quantity="one">%d\nrepost</item>
+        <item quantity="other">%d\nreposts</item>
+    </plurals>
+    <plurals name="star_count_template">
+        <item quantity="zero">%d\nstars</item>
+        <item quantity="one">%d\nstar</item>
+        <item quantity="other">%d\nstars</item>
+    </plurals>
 </resources>
