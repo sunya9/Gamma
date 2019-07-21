@@ -12,6 +12,7 @@ import net.unsweets.gamma.di.AppModule
 import net.unsweets.gamma.di.DaggerAppComponent
 import net.unsweets.gamma.domain.usecases.SetupTokenUseCase
 import net.unsweets.gamma.presentation.activity.LoginActivity
+import net.unsweets.gamma.service.ClearCacheService
 
 class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
     val module by lazy { AppModule(this) }
@@ -26,6 +27,7 @@ class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
             .setReplaceAll(true)
         EmojiCompat.init(config)
         if (!setToken()) return backToLoginActivity() // failed
+        ClearCacheService.startService(this)
     }
 
     private fun backToLoginActivity() {
