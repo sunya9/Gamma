@@ -3,6 +3,7 @@ package net.unsweets.gamma.presentation.fragment
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
+import android.transition.TransitionSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -11,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.app.SharedElementCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -38,7 +40,6 @@ import net.unsweets.gamma.presentation.adapter.ThumbnailViewPagerAdapter
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.util.DateUtil.Companion.getShortDateStr
 import net.unsweets.gamma.service.PostService
-import net.unsweets.gamma.util.LogUtil
 import java.util.*
 import javax.inject.Inject
 
@@ -66,7 +67,14 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
     private val entityListener: View.OnTouchListener = EntityOnTouchListener()
 
-    private lateinit var moveTransition: Transition
+    private val moveTransition: Transition by lazy {
+        val transition =
+            TransitionInflater.from(context)
+                .inflateTransition(R.transition.image_shared_element_transition)
+        val duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+        transition.duration = duration
+        transition
+    }
 
     override lateinit var viewModel: PostItemViewModel
     private val slideToLeftIn by lazy {
@@ -86,11 +94,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewModel = ViewModelProviders.of(this, PostItemViewModel.Factory(streamType, getPostUseCase))
             .get(PostItemViewModel::class.java)
         super.onCreate(savedInstanceState)
-        moveTransition =
-            TransitionInflater.from(context)
-                .inflateTransition(R.transition.image_shared_element_transition)
-        val duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-        moveTransition.duration = duration
+        if (savedInstanceState != null)
+            currentPosition = savedInstanceState.getInt(StateKey.CurrentPosition.name, -1)
+
     }
 
     override val baseListListener by lazy { this }
@@ -123,26 +129,21 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewHolder.avatarView.isEnabled = true
             GlideApp.with(this).load(url).into(viewHolder.avatarView)
             val iconTransition = getString(R.string.icon_transition)
-            val profileTransition = getString(R.string.profile_transition)
-            val iconTransitionName = "$iconTransition + $position ${viewHolder.hashCode()}"
+            val iconTransitionName =
+                "$iconTransition + ${viewHolder.adapterPosition} ${streamType::class.java.simpleName}"
             viewHolder.avatarView.transitionName = iconTransitionName
             viewHolder.avatarView.setOnClickListener {
-                LogUtil.e("it.transitionName: ${it.transitionName}")
-                val transitionMap = HashMap<View, String>(
+                currentPosition = viewHolder.adapterPosition
+                val transitionMap = HashMap(
                     hashMapOf<View, String>(
                         Pair(it, it.transitionName)
-//                    Pair(viewHolder.itemView, profileTransition)
                     )
                 )
                 val id = item.mainPost.user?.id ?: return@setOnClickListener
-//            viewHolder.itemView.transitionName = profileTransition
                 val fragment = ProfileFragment.newInstance(id, url, item.mainPost.user, it.transitionName)
                 sharedElementReturnTransition = moveTransition
-                sharedElementEnterTransition = moveTransition
                 fragment.sharedElementEnterTransition = moveTransition
-                fragment.sharedElementReturnTransition = moveTransition
-                fragment.enterTransition = slideToLeftIn
-                fragment.exitTransition = slideToLeftOut
+                (fragment.exitTransition as? TransitionSet)?.excludeTarget(it.transitionName, true)
                 FragmentHelper.addFragment(context!!, fragment, id, transitionMap)
             }
             item.mainPost.user?.let {
@@ -277,10 +278,26 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     override fun getItemLayout(): Int = R.layout.fragment_post_item
 
+    private var currentPosition = -1
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(StateKey.CurrentPosition.name, currentPosition)
+    }
+
+    private enum class StateKey { CurrentPosition }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = getRecyclerView(view)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+        setExitSharedElementCallback(object : SharedElementCallback() {
+            override fun onMapSharedElements(names: MutableList<String>?, sharedElements: MutableMap<String, View>?) {
+                val viewHolder = recyclerView.findViewHolderForAdapterPosition(currentPosition) ?: return
+                if (names == null || sharedElements == null) return
+                sharedElements[names[0]] = viewHolder.itemView.findViewById(R.id.avatarImageView)
+            }
+        })
+
     }
 
     // TODO: create the view holder for deleted post

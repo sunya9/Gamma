@@ -109,7 +109,7 @@ class ProfileFragment : BaseFragment() {
         toolbarSetup(binding.appBar, binding.swipeRefreshLayout)
         setEnterSharedElementCallback(object : SharedElementCallback() {
             override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
-                sharedElements[getString(R.string.icon_transition)] = binding.circleImageView
+                sharedElements[names[0]] = binding.circleImageView
             }
         })
 
