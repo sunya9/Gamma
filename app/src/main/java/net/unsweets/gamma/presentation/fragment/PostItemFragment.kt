@@ -69,7 +69,12 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     private lateinit var moveTransition: Transition
 
     override lateinit var viewModel: PostItemViewModel
-
+    private val slideToLeftIn by lazy {
+        TransitionInflater.from(context).inflateTransition(R.transition.slide_to_left_in)
+    }
+    private val slideToLeftOut by lazy {
+        TransitionInflater.from(context).inflateTransition(R.transition.slide_to_left_out)
+    }
     private val postsObserver = Observer<List<Post>> {
 
     }
@@ -136,6 +141,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 sharedElementEnterTransition = moveTransition
                 fragment.sharedElementEnterTransition = moveTransition
                 fragment.sharedElementReturnTransition = moveTransition
+                fragment.enterTransition = slideToLeftIn
+                fragment.exitTransition = slideToLeftOut
                 FragmentHelper.addFragment(context!!, fragment, id, transitionMap)
             }
             item.mainPost.user?.let {

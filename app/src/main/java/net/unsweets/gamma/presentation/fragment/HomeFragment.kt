@@ -3,6 +3,7 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,9 @@ class HomeFragment : Fragment(), DrawerContentFragment {
     )
 
     override val menuItemId = R.id.home
+    private val slideToLeftOut by lazy {
+        TransitionInflater.from(context).inflateTransition(R.transition.slide_to_left_out)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

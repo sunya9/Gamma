@@ -64,14 +64,12 @@ object FragmentHelper {
         if (foundFragment == null || foundFragment == fragment || foundFragment.tag == tag) return foundFragment
         val ft = fm
             .beginTransaction()
-//            .setReorderingAllowed(true)
             .setCustomAnimations(
-                android.R.anim.fade_in,
-                android.R.anim.fade_out,
-                android.R.anim.slide_in_left,
-                android.R.anim.slide_out_right
+                R.anim.slide_in_left,
+                R.anim.slide_out_left,
+                R.anim.slide_in_right,
+                R.anim.slide_out_right
             )
-//            .setReorderingAllowed(true)
 
         transitionMap?.forEach {
             val sharedElement = it.key
