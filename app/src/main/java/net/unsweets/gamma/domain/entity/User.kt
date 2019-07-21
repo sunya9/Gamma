@@ -32,6 +32,7 @@ data class User(
 ) : Parcelable, Pageable, Unique {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
+
     @Parcelize
     data class UserContent(
         @Json(name = "avatar_image") val avatarImage: Avatar,
@@ -40,7 +41,7 @@ data class User(
         override val html: String?,
         val markdownText: String?,
         override val text: String?
-    ): HaveEntities, Parcelable
+    ) : HaveEntities, Parcelable
 
     @Parcelize
     data class UserCount(
@@ -65,11 +66,19 @@ data class User(
     ) : Parcelable
 
     enum class AccountType {
-        @Json(name = "human") HUMAN,
-        @Json(name = "feed") FEED,
-        @Json(name = "bot") BOT
+        @Json(name = "human")
+        HUMAN,
+        @Json(name = "feed")
+        FEED,
+        @Json(name = "bot")
+        BOT
     }
 
     @IgnoredOnParcel
     val me = followsYou && youFollow && !youCanFollow
+
+    enum class AvatarSize(val size: Int) { Mini(24), Small(48), Normal(64), Large(96) }
+
+    fun getAvatarUrl(avatarSize: AvatarSize = AvatarSize.Normal) =
+        "https://api.pnut.io/v0/users/$id/avatar?h=${avatarSize.size}&w=${avatarSize.size}"
 }

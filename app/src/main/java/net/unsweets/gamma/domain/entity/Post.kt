@@ -28,7 +28,9 @@ data class Post(
     @Json(name = "you_bookmarked") var youBookmarked: Boolean?,
     @Json(name = "you_reposted") var youReposted: Boolean?,
     @Json(name = "pagination_id") override var paginationId: String?,
-    @Json(name = "raw") var raw: List<Raw<*>>?
+    @Json(name = "raw") var raw: List<Raw<*>>?,
+    @Json(name = "bookmarked_by") val bookmarkedBy: List<User>?,
+    @Json(name = "reposted_by") val repostedBy: List<User>?
 ) : Parcelable, Pageable, Unique {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
@@ -66,5 +68,12 @@ data class Post(
             val spoilerDate = it.value.expiredAt ?: return@let true
             spoilerDate.time > Calendar.getInstance().time.time
         } ?: false
+    }
+
+    @IgnoredOnParcel
+    val reactionUsers: List<User> = mutableListOf<User>().let {
+        if (bookmarkedBy != null) it.addAll(bookmarkedBy)
+        if (repostedBy != null) it.addAll(repostedBy)
+        it.distinctBy { user -> user.id }
     }
 }

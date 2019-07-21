@@ -14,10 +14,12 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -29,6 +31,7 @@ import kotlinx.android.synthetic.main.fragment_post_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
+import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.entity.raw.OEmbed
 import net.unsweets.gamma.domain.model.StreamType
 import net.unsweets.gamma.domain.model.io.GetPostInputData
@@ -37,6 +40,7 @@ import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.GetPostUseCase
 import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
+import net.unsweets.gamma.presentation.adapter.ReactionUsersAdapter
 import net.unsweets.gamma.presentation.adapter.ThumbnailViewPagerAdapter
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.util.DateUtil.Companion.getShortDateStr
@@ -278,6 +282,32 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             it.isClickable = !isMainItem
             it.isFocusable = !isMainItem
         }
+        viewHolder.reactionUsersRecyclerView.also {
+            it.adapter = if (isMainItem) ReactionUsersAdapter(
+                item.mainPost.reactionUsers,
+                reactionUsersAdapterListener
+            ) else null
+            if (isMainItem)
+                it.addItemDecoration(reactionSpacerDecoration)
+            else
+                it.removeItemDecoration(reactionSpacerDecoration)
+        }
+    }
+
+    private val reactionSpacerDecoration by lazy {
+        val drawable = ContextCompat.getDrawable(context!!, R.drawable.spacer_width_half)!!
+        DividerItemDecoration(context, RecyclerView.HORIZONTAL).also {
+            it.setDrawable(drawable)
+        }
+    }
+
+    private val reactionUsersAdapterListener by lazy {
+        object : ReactionUsersAdapter.Listener {
+            override fun onUserClick(user: User) {
+                val fragment = ProfileFragment.newInstance(user.id, user.getAvatarUrl(), user)
+                addFragment(fragment, user.username)
+            }
+        }
     }
 
     private fun getVisibility(b: Boolean): Int = if (b) View.VISIBLE else View.GONE
@@ -363,6 +393,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val repostCountTextView: TextView = itemView.repostCountTextView
         val starCountTextView: TextView = itemView.starCountTextView
         val postItemForegroundView: ConstraintLayout = itemView.postItemForegroundView
+        val reactionUsersRecyclerView: RecyclerView = itemView.reactionUsersRecyclerView
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
