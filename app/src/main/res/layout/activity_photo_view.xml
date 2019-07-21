@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize" />
 
-            <androidx.viewpager.widget.ViewPager
+            <net.unsweets.gamma.presentation.view.AvoidExceptionViewPager
                 android:id="@+id/mediaViewPager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
