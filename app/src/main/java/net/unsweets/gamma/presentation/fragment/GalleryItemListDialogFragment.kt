@@ -61,6 +61,7 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menuCamera -> openCamera()
+            R.id.menuLibrary -> openLibrary()
             else -> return super.onOptionsItemSelected(item)
 
         }
@@ -89,7 +90,7 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    enum class RequestCode { TakePhoto }
+    enum class RequestCode { TakePhoto, Library }
 
     // https://developer.android.com/training/camera/photobasics
     private fun openCamera() {
@@ -110,6 +111,14 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private fun openLibrary() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "image/*"
+        }
+        startActivityForResult(intent, RequestCode.Library.ordinal)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             RequestCode.TakePhoto.ordinal -> {
@@ -119,7 +128,12 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
                     listener?.onGalleryItemClicked(it, tag)
                     dismiss()
                 }
-
+            }
+            RequestCode.Library.ordinal -> {
+                if (resultCode != Activity.RESULT_OK || data == null) return
+                val uri = data.data ?: return
+                listener?.onGalleryItemClicked(uri, tag)
+                dismiss()
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
