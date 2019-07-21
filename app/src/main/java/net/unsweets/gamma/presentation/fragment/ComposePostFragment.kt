@@ -45,8 +45,8 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         CX, CY, Text, ReplyTarget
     }
 
-    private enum class FragmentKey {
-        Gallery
+    private enum class DialogKey {
+        Gallery, Discard
     }
 
     private enum class PermissionRequestCode {
@@ -70,7 +70,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         }
     }
 
-    private enum class RequestCode { EditPhoto }
+    private enum class RequestCode { EditPhoto, Discard }
 
     private val thumbnailAdapterListener = object : ThumbnailAdapter.Callback {
         override fun onClick(uri: Uri, index: Int) {
@@ -150,6 +150,10 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
                 if (resultCode != Activity.RESULT_OK || data == null) return
                 updatePhoto(data)
             }
+            RequestCode.Discard.ordinal -> {
+                if (resultCode != Activity.RESULT_OK) return
+                cancelToCompose(true)
+            }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -217,7 +221,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
         dialog.setOnKeyListener { _, keyCode, _ ->
             if (keyCode != KeyEvent.KEYCODE_BACK) return@setOnKeyListener false
-            exitReveal()
+            cancelToCompose()
             true
         }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -251,7 +255,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     private fun showGalleryDialog() {
         hideKeyboard(binding.composeTextEditText)
         val fragment = GalleryItemListDialogFragment.chooseMultiple()
-        fragment.show(childFragmentManager, FragmentKey.Gallery.name)
+        fragment.show(childFragmentManager, DialogKey.Gallery.name)
     }
 
     override fun onGalleryItemClicked(uri: Uri, tag: String?) {
@@ -341,9 +345,18 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         viewModel.nsfw.value = nextValue
     }
 
-    private fun cancelToCompose() {
-        // TODO: confirm to really finish or not
-        finishWithAnim()
+
+    private fun cancelToCompose(force: Boolean = false) {
+        val isChanged = viewModel.initialText != viewModel.text.value || adapter.getItems().isNotEmpty()
+        if (!force && isChanged) {
+            val fragment = BasicDialogFragment.Builder()
+                .setMessage(R.string.discard_changes)
+                .setPositive(R.string.discard)
+                .build(RequestCode.Discard.ordinal)
+            fragment.show(childFragmentManager, DialogKey.Discard.name)
+        } else {
+            finishWithAnim()
+        }
     }
 
     private fun finishWithAnim() {
@@ -423,14 +436,16 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         val enableSendButton: LiveData<Boolean> =
             Transformations.map(counter) { (0 <= it) && it < maxTextLength }
         val previewAttachmentsVisibility = MutableLiveData<Int>().apply { value = View.GONE }
+        val initialText by lazy {
+            val replyTargetUserUsername = replyTargetArg?.user?.username
+            if (replyTargetUserUsername != null && mentionToMyself)
+                "@$replyTargetUserUsername "
+            else
+                ""
+        }
 
         init {
-            val replyTargetUserUsername = replyTargetArg?.user?.username
-            text.value =
-                if (replyTargetUserUsername != null && mentionToMyself)
-                    "@$replyTargetUserUsername "
-                else
-                    ""
+            text.value = initialText
         }
 
         class Factory(
