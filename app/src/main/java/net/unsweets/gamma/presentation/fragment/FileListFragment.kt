@@ -40,7 +40,7 @@ class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>
         super.onCreate(savedInstanceState)
     }
 
-    override fun onBindViewHolder(item: File, viewHolder: FileViewHolder, position: Int) {
+    override fun onBindViewHolder(item: File, viewHolder: FileViewHolder, position: Int, isMainItem: Boolean) {
         viewHolder.filesItemTitleTextView.text = item.name
         viewHolder.filesItemDateTextView.text = item.createdAt.toFormatString(context)
         viewHolder.filesItemSubTitleTextView.text = item.mimeType

@@ -48,7 +48,7 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
         addFragment(fragment, item.id)
     }
 
-    override fun onBindViewHolder(item: User, viewHolder: UserViewHolder, position: Int) {
+    override fun onBindViewHolder(item: User, viewHolder: UserViewHolder, position: Int, isMainItem: Boolean) {
         GlideApp.with(this).load(item.content.avatarImage.link).into(viewHolder.avatarView)
         viewHolder.screenNameTextView.text = item.username
         viewHolder.handleNameTextView.text = item.name

@@ -69,8 +69,21 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     }
 
     protected val adapter: BaseListRecyclerViewAdapter<T, V> by lazy {
-        BaseListRecyclerViewAdapter(viewModel.items, viewModel.olderDirectionMeta, baseListListener, reverse)
+        BaseListRecyclerViewAdapter(overrideOptions(defaultOptions))
     }
+
+    private val defaultOptions by lazy {
+        BaseListRecyclerViewAdapter.BaseListRecyclerViewAdapterOptions(
+            viewModel.items, viewModel.olderDirectionMeta, baseListListener, reverse
+        )
+    }
+
+    open fun overrideOptions(
+        options: BaseListRecyclerViewAdapter.BaseListRecyclerViewAdapterOptions<T, V>
+    ): BaseListRecyclerViewAdapter.BaseListRecyclerViewAdapterOptions<T, V> {
+        return options
+    }
+
     abstract val viewModel: BaseListViewModel<T>
 
     fun scrollToTop() {

@@ -46,7 +46,12 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
     override fun onClickItemListener(item: Interaction) {
     }
 
-    override fun onBindViewHolder(item: Interaction, viewHolder: InteractionViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        item: Interaction,
+        viewHolder: InteractionViewHolder,
+        position: Int,
+        isMainItem: Boolean
+    ) {
         val concreteItem = when (item.action) {
             Action.Bookmark -> item as Interaction.Bookmark
             Action.PollResponse -> item as Interaction.PollResponse
