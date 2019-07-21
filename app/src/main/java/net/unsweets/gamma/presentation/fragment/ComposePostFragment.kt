@@ -257,6 +257,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     override fun onGalleryItemClicked(uri: Uri, tag: String?) {
         adapter.add(uri)
         viewModel.previewAttachmentsVisibility.value = View.VISIBLE
+
     }
 
 
@@ -265,13 +266,13 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     }
 
     override fun onDismiss() {
-        showKeyboard(binding.composeTextEditText)
-        binding.composeTextEditText.apply {
-            requestFocus()
-            visibility = View.INVISIBLE
-            visibility = View.VISIBLE
-            requestFocus()
+        binding.composeTextEditText.post {
+            binding.composeTextEditText.apply {
+                requestFocus()
+            }
+            showKeyboardForce(binding.composeTextEditText.context)
         }
+
     }
 
     private fun revealAnimation(root: View) {

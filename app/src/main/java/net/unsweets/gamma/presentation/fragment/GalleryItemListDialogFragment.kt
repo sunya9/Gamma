@@ -3,6 +3,7 @@ package net.unsweets.gamma.presentation.fragment
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -21,6 +22,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_gallery_item_list_dialog.*
 import kotlinx.android.synthetic.main.fragment_gallery_item_list_dialog_item.view.*
@@ -159,11 +162,50 @@ class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.let {
-            it.setOnShowListener { listener?.onShow() }
+            it.setOnShowListener {
+                listener?.onShow()
+                setupDialogConfiguration(it)
+            }
             it.setOnDismissListener { listener?.onDismiss() }
             it.setOnCancelListener { listener?.onDismiss() }
         }
         return dialog
+    }
+
+    private fun setupDialogConfiguration(it: DialogInterface) {
+        val dialog = it as? BottomSheetDialog ?: return
+        val dbs = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) ?: return
+        val behaviour = BottomSheetBehavior.from(dbs)
+        behaviour.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    listener?.onDismiss()
+                    dismiss()
+                }
+            }
+        })
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        dialog
+            ?.window
+            ?.decorView
+            ?.findViewById<View>(com.google.android.material.R.id.touch_outside)
+            ?.setOnClickListener { dismiss() }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        listener?.onDismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        listener?.onDismiss()
     }
 
     private inner class ViewHolder internal constructor(inflater: LayoutInflater, parent: ViewGroup) :
