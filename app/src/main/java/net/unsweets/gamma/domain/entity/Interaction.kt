@@ -90,7 +90,7 @@ sealed class Interaction(
 
     enum class Action(@DrawableRes val iconRes: Int, @StringRes val actionRes: Int) {
         @Json(name = "repost")
-        Repost(R.drawable.ic_cached_black_24dp, R.string.action_reposted_by),
+        Repost(R.drawable.ic_repeat_black_24dp, R.string.action_reposted_by),
         @Json(name = "bookmark")
         Bookmark(R.drawable.ic_star_black_24dp, R.string.action_starred_by),
         @Json(name = "reply")
