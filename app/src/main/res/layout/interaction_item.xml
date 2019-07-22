@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    app:cardElevation="0dp"
     android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
     app:contentPadding="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,15 +26,28 @@
             tools:ignore="ContentDescription"
             tools:src="@drawable/ic_star_black_24dp" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reactionUsersRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_half"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iconView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:spanCount="1"
+            tools:listitem="@layout/reaction_user_item" />
+
         <TextView
             android:id="@+id/messageTextView"
             android:layout_width="0dp"
+            android:layout_marginTop="@dimen/margin_half"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             app:layout_constraintEnd_toStartOf="@id/timeTextView"
-            app:layout_constraintStart_toEndOf="@id/iconView"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/reactionUsersRecyclerView"
+            app:layout_constraintTop_toBottomOf="@id/reactionUsersRecyclerView"
             tools:text="This post is starred by @testuser" />
 
         <TextView

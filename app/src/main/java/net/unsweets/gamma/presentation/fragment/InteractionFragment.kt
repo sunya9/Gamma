@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.interaction_item.view.*
 import net.unsweets.gamma.R
@@ -23,11 +25,13 @@ import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.GetInteractionUseCase
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
+import net.unsweets.gamma.presentation.adapter.ReactionUsersAdapter
 import net.unsweets.gamma.presentation.util.DateUtil
 import javax.inject.Inject
 
 class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.InteractionViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<Interaction, InteractionFragment.InteractionViewHolder> {
+
     override val itemNameRes: Int = R.string.interactions
 
     @Inject
@@ -62,6 +66,13 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
         viewHolder.iconView.setImageResource(item.action.iconRes)
         viewHolder.timeTextView.text = DateUtil.getShortDateStr(viewHolder.itemView.context, item.eventDate)
         viewHolder.messageTextView.text = item.getMessage(viewHolder.itemView.context)
+        viewHolder.bodyTextView.visibility = when (concreteItem) {
+            is Interaction.Repost,
+            is Interaction.Bookmark,
+            is Interaction.Reply,
+            is Interaction.PollResponse -> View.VISIBLE
+            is Interaction.Follow -> View.GONE
+        }
         viewHolder.bodyTextView.text = when (concreteItem) {
             is Interaction.Repost -> handlePost(concreteItem.objects)
             is Interaction.Bookmark -> handlePost(concreteItem.objects)
@@ -70,7 +81,32 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
             is Interaction.PollResponse -> handlePoll(concreteItem.objects)
             is Interaction.HasUsersFieldInteraction -> TODO()
         }
+        viewHolder.reactionUsersRecyclerView.adapter = when (concreteItem) {
+            is Interaction.HasUsersFieldInteraction -> {
+                viewHolder.reactionUsersRecyclerView.removeItemDecoration(reactionSpacerDecoration)
+                ReactionUsersAdapter(concreteItem.users.orEmpty(), reactionUsersAdapterListener)
+            }
+            else -> null
+        }
     }
+
+    private val reactionSpacerDecoration by lazy {
+        val drawable = ContextCompat.getDrawable(context!!, R.drawable.spacer_width_half)!!
+        DividerItemDecoration(context, RecyclerView.HORIZONTAL).also {
+            it.setDrawable(drawable)
+        }
+    }
+
+
+    private val reactionUsersAdapterListener by lazy {
+        object : ReactionUsersAdapter.Listener {
+            override fun onUserClick(user: User) {
+                val fragment = ProfileFragment.newInstance(user.id, user.getAvatarUrl(), user)
+                addFragment(fragment, user.username)
+            }
+        }
+    }
+
 
     private fun handlePoll(objects: List<Interaction.PollResponse.InteractionPoll>): CharSequence? {
         return objects[0].prompt
@@ -93,9 +129,11 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
         val iconView: ImageView = view.iconView
         val bodyTextView: TextView = view.bodyTextView
         val timeTextView: TextView = view.timeTextView
+        val reactionUsersRecyclerView: RecyclerView = view.reactionUsersRecyclerView
     }
 
-    class InteractionViewModel(private val getInteractionUseCase: GetInteractionUseCase) : BaseListViewModel<Interaction>() {
+    class InteractionViewModel(private val getInteractionUseCase: GetInteractionUseCase) :
+        BaseListViewModel<Interaction>() {
         override suspend fun getItems(pagination: PaginationParam): PnutResponse<List<Interaction>> {
             val params = GetInteractionsParam().apply { add(pagination) }
             Log.e("params", params.toString())

@@ -40,5 +40,5 @@
     <dimen name="size_button_loading_indicator">24dp</dimen>
     <dimen name="size_avatar_mini">40dp</dimen>
     <dimen name="size_normal_icon">24dp</dimen>
-    <dimen name="size_avatar_reaction">24dp</dimen>
+    <dimen name="size_avatar_reaction">32dp</dimen>
 </resources>
