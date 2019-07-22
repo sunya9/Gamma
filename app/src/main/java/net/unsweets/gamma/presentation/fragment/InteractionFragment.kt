@@ -88,6 +88,20 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
             }
             else -> null
         }
+        viewHolder.itemView.setOnClickListener {
+            when (concreteItem) {
+                is Interaction.Repost -> showPost(concreteItem.objects[0])
+                is Interaction.Bookmark -> showPost(concreteItem.objects[0])
+                is Interaction.Reply -> Unit
+                is Interaction.Follow -> Unit
+                is Interaction.PollResponse -> Unit
+            }
+        }
+    }
+
+    private fun showPost(post: Post) {
+        val fragment = ThreadFragment.newInstance(post, post.id)
+        addFragment(fragment, post.id)
     }
 
     private val reactionSpacerDecoration by lazy {
