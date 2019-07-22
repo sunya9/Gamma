@@ -88,6 +88,10 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
             }
             else -> null
         }
+        viewHolder.reactionUsersRecyclerView.visibility = when (concreteItem) {
+            is Interaction.HasUsersFieldInteraction -> View.VISIBLE
+            else -> View.GONE
+        }
         viewHolder.itemView.setOnClickListener {
             when (concreteItem) {
                 is Interaction.Repost -> showPost(concreteItem.objects[0])

@@ -42,12 +42,14 @@
         <TextView
             android:id="@+id/messageTextView"
             android:layout_width="0dp"
-            android:layout_marginTop="@dimen/margin_half"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_half"
+            android:layout_marginTop="@dimen/margin_half"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             app:layout_constraintEnd_toStartOf="@id/timeTextView"
-            app:layout_constraintStart_toStartOf="@id/reactionUsersRecyclerView"
+            app:layout_constraintStart_toEndOf="@id/iconView"
             app:layout_constraintTop_toBottomOf="@id/reactionUsersRecyclerView"
+            app:layout_goneMarginTop="0dp"
             tools:text="This post is starred by @testuser" />
 
         <TextView
