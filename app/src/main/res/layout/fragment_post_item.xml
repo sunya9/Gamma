@@ -185,45 +185,79 @@
                     app:tabRippleColor="@null" />
             </FrameLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/detailInfoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_regular"
-                android:background="@drawable/divider_top"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/margin_regular">
+                android:layout_marginTop="@dimen/margin_half"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/clientNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_via_12dp"
+                    android:drawablePadding="@dimen/margin_quoter"
+                    android:focusable="true"
+                    android:gravity="start|center_vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="via Gamma" />
+
+                <ImageView
+                    android:id="@+id/horizontalDivider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_half"
+                    android:layout_marginBottom="@dimen/margin_half"
+                    android:src="@drawable/divider_full_bleed"
+                    app:layout_constraintBottom_toTopOf="@id/replyCountTextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/clientNameTextView"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/replyCountTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     tools:text="0\nReplies" />
 
                 <TextView
                     android:id="@+id/repostCountTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_half"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/replyCountTextView"
                     tools:text="0\nReposts" />
 
                 <TextView
                     android:id="@+id/starCountTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_half"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/repostCountTextView"
                     tools:text="0\nStars" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/reactionUsersRecyclerView"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
                     android:layout_marginStart="@dimen/margin_half"
-                    android:layout_weight="1"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:spanCount="1" />
-            </LinearLayout>
+                    app:layout_constraintBottom_toBottomOf="@id/starCountTextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/starCountTextView"
+                    app:layout_constraintTop_toTopOf="@id/starCountTextView"
+                    app:spanCount="1"
+                    tools:listitem="@layout/reaction_user_item" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
         <TextView

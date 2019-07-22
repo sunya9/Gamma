@@ -3,11 +3,14 @@ package net.unsweets.gamma.presentation.util
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.browser.customtabs.CustomTabsClient
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
 import net.unsweets.gamma.R
@@ -65,4 +68,17 @@ fun setTintForCheckableMenuItem(context: Context, menuItem: MenuItem) {
             setTintForToolbarIcon(colorStateList, menuItem)
         }
     }
+}
+
+fun openCustomTabUrl(context: Context, link: String) {
+    val packageName = CustomTabsClient.getPackageName(context, arrayListOf(context.packageName))
+    CustomTabsIntent
+        .Builder()
+        .setShowTitle(true)
+//                .setActionButton(icon, menuLabel, pendingIntent, false)
+        .addDefaultShareMenuItem()
+        .enableUrlBarHiding()
+        .build()
+        .also { it.intent.`package` = packageName }
+        .launchUrl(context, Uri.parse(link))
 }

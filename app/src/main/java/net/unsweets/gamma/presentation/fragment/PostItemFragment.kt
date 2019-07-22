@@ -292,6 +292,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             else
                 it.removeItemDecoration(reactionSpacerDecoration)
         }
+        viewHolder.clientNameTextView.text = item.mainPost.source?.name
+        viewHolder.clientNameTextView.setOnClickListener {
+            item.mainPost.source?.link?.let { link -> openCustomTabUrl(context, link) }
+        }
     }
 
     private val reactionSpacerDecoration by lazy {
@@ -388,12 +392,13 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val spoilerMaskLayout: FrameLayout = itemView.spoilerMaskLayout
         val showSpoilerButton: MaterialButton = itemView.showSpoilerButton
         val contentsWrapperLayout: LinearLayout = itemView.contentsWrapperLayout
-        val detailInfoLayout: LinearLayout = itemView.detailInfoLayout
+        val detailInfoLayout: ConstraintLayout = itemView.detailInfoLayout
         val replyCountTextView: TextView = itemView.replyCountTextView
         val repostCountTextView: TextView = itemView.repostCountTextView
         val starCountTextView: TextView = itemView.starCountTextView
         val postItemForegroundView: ConstraintLayout = itemView.postItemForegroundView
         val reactionUsersRecyclerView: RecyclerView = itemView.reactionUsersRecyclerView
+        val clientNameTextView: TextView = itemView.clientNameTextView
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :

@@ -2,18 +2,16 @@ package net.unsweets.gamma.domain.entity.entities
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.view.View
-import androidx.browser.customtabs.CustomTabsClient
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.res.ResourcesCompat
 import net.unsweets.gamma.R
 import net.unsweets.gamma.presentation.fragment.PostItemFragment
 import net.unsweets.gamma.presentation.fragment.ProfileFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper
 import net.unsweets.gamma.presentation.util.TouchableSpan
+import net.unsweets.gamma.presentation.util.openCustomTabUrl
 
 interface HaveEntities {
     val entities: Entities?
@@ -66,22 +64,12 @@ interface HaveEntities {
         private fun openLink(context: Context, entity: Entities.SealedEntity.LinkEntities) {
             val link = entity.link
             val menuLabel = context.getString(R.string.post)
-            val packageName = CustomTabsClient.getPackageName(context, arrayListOf(context.packageName))
 
 //            val pendingIntent = ComposePostActivity.shareUrlIntent(context, null, link).run {
 //                PendingIntent.getActivity(context, 0, this, 0)
 //            }
             val icon = BitmapFactory.decodeResource(context.resources, R.drawable.ic_create_black_24dp)
-            CustomTabsIntent
-                .Builder()
-                .setShowTitle(true)
-//                .setActionButton(icon, menuLabel, pendingIntent, false)
-                .addDefaultShareMenuItem()
-                .enableUrlBarHiding()
-                .build()
-                .also { it.intent.`package` = packageName }
-                .launchUrl(context, Uri.parse(link))
-
+            openCustomTabUrl(context, link)
         }
     }
 }
