@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.content.ContextCompat
@@ -278,9 +279,14 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewHolder.repostCountTextView.text = repostText
         viewHolder.starCountTextView.text = starText
 
-        viewHolder.itemView.let {
+        viewHolder.rootCardView.let {
             it.isClickable = !isMainItem
             it.isFocusable = !isMainItem
+            it.elevation = if (isMainItem) resources.getDimension(R.dimen.elevation_main_item) else 0f
+//            it.useCompatPadding = isMainItem
+            val padding = if (isMainItem) resources.getDimensionPixelSize(R.dimen.pad_main_item) else 0
+            it.setPadding(0, padding, 0, padding)
+
         }
         viewHolder.reactionUsersRecyclerView.also {
             it.adapter = if (isMainItem) ReactionUsersAdapter(
@@ -364,6 +370,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     // TODO: create the view holder for deleted post
     class PostViewHolder(mView: View, itemTouchHelper: ItemTouchHelper) : RecyclerView.ViewHolder(mView) {
+        val rootCardView: CardView = itemView.rootCardView
         val avatarView: CircleImageView = itemView.avatarImageView.also {
             it.setOnTouchListener { view, motionEvent ->
                 if (view.isEnabled && motionEvent.actionMasked == MotionEvent.ACTION_MOVE) {

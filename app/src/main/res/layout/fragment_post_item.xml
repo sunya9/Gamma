@@ -9,6 +9,9 @@
     android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="0dp"
+    android:id="@+id/rootCardView"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     app:cardElevation="0dp">
 
     <FrameLayout

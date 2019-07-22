@@ -41,4 +41,6 @@
     <dimen name="size_avatar_mini">40dp</dimen>
     <dimen name="size_normal_icon">24dp</dimen>
     <dimen name="size_avatar_reaction">32dp</dimen>
+    <dimen name="elevation_main_item">4dp</dimen>
+    <dimen name="pad_main_item">@dimen/margin_regular</dimen>
 </resources>
