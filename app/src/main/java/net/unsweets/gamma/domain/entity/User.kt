@@ -80,5 +80,5 @@ data class User(
     enum class AvatarSize(val size: Int) { Mini(24), Small(48), Normal(64), Large(96) }
 
     fun getAvatarUrl(avatarSize: AvatarSize = AvatarSize.Normal) =
-        "https://api.pnut.io/v0/users/$id/avatar?h=${avatarSize.size}&w=${avatarSize.size}"
+        "https://api.pnut.io/v0/users/$id/avatar?h=${avatarSize.size}"
 }
