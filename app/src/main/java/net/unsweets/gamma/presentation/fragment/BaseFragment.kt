@@ -28,7 +28,7 @@ abstract class BaseFragment : DaggerFragment() {
         outState.putBoolean(StateKey.ConfigurationChanges.name, activity?.isFinishing ?: false)
     }
 
-    protected fun addFragment(fragment: Fragment, tag: String) {
-        FragmentHelper.addFragment(context!!, fragment, tag)
+    protected fun addFragment(fragment: Fragment, tag: String): Fragment? {
+        return FragmentHelper.addFragment(context!!, fragment, tag)
     }
 }

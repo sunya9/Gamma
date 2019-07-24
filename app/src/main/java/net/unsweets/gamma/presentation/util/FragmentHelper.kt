@@ -14,8 +14,8 @@ object FragmentHelper {
         tag: String,
         sharedElement: View? = null,
         transitionName: String? = null
-    ) {
-        addFragment(context, fragment, tag, createTransitionMap(sharedElement, transitionName))
+    ): Fragment? {
+        return addFragment(context, fragment, tag, createTransitionMap(sharedElement, transitionName))
     }
 
     fun addFragment(
