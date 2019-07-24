@@ -86,5 +86,7 @@ data class User(
             avatarSize != null -> "https://api.pnut.io/v0/users/$id/avatar?h=${avatarSize.size}"
             else -> "https://api.pnut.io/v0/users/$id/avatar"
         }
+
+        fun getCanonicalUrl(username: String) = "https://pnut.io/@$username"
     }
 }

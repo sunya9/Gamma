@@ -140,6 +140,13 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun share() {
+        val username = viewModel.user.value?.username ?: return
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, User.getCanonicalUrl(username))
+            type = "text/plain"
+        }
+        startActivity(Intent.createChooser(sendIntent, resources.getText(R.string.share)))
     }
 
     private fun toggleMute() {
