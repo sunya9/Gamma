@@ -76,40 +76,47 @@ class PostTouchHelperCallback(
         val per = dX / deviceWidth
         val direction = if (prevDX < dX) Direction.Right else Direction.Left
         if (isCurrentlyActive) {
-            animActionViews(per, backgroundView, direction)
+            animActionViews(per, backgroundView, direction, vh)
         }
         prevDX = dX
         ItemTouchHelper.Callback.getDefaultUIUtil()
             .onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive)
         val immediatelyAfterRelease = prevIsCurrentlyActive && !isCurrentlyActive
         if (immediatelyAfterRelease) {
-            performClick(per, backgroundView)
+            performClick(per, backgroundView, viewHolder)
         }
         prevIsCurrentlyActive = isCurrentlyActive
     }
 
-    private fun performClick(per: Float, backgroundView: FrameLayout) {
-        val viewId = getShownViewId(per, backgroundView) ?: return
+    private fun performClick(per: Float, backgroundView: FrameLayout, viewHolder: PostItemFragment.PostViewHolder) {
+        val viewId = getShownViewId(per, backgroundView, viewHolder) ?: return
         backgroundView.findViewById<View>(viewId)?.performClick()
     }
 
 
-    private fun getShownViewId(per: Float, backgroundView: View): Int? {
+    private fun getShownViewId(per: Float, backgroundView: View, viewHolder: PostItemFragment.PostViewHolder): Int? {
         return when {
-            per < 0.2 -> null
-            0.2 <= per && per < 0.35 -> backgroundView.replyTextView.id
-            0.35 <= per && per < 0.5 -> backgroundView.starTextView.id
-            0.5 <= per && per < 0.65 -> backgroundView.repostTextView.id
-            else -> backgroundView.moreImageView.id
+            per < 0.1 -> null
+            0.1 <= per && per < 0.25 -> backgroundView.actionReplyImageView.id
+            0.25 <= per && per < 0.4 -> backgroundView.actionStarImageView.id
+            0.4 <= per && per < 0.55 -> backgroundView.actionRepostImageView.id
+            else -> when (viewHolder.isMainItem) {
+                true -> backgroundView.actionMoreImageView.id
+                else -> when {
+                    0.55 <= per && per < 0.7 -> backgroundView.actionThreadImageView.id
+                    else -> backgroundView.actionMoreImageView.id
+                }
+            }
         }
     }
 
     private fun animActionViews(
         per: Float,
         backgroundView: View,
-        direction: Direction
+        direction: Direction,
+        viewHolder: PostItemFragment.PostViewHolder
     ) {
-        val shownViewId = getShownViewId(per, backgroundView)
+        val shownViewId = getShownViewId(per, backgroundView, viewHolder)
         if (prevActionViewId == shownViewId) return
         hideActionViewAnimation(prevActionViewId, backgroundView, direction)
         showActionViewAnimation(backgroundView, shownViewId, direction)

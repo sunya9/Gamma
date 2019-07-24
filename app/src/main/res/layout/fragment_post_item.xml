@@ -23,60 +23,68 @@
             android:background="@color/colorPrimary"
             android:elevation="@dimen/elevation_main_item">
 
-            <TextView
-                android:id="@+id/replyTextView"
+            <ImageView
+                android:id="@+id/actionReplyImageView"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:drawableStart="@drawable/ic_reply_black_24dp"
-                android:drawablePadding="8dp"
-                android:drawableTint="@android:color/white"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/margin_regular"
+                android:scaleType="center"
+                android:src="@drawable/ic_reply_black_24dp"
                 android:hapticFeedbackEnabled="true"
-                android:lines="1"
-                android:padding="16dp"
-                android:text="@string/reply"
-                android:textColor="@android:color/white"
+                android:tint="@android:color/white"
                 android:visibility="gone"
+                tools:ignore="ContentDescription"
                 tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/starTextView"
+            <ImageView
+                android:id="@+id/actionStarImageView"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:drawableStart="@drawable/ic_star_black_24dp"
-                android:drawablePadding="8dp"
-                android:drawableTint="@android:color/white"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/margin_regular"
+                android:scaleType="center"
+                android:src="@drawable/ic_star_black_24dp"
                 android:hapticFeedbackEnabled="true"
-                android:lines="1"
-                android:padding="16dp"
-                android:text="@string/star"
-                android:textColor="@android:color/white"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/repostTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:drawableStart="@drawable/ic_repeat_black_24dp"
-                android:drawablePadding="8dp"
-                android:drawableTint="@android:color/white"
-                android:gravity="center_vertical"
-                android:hapticFeedbackEnabled="true"
-                android:lines="1"
-                android:padding="16dp"
-                android:text="@string/repost"
-                android:textColor="@android:color/white"
-                android:visibility="gone" />
+                android:tint="@android:color/white"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
 
             <ImageView
-                android:id="@+id/moreImageView"
+                android:id="@+id/actionRepostImageView"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/margin_regular"
+                android:scaleType="center"
+                android:src="@drawable/ic_repeat_black_24dp"
                 android:hapticFeedbackEnabled="true"
-                android:padding="16dp"
+                android:tint="@android:color/white"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/actionThreadImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:hapticFeedbackEnabled="true"
+                android:padding="@dimen/margin_regular"
+                android:scaleType="center"
+                android:src="@drawable/ic_forum_black_24dp"
+                android:tint="@android:color/white"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/actionMoreImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/margin_regular"
                 android:scaleType="center"
                 android:src="@drawable/ic_more_horiz_black_24dp"
+                android:hapticFeedbackEnabled="true"
                 android:tint="@android:color/white"
                 android:visibility="gone"
                 tools:ignore="ContentDescription" />
@@ -89,7 +97,7 @@
                 android:background="@color/colorWindowBackground"
                 android:elevation="@dimen/elevation_list_item_elevation"
                 android:foreground="?attr/selectableItemBackground"
-                tools:translationX="0dp">
+                tools:translationX="100dp">
 
                 <View
                     android:id="@+id/starStateView"
@@ -394,6 +402,17 @@
                 android:src="@drawable/ic_repeat_black_24dp"
                 android:tint="@android:color/white" />
 
+            <ImageButton
+                android:id="@+id/threadButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/thread"
+                android:foreground="?attr/selectableItemBackground"
+                android:scaleType="center"
+                android:src="@drawable/ic_forum_black_24dp"
+                android:tint="@android:color/white" />
             <ImageButton
                 android:id="@+id/moreButton"
                 android:layout_width="0dp"

@@ -1,5 +1,7 @@
 package net.unsweets.gamma.presentation.fragment
 
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
@@ -193,14 +195,15 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             }
             val starDrawableRes =
                 if (item.mainPost.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
-            viewHolder.starTextView.let {
+            viewHolder.actionStarImageView.let {
                 it.setOnClickListener {
                     toggleStar(item, viewHolder.adapterPosition)
 
                 }
                 val starTextRes = if (item.mainPost.youBookmarked == true) R.string.unstar else R.string.star
-                it.text = context.getString(starTextRes)
-                it.setCompoundDrawablesRelativeWithIntrinsicBounds(starDrawableRes, 0, 0, 0)
+//                it.text = context.getString(starTextRes)
+                it.setImageResource(starDrawableRes)
+                it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
             }
             viewHolder.starButton.let {
                 it.setOnClickListener {
@@ -208,7 +211,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 }
                 it.setImageResource(starDrawableRes)
             }
-            viewHolder.replyTextView.setOnClickListener {
+            viewHolder.actionReplyImageView.setOnClickListener {
                 showReplyCompose(viewHolder.avatarView, item)
             }
             viewHolder.replyButton.setOnClickListener {
@@ -219,9 +222,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 item.mainPost.user?.me == true -> RepostButtonType.DeletePost
                 else -> RepostButtonType.Repost
             }
-            viewHolder.repostTextView.let {
-                it.setText(repostType.textRes)
-                it.setCompoundDrawablesRelativeWithIntrinsicBounds(repostType.iconRes, 0, 0, 0)
+            viewHolder.actionRepostImageView.let {
+                //                it.setText(repostType.textRes)
+                it.setImageResource(repostType.iconRes)
+                it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
                 it.setOnClickListener {
                     toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
                 }
@@ -297,7 +301,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             it.isClickable = !isMainItem
             it.isFocusable = !isMainItem
             it.elevation = if (isMainItem) resources.getDimension(R.dimen.elevation_main_item) else 0f
-//            it.useCompatPadding = isMainItem
             val padding = if (isMainItem) resources.getDimensionPixelSize(R.dimen.pad_main_item) else 0
             it.setPadding(0, padding, 0, padding)
 
@@ -321,6 +324,15 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         }
         viewHolder.foregroundActionsLayout.visibility =
             getVisibility(mainPostId == item.id || expandedPostItemId == item.id)
+        viewHolder.threadButton.let {
+            it.setOnClickListener { showThread(item) }
+            it.visibility = getVisibility(item.mainPost.id != mainPostId)
+        }
+        viewHolder.actionThreadImageView.let {
+            it.setOnClickListener { showThread(item) }
+//            it.visibility = getVisibility(item.mainPost.id != mainPostId)
+        }
+        viewHolder.isMainItem = item.id == mainPostId
     }
 
     private fun toggleRepost(repostType: RepostButtonType, item: Post, adapterPosition: Int) {
@@ -426,7 +438,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
 
     // TODO: create the view holder for deleted post
-    class PostViewHolder(mView: View, itemTouchHelper: ItemTouchHelper) : RecyclerView.ViewHolder(mView) {
+    class PostViewHolder(
+        mView: View,
+        itemTouchHelper: ItemTouchHelper
+    ) : RecyclerView.ViewHolder(mView) {
         val rootCardView: CardView = itemView.rootCardView
         val avatarView: CircleImageView = itemView.avatarImageView.also {
             it.setOnTouchListener { view, motionEvent ->
@@ -443,10 +458,11 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val repostedByTextView: TextView = itemView.repostedByTextView
         val starStateView: View = itemView.starStateView
         val repostStateView: View = itemView.repostStateView
-        val replyTextView: TextView = itemView.replyTextView
-        val starTextView: TextView = itemView.starTextView
-        val repostTextView: TextView = itemView.repostTextView
-        val moreImageView: ImageView = itemView.moreImageView
+        val actionReplyImageView: ImageView = itemView.actionReplyImageView
+        val actionStarImageView: ImageView = itemView.actionStarImageView
+        val actionRepostImageView: ImageView = itemView.actionRepostImageView
+        val actionThreadImageView: ImageView = itemView.actionThreadImageView
+        val actionMoreImageView: ImageView = itemView.actionMoreImageView
         val thumbnailViewPager: ViewPager2 = itemView.thumbnailViewPager
         val thumbnailViewPagerFrameLayout: FrameLayout = itemView.thumbnailViewPagerFrameLayout
         val thumbnailTabLayout: TabLayout = itemView.thumbnailTabLayout
@@ -467,7 +483,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val replyButton: ImageButton = itemView.replyButton
         val starButton: ImageButton = itemView.starButton
         val repostButton: ImageButton = itemView.repostButton
+        val threadButton: ImageButton = itemView.threadButton
         val moreButton: ImageButton = itemView.moreButton
+        var isMainItem: Boolean = false
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
