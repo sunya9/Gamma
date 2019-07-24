@@ -1,11 +1,14 @@
 package net.unsweets.gamma.presentation.fragment
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
 import android.transition.TransitionSet
+import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
@@ -51,8 +54,34 @@ import javax.inject.Inject
 
 abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder>,
-    ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback {
+    ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback,
+    SimpleBottomSheetMenuFragment.Callback {
     enum class BundleKey { MainPostId }
+
+    override fun onMenuShow(menu: Menu, tag: String?) {
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem, tag: String?) {
+        when (tag) {
+            DialogKey.More.name -> handlePostMoreMenu(menuItem)
+        }
+    }
+
+    private fun handlePostMoreMenu(menuItem: MenuItem) {
+        val post = selectedPost ?: return
+        when (menuItem.itemId) {
+            R.id.menuShare -> showShareMenu(post)
+        }
+    }
+
+    private fun showShareMenu(post: Post) {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, post.canonicalUrl)
+            type = "text/plain"
+        }
+        startActivity(Intent.createChooser(sendIntent, resources.getText(R.string.share)))
+    }
 
     private var expandedPostItemId = ""
 
@@ -112,8 +141,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewModel = ViewModelProviders.of(this, PostItemViewModel.Factory(streamType, getPostUseCase))
             .get(PostItemViewModel::class.java)
         super.onCreate(savedInstanceState)
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt(StateKey.CurrentPosition.name, -1)
+            selectedPost = savedInstanceState.getParcelable<Post>(StateKey.SelectedPost.name)
+        }
 
     }
 
@@ -147,13 +178,19 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         return if (reverse) position - -1 else position
     }
 
-    private enum class DialogKey { Compose, DeletePost }
+    var selectedPost: Post? = null
+
+    private fun showMoreMenu(post: Post) {
+        selectedPost = post
+        val fragment = SimpleBottomSheetMenuFragment.newInstance(R.menu.post_item_more)
+        fragment.show(childFragmentManager, DialogKey.More.name)
+    }
+
+    private enum class DialogKey { Compose, DeletePost, More }
 
 
     override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder, position: Int, isMainItem: Boolean) {
-        val url = item.mainPost.user?.let {
-            "${it.content.avatarImage.link}?w=96"
-        } ?: "" //
+        val url = item.mainPost.user?.getAvatarUrl(User.AvatarSize.Large).orEmpty()
         val context = viewHolder.itemView.context
         viewHolder.itemId
         if (item.isDeleted == true) {
@@ -333,6 +370,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 //            it.visibility = getVisibility(item.mainPost.id != mainPostId)
         }
         viewHolder.isMainItem = item.id == mainPostId
+        viewHolder.moreButton.setOnClickListener { showMoreMenu(item) }
+        viewHolder.actionMoreImageView.setOnClickListener { showMoreMenu(item) }
     }
 
     private fun toggleRepost(repostType: RepostButtonType, item: Post, adapterPosition: Int) {
@@ -419,9 +458,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(StateKey.CurrentPosition.name, currentPosition)
+        outState.putParcelable(StateKey.SelectedPost.name, selectedPost)
     }
 
-    private enum class StateKey { CurrentPosition }
+    private enum class StateKey { CurrentPosition, SelectedPost }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
