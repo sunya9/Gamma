@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -21,12 +22,17 @@ import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.ChangeBounds
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentProfileBinding
 import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.model.io.FollowInputData
+import net.unsweets.gamma.domain.model.io.GetProfileInputData
 import net.unsweets.gamma.domain.usecases.FollowUseCase
 import net.unsweets.gamma.domain.usecases.GetProfileUseCase
 import net.unsweets.gamma.presentation.activity.PhotoViewActivity
@@ -43,13 +49,19 @@ class ProfileFragment : BaseFragment() {
         ID, IconUrl, User, IconTransitionName
     }
 
+    private val fetchingUserObserve = Observer<Boolean> {
+        binding.swipeRefreshLayout.isRefreshing = it
+    }
     @Inject
     lateinit var getProfileUseCase: GetProfileUseCase
     @Inject
     lateinit var followUseCase: FollowUseCase
 
     private val viewModel: ProfileViewModel by lazy {
-        ViewModelProviders.of(this, ProfileViewModel.Factory(activity!!.application, getProfileUseCase, followUseCase))
+        ViewModelProviders.of(
+            this,
+            ProfileViewModel.Factory(activity!!.application, getProfileUseCase, followUseCase, userId)
+        )
             .get(ProfileViewModel::class.java)
     }
 
@@ -64,7 +76,6 @@ class ProfileFragment : BaseFragment() {
     private val eventObserver = Observer<Event>(::eventHandling)
     private val userObserver = Observer<User> {
         if (it == null || it.content.coverImage.isDefault) return@Observer
-        viewModel.iconUrl.postValue(it.content.avatarImage.link)
         binding.swipeRefreshLayout.isRefreshing = false
     }
 
@@ -72,6 +83,7 @@ class ProfileFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         viewModel.event.observe(this, eventObserver)
         viewModel.user.observe(this, userObserver)
+        viewModel.fetchingUser.observe(this, fetchingUserObserve)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -99,7 +111,7 @@ class ProfileFragment : BaseFragment() {
             toolbar.setOnMenuItemClickListener { onOptionsItemSelected(it) }
         }
         binding.swipeRefreshLayout.setOnRefreshListener {
-            //            viewModel.getUserData(userId)
+            viewModel.getUser()
         }
         binding.profileDescriptionTextView.setOnTouchListener(entityOnTouchListener)
         val pagerAdapter = ProfilePagerAdapter(context!!, childFragmentManager, userId)
@@ -142,31 +154,30 @@ class ProfileFragment : BaseFragment() {
     private fun fixTransition(iconUrl: String) {
         GlideApp.with(context!!)
             .load(iconUrl)
-//            .addListener(object : RequestListener<Drawable> {
-//                override fun onLoadFailed(
-//                    e: GlideException?,
-//                    model: Any?,
-//                    target: Target<Drawable>?,
-//                    isFirstResource: Boolean
-//                ): Boolean {
-//                    startPostponedEnterTransition()
-//                    return false
-//                }
-//
-//                override fun onResourceReady(
-//                    resource: Drawable?,
-//                    model: Any?,
-//                    target: Target<Drawable>?,
-//                    dataSource: DataSource?,
-//                    isFirstResource: Boolean
-//                ): Boolean {
-//                    startPostponedEnterTransition()
-//                    return false
-//                }
-//            })
+            .addListener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    startPostponedEnterTransition()
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    startPostponedEnterTransition()
+                    return false
+                }
+            })
             .onlyRetrieveFromCache(true)
             .into(binding.circleImageView)
-        viewModel.iconUrl.value = iconUrl
 
     }
 
@@ -240,13 +251,18 @@ class ProfileFragment : BaseFragment() {
     }
 
     class ProfileViewModel(
-        val app: Application,
-        val getProfileUseCase: GetProfileUseCase,
-        val followUseCase: FollowUseCase
+        private val app: Application,
+        private val getProfileUseCase: GetProfileUseCase,
+        private val followUseCase: FollowUseCase,
+        private val userId: String?
     ) : AndroidViewModel(app) {
         val event = SingleLiveEvent<Event>()
         val user = MutableLiveData<User>()
-        val iconUrl = MutableLiveData<String>().apply { value = "" }
+        val iconUrl = when {
+            userId != null -> User.getAvatarUrl(userId, null)
+            user.value != null -> user.value?.getAvatarUrl(null)
+            else -> ""
+        }
         val usernameWithAt: LiveData<String> = Transformations.map(user) { "@${it?.username}" }
         val since: LiveData<CharSequence?> = Transformations.map(user) {
             val calendar = Calendar.getInstance()
@@ -267,15 +283,31 @@ class ProfileFragment : BaseFragment() {
         val toolbarTextColor = MutableLiveData<Int>().apply { value = Color.WHITE }
         val toolbarBgColor = MutableLiveData<Int>().apply { value = Color.TRANSPARENT }
         val loading = MutableLiveData<Boolean>().apply { value = false }
-        private val me = Transformations.map(user) {
-            it.followsYou && it.youFollow && !it.youCanFollow
-        }
         val mainActionButtonText: LiveData<String> = Transformations.map(user) {
             when {
+                it == null -> ""
                 it.me -> app.getString(R.string.edit_profile)
                 it.youFollow -> app.getString(R.string.unfollow)
                 it.youBlocked -> app.getString(R.string.unblock)
                 else -> app.getString(R.string.follow)
+            }
+        }
+        val fetchingUser = MutableLiveData<Boolean>().apply { value = false }
+
+        init {
+            if (user.value == null) getUser()
+        }
+
+        fun getUser() {
+            val id = userId ?: user.value?.id ?: return
+            fetchingUser.value = true
+            viewModelScope.launch {
+                runCatching {
+                    getProfileUseCase.run(GetProfileInputData(id))
+                }.onSuccess {
+                    user.value = it.res.data
+                }
+                fetchingUser.postValue(false)
             }
         }
 
@@ -299,7 +331,7 @@ class ProfileFragment : BaseFragment() {
             }
         }
 
-        fun showAvatar() = event.emit(Event.ShowAvatar(iconUrl.value))
+        fun showAvatar() = event.emit(Event.ShowAvatar(user.value?.getAvatarUrl(null)))
         fun showCover() = event.emit(Event.ShowCover(user.value?.content?.coverImage?.link))
         private fun follow() = updateRelationship(true)
         private fun unfollow() = updateRelationship(false)
@@ -319,12 +351,13 @@ class ProfileFragment : BaseFragment() {
         class Factory(
             private val application: Application,
             private val getProfileUseCase: GetProfileUseCase,
-            private val followUseCase: FollowUseCase
+            private val followUseCase: FollowUseCase,
+            private val userId: String?
         ) :
             ViewModelProvider.AndroidViewModelFactory(application) {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return ProfileViewModel(application, getProfileUseCase, followUseCase) as T
+                return ProfileViewModel(application, getProfileUseCase, followUseCase, userId) as T
             }
         }
     }

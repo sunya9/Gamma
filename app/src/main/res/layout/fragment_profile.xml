@@ -93,6 +93,7 @@
                             app:civ_border_width="@dimen/width_avatar_border"
                             app:glideSrc="@{viewModel.iconUrl}"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:civ_circle_background_color="@android:color/white"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:src="@tools:sample/avatars" />

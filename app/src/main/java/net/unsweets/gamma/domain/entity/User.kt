@@ -79,6 +79,12 @@ data class User(
 
     enum class AvatarSize(val size: Int) { Mini(24), Small(48), Normal(64), Large(96) }
 
-    fun getAvatarUrl(avatarSize: AvatarSize = AvatarSize.Normal) =
-        "https://api.pnut.io/v0/users/$id/avatar?h=${avatarSize.size}"
+    fun getAvatarUrl(avatarSize: AvatarSize? = AvatarSize.Normal) = getAvatarUrl(id, avatarSize)
+
+    companion object {
+        fun getAvatarUrl(id: String, avatarSize: AvatarSize? = AvatarSize.Normal) = when {
+            avatarSize != null -> "https://api.pnut.io/v0/users/$id/avatar?h=${avatarSize.size}"
+            else -> "https://api.pnut.io/v0/users/$id/avatar"
+        }
+    }
 }
