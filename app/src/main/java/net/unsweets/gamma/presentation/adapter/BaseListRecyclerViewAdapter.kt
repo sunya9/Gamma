@@ -23,6 +23,10 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
         val reverse: Boolean = false,
         val mainItemId: String = ""
     )
+
+    init {
+        setHasStableIds(true)
+    }
     // empty view; loading indicator;
     override fun getItemCount(): Int = bodyItemCount + 1
 
@@ -39,7 +43,7 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
     }
 
     override fun getItemId(position: Int): Long {
-        return options.listLiveData.value?.get(position)?.uniqueKey?.toLong() ?: 0L
+        return options.listLiveData.value?.getOrNull(position)?.uniqueKey?.toLong() ?: 0L
     }
 
     private enum class ViewType { Body, Footer }

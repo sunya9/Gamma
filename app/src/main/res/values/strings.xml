@@ -141,6 +141,7 @@
     <string name="error_template">error: %s</string>
     <string name="keyword_search">Keyword search</string>
     <string name="clear_text">Clear text</string>
+    <string name="more">more</string>
     <plurals name="reply_count_template">
         <item quantity="zero">%d\nreplies</item>
         <item quantity="one">%d\nreply</item>

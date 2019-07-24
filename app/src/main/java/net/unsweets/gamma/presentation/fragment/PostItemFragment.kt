@@ -6,10 +6,7 @@ import android.transition.TransitionInflater
 import android.transition.TransitionSet
 import android.view.MotionEvent
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
@@ -54,6 +51,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder>,
     ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback {
     enum class BundleKey { MainPostId }
+
+    private var expandedPostItemId = ""
 
     private val mainPostId by lazy {
         arguments?.getString(BundleKey.MainPostId.name, "") ?: ""
@@ -122,18 +121,39 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         PostViewHolder(mView, itemTouchHelper)
 
     override fun onClickItemListener(item: Post) {
-        val fragment = getThreadInstance(item, item.id)
-        addFragment(fragment, item.id)
+        val recyclerView = getRecyclerView(view ?: return)
+        val clickedItemPosition =
+            calcPosition(recyclerView.findViewHolderForItemId(item.id.toLong())?.adapterPosition ?: return)
+        adapter.notifyItemChanged(clickedItemPosition)
+        expandedPostItemId = when {
+            expandedPostItemId.isNotEmpty() -> when {
+                expandedPostItemId != item.id -> {
+                    // click another item when already expanded
+                    recyclerView.findViewHolderForItemId(expandedPostItemId.toLong())?.adapterPosition?.let {
+                        adapter.notifyItemChanged(calcPosition(it))
+                    }
+                    item.id
+                }
+                else -> // click same item
+                    ""
+            }
+            else -> item.id
+        }
+    }
+
+    private fun calcPosition(position: Int): Int {
+        return if (reverse) position - -1 else position
     }
 
     private enum class DialogKey { Compose, DeletePost }
+
 
     override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder, position: Int, isMainItem: Boolean) {
         val url = item.mainPost.user?.let {
             "${it.content.avatarImage.link}?w=96"
         } ?: "" //
         val context = viewHolder.itemView.context
-
+        viewHolder.itemId
         if (item.isDeleted == true) {
             viewHolder.itemView.alpha = 0.5f
             viewHolder.screenNameTextView.setText(R.string.deleted_post_user_name)
@@ -171,51 +191,45 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 text = item.mainPost.content?.getSpannableStringBuilder(context)
                 setOnTouchListener(entityListener)
             }
+            val starDrawableRes =
+                if (item.mainPost.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
             viewHolder.starTextView.let {
                 it.setOnClickListener {
-                    val newState = item.mainPost.youBookmarked == false
-                    PostService.newStarIntent(context, item.mainPost.id, newState)
-                    // TODO: revert state when raised error
-                    // star "this post"
-                    item.mainPost.youBookmarked = newState
-                    adapter.notifyItemChanged(position)
+                    toggleStar(item, viewHolder.adapterPosition)
+
                 }
                 val starTextRes = if (item.mainPost.youBookmarked == true) R.string.unstar else R.string.star
-                val drawableRes =
-                    if (item.mainPost.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
                 it.text = context.getString(starTextRes)
-                it.setCompoundDrawablesRelativeWithIntrinsicBounds(drawableRes, 0, 0, 0)
+                it.setCompoundDrawablesRelativeWithIntrinsicBounds(starDrawableRes, 0, 0, 0)
+            }
+            viewHolder.starButton.let {
+                it.setOnClickListener {
+                    toggleStar(item, viewHolder.adapterPosition)
+                }
+                it.setImageResource(starDrawableRes)
             }
             viewHolder.replyTextView.setOnClickListener {
-                val pos = getViewPositionOnScreen(viewHolder.avatarView)
-                val fragment = ComposePostFragment.replyInstance(pos.first, pos.second, item.mainPost)
-                fragment.show(childFragmentManager, DialogKey.Compose.name)
-
+                showReplyCompose(viewHolder.avatarView, item)
+            }
+            viewHolder.replyButton.setOnClickListener {
+                showReplyCompose(viewHolder.avatarView, item)
+            }
+            val repostType = when {
+                item.mainPost.youReposted == true -> RepostButtonType.DeleteRepost
+                item.mainPost.user?.me == true -> RepostButtonType.DeletePost
+                else -> RepostButtonType.Repost
             }
             viewHolder.repostTextView.let {
-                val repostType = when {
-                    item.mainPost.youReposted == true -> RepostButtonType.DeleteRepost
-                    item.mainPost.user?.me == true -> RepostButtonType.DeletePost
-                    else -> RepostButtonType.Repost
-                }
                 it.setText(repostType.textRes)
                 it.setCompoundDrawablesRelativeWithIntrinsicBounds(repostType.iconRes, 0, 0, 0)
                 it.setOnClickListener {
-                    when (repostType) {
-                        RepostButtonType.DeletePost -> {
-                            if (item.mainPost.user?.me == false) return@setOnClickListener
-                            val dialog = DeletePostDialogFragment.newInstance(viewHolder.adapterPosition, item.mainPost)
-                            dialog.show(childFragmentManager, DialogKey.DeletePost.name)
-                        }
-                        RepostButtonType.DeleteRepost,
-                        RepostButtonType.Repost -> {
-                            val newState = item.mainPost.youReposted == false
-                            PostService.newRepostIntent(context, item.mainPost.id, newState)
-                            item.mainPost.youReposted = newState
-                        }
-                    }
-                    // TODO: revert state when raised error
-                    adapter.notifyItemChanged(position)
+                    toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
+                }
+            }
+            viewHolder.repostButton.let {
+                it.setImageResource(repostType.iconRes)
+                it.setOnClickListener {
+                    toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
                 }
             }
             setupRepostView(item, viewHolder.repostedByTextView)
@@ -288,6 +302,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             it.setPadding(0, padding, 0, padding)
 
         }
+        viewHolder.rootCardView.setOnLongClickListener {
+            showThread(item)
+        }
         viewHolder.reactionUsersRecyclerView.also {
             it.adapter = if (isMainItem) ReactionUsersAdapter(
                 item.mainPost.reactionUsers,
@@ -302,6 +319,46 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewHolder.clientNameTextView.setOnClickListener {
             item.mainPost.source?.link?.let { link -> openCustomTabUrl(context, link) }
         }
+        viewHolder.foregroundActionsLayout.visibility =
+            getVisibility(mainPostId == item.id || expandedPostItemId == item.id)
+    }
+
+    private fun toggleRepost(repostType: RepostButtonType, item: Post, adapterPosition: Int) {
+        when (repostType) {
+            RepostButtonType.DeletePost -> {
+                if (item.mainPost.user?.me == false) return
+                val dialog = DeletePostDialogFragment.newInstance(adapterPosition, item.mainPost)
+                dialog.show(childFragmentManager, DialogKey.DeletePost.name)
+            }
+            RepostButtonType.DeleteRepost,
+            RepostButtonType.Repost -> {
+                val newState = item.mainPost.youReposted == false
+                PostService.newRepostIntent(context, item.mainPost.id, newState)
+                item.mainPost.youReposted = newState
+            }
+        }
+        // TODO: revert state when raised error
+        adapter.notifyItemChanged(adapterPosition)
+    }
+
+    private fun showReplyCompose(view: View, item: Post) {
+        val pos = getViewPositionOnScreen(view)
+        val fragment = ComposePostFragment.replyInstance(pos.first, pos.second, item.mainPost)
+        fragment.show(childFragmentManager, DialogKey.Compose.name)
+    }
+
+    private fun toggleStar(item: Post, adapterPosition: Int) {
+        val newState = item.mainPost.youBookmarked == false
+        PostService.newStarIntent(context, item.mainPost.id, newState)
+        // TODO: revert state when raised error
+        // star "this post"
+        item.mainPost.youBookmarked = newState
+        adapter.notifyItemChanged(adapterPosition)
+    }
+
+    private fun showThread(item: Post): Boolean {
+        val fragment = getThreadInstance(item, item.id)
+        return addFragment(fragment, item.id) == null
     }
 
     private val reactionSpacerDecoration by lazy {
@@ -406,6 +463,11 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val postItemForegroundView: ConstraintLayout = itemView.postItemForegroundView
         val reactionUsersRecyclerView: RecyclerView = itemView.reactionUsersRecyclerView
         val clientNameTextView: TextView = itemView.clientNameTextView
+        val foregroundActionsLayout: LinearLayout = itemView.foregroundActionsLayout
+        val replyButton: ImageButton = itemView.replyButton
+        val starButton: ImageButton = itemView.starButton
+        val repostButton: ImageButton = itemView.repostButton
+        val moreButton: ImageButton = itemView.moreButton
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
