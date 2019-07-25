@@ -56,7 +56,10 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
             text = item.content.getSpannableStringBuilder(viewHolder.itemView.context)
             setOnTouchListener(entityListener)
         }
+        viewHolder.relationshipTextView.visibility = getVisibility(!item.me && item.followsYou)
     }
+
+    private fun getVisibility(b: Boolean) = if (b) View.VISIBLE else View.GONE
 
     override fun getItemLayout(): Int = R.layout.fragment_user_item
 
@@ -65,6 +68,7 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
         val screenNameTextView: TextView = itemView.screenNameTextView
         val handleNameTextView: TextView = itemView.handleNameTextView
         val bodyTextView: TextView = itemView.bodyTextView
+        val relationshipTextView: TextView = itemView.relationshipTextView
     }
 
     class UserListViewModel(

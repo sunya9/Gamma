@@ -24,34 +24,46 @@
             android:layout_width="@dimen/size_post_item_avatar"
             android:layout_height="@dimen/size_post_item_avatar"
             app:layout_constraintDimensionRatio="w,1:1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/margin_quoter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/screenNameTextView"
             tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/screenNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/margin_regular"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintStart_toEndOf="@+id/avatarImageView"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/relationshipTextView"
             tools:text="@tools:sample/first_names" />
 
         <TextView
             android:id="@+id/handleNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/margin_half"
             app:layout_constraintStart_toEndOf="@+id/screenNameTextView"
             app:layout_constraintBaseline_toBaselineOf="@id/screenNameTextView"
             tools:text="@tools:sample/full_names" />
 
         <TextView
+            android:id="@+id/relationshipTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_regular"
+            android:text="@string/follows_you"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:layout_constraintStart_toEndOf="@id/avatarImageView"
+            app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/bodyTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/margin_quoter"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
