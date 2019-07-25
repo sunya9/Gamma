@@ -17,9 +17,10 @@ import kotlinx.coroutines.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentEditProfileBinding
 import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.model.io.GetProfileInputData
 import net.unsweets.gamma.domain.model.io.UpdateProfileInputData
 import net.unsweets.gamma.domain.model.io.UpdateUserImageInputData
-import net.unsweets.gamma.domain.usecases.GetAuthenticatedUserUseCase
+import net.unsweets.gamma.domain.usecases.GetProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateUserImageUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
@@ -147,13 +148,13 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
     private val viewModel by lazy {
         ViewModelProviders.of(
             this,
-            EditProfileViewModel.Factory(userId, getAuthenticatedUseCase, updateProfileUseCase, updateUserImageUseCase)
+            EditProfileViewModel.Factory(userId, getProfileUseCase, updateProfileUseCase, updateUserImageUseCase)
         )
             .get(EditProfileViewModel::class.java)
     }
 
     @Inject
-    lateinit var getAuthenticatedUseCase: GetAuthenticatedUserUseCase
+    lateinit var getProfileUseCase: GetProfileUseCase
     @Inject
     lateinit var updateProfileUseCase: UpdateProfileUseCase
     @Inject
@@ -300,8 +301,8 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
     }
 
     class EditProfileViewModel private constructor(
-        userId: String,
-        getAuthenticatedUseCase: GetAuthenticatedUserUseCase,
+        private val userId: String,
+        private val getProfileUseCase: GetProfileUseCase,
         private val updateProfileUseCase: UpdateProfileUseCase,
         private val updateUserImageUseCase: UpdateUserImageUseCase
     ) : ViewModel() {
@@ -334,14 +335,14 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
         init {
             viewModelScope.launch {
                 runCatching {
-                    getAuthenticatedUseCase.run(Unit)
+                    getProfileUseCase.run(GetProfileInputData("me"))
                 }.onSuccess {
-                    beforeEditingProfile = it.token.user
-                    user.value = it.token.user
-                    name.value = it.token.user.name
-                    description.value = it.token.user.content.text
-                    timezone.value = it.token.user.timezone
-                    locale.value = it.token.user.locale
+                    beforeEditingProfile = it.res.data
+                    user.value = it.res.data
+                    name.value = it.res.data.name
+                    description.value = it.res.data.content.text
+                    timezone.value = it.res.data.timezone
+                    locale.value = it.res.data.locale
                     loading.value = false
                 }.onFailure {
                     loading.value = false
@@ -425,7 +426,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
 
         class Factory(
             private val userId: String,
-            private val getAuthenticatedUseCase: GetAuthenticatedUserUseCase,
+            private val getProfileUseCase: GetProfileUseCase,
             private val updateProfileUseCase: UpdateProfileUseCase,
             private val updateUserImageUseCase: UpdateUserImageUseCase
         ) :
@@ -434,7 +435,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return EditProfileViewModel(
                     userId,
-                    getAuthenticatedUseCase,
+                    getProfileUseCase,
                     updateProfileUseCase,
                     updateUserImageUseCase
                 ) as T

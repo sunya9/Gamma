@@ -39,7 +39,7 @@ data class User(
         @Json(name = "cover_image") val coverImage: Cover,
         override val entities: Entities?,
         override val html: String?,
-        val markdownText: String?,
+        @Json(name = "markdown_text") val markdownText: String?,
         override val text: String?
     ) : HaveEntities, Parcelable
 
