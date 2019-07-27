@@ -1,7 +1,6 @@
 package net.unsweets.gamma.util
 
 import android.graphics.Color
-import android.util.Log
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -35,7 +34,7 @@ suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> = suspendCancella
         }
 
         override fun onResponse(call: Call<PnutResponse<T>>, response: Response<PnutResponse<T>>) {
-            Log.e("response", response.toString())
+            LogUtil.e(response.toString())
             response.body()?.let { cont.resume(it) }
                 ?: response.errorBody()?.let { cont.cancel(Throwable(it.string())) }
 

@@ -2,7 +2,6 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +24,7 @@ import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.InfiniteScrollListener
 import net.unsweets.gamma.presentation.util.SmoothScroller
 import net.unsweets.gamma.presentation.view.DividerIgnoreLastItem
+import net.unsweets.gamma.util.LogUtil
 import net.unsweets.gamma.util.SingleLiveEvent
 
 
@@ -166,7 +166,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
             val pagination = items.value?.lastOrNull()?.let {
                 PaginationParam(minId = it.paginationId)
             } ?: PaginationParam()
-            Log.e("pagination", pagination.toString())
+            LogUtil.e(pagination.toString())
             if (lastPagination == pagination) return
             lastPagination = pagination
             loadItems(pagination)
@@ -182,7 +182,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
                     getItems(pagination)
                 }.onSuccess {
                     val insertPosition = if (!pagination.maxId.isNullOrEmpty()) 0 else items.value?.size
-                    Log.e("insertPosition", insertPosition.toString())
+                    LogUtil.e(insertPosition.toString())
                     when {
                         !pagination.minId.isNullOrEmpty() -> {
                             olderDirectionMeta.value = it.meta
@@ -193,7 +193,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
                     }
                     listEvent.value = ListEvent.ReceiveNewItems(it.data, insertPosition)
                 }.onFailure {
-                    Log.e("error", it.message ?: "no message")
+                    LogUtil.e(it.message ?: "no message")
                     listEvent.value = ListEvent.Failure(it)
                     lastPagination = null
                 }

@@ -3,7 +3,6 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -27,6 +26,7 @@ import net.unsweets.gamma.domain.usecases.GetInteractionUseCase
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.adapter.ReactionUsersAdapter
 import net.unsweets.gamma.presentation.util.DateUtil
+import net.unsweets.gamma.util.LogUtil
 import javax.inject.Inject
 
 class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.InteractionViewHolder>(),
@@ -152,10 +152,10 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
 
     class InteractionViewModel(private val getInteractionUseCase: GetInteractionUseCase) :
         BaseListViewModel<Interaction>() {
-        override suspend fun getItems(pagination: PaginationParam): PnutResponse<List<Interaction>> {
-            val params = GetInteractionsParam().apply { add(pagination) }
-            Log.e("params", params.toString())
-            return getInteractionUseCase.run(GetInteractionInputData(params)).res
+        override suspend fun getItems(params: PaginationParam): PnutResponse<List<Interaction>> {
+            val modParams = GetInteractionsParam().apply { add(params) }
+            LogUtil.e(modParams.toString())
+            return getInteractionUseCase.run(GetInteractionInputData(modParams)).res
         }
 
 

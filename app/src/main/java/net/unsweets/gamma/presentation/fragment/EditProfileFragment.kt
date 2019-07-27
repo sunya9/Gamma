@@ -251,7 +251,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
             viewModel.beforeEditingProfile?.name != viewModel.name.value ||
                     viewModel.beforeEditingProfile?.timezone != viewModel.timezone.value ||
                     viewModel.beforeEditingProfile?.locale != viewModel.locale.value ||
-                    viewModel.beforeEditingProfile?.content?.text != viewModel.description.value ||
+                    viewModel.beforeEditingProfile?.content?.markdownText != viewModel.description.value ||
                     viewModel.newAvatarUri.value !is ImageState.Keep ||
                     viewModel.newCoverUri.value !is ImageState.Keep
 
@@ -340,7 +340,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                     beforeEditingProfile = it.res.data
                     user.value = it.res.data
                     name.value = it.res.data.name
-                    description.value = it.res.data.content.text
+                    description.value = it.res.data.content.markdownText
                     timezone.value = it.res.data.timezone
                     locale.value = it.res.data.locale
                     loading.value = false

@@ -1,7 +1,7 @@
 package net.unsweets.gamma.domain.model.params.composed
 
-import android.util.Log
 import net.unsweets.gamma.domain.model.params.single.BaseParam
+import net.unsweets.gamma.util.LogUtil
 
 abstract class BaseComposeParam(private val map: Map<String, String> = emptyMap()) : BaseParam {
     protected val queryList: MutableList<BaseParam> = mutableListOf()
@@ -11,7 +11,7 @@ abstract class BaseComposeParam(private val map: Map<String, String> = emptyMap(
             currentMap.entries.forEach { entry ->
                 res[entry.key] = entry.value
             }
-            Log.e("res", res.toString())
+            LogUtil.e(res.toString())
             res
         })
     }
