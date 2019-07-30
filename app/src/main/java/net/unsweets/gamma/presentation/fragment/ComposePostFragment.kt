@@ -438,7 +438,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         val previewAttachmentsVisibility = MutableLiveData<Int>().apply { value = View.GONE }
         val initialText by lazy {
             val replyTargetUserUsername = replyTargetArg?.user?.username
-            if (replyTargetUserUsername != null && mentionToMyself)
+            if (replyTargetUserUsername != null && !mentionToMyself)
                 "@$replyTargetUserUsername "
             else
                 ""
