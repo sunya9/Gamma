@@ -27,6 +27,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:textAppearance">@style/TextAppearance</item>
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>
+        <item name="materialAlertDialogTheme">@style/MaterialAlertDialog</item>
         <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementsUseOverlay">true</item>
@@ -103,7 +104,7 @@
         <item name="iconTint">@android:color/white</item>
     </style>
 
-    <style name="TextInputStyle" parent="Widget.Design.TextInputLayout" />
+    <style name="TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
     <style name="Tab" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabTextAppearance">@style/TextAppearance</item>
@@ -240,6 +241,39 @@
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="cornerRadius">0dp</item>
+    </style>
+
+    <style name="MaterialAlertDialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
+        <item name="extendedFloatingActionButtonStyle">@style/ExtendedFloatingActionButtonStyle</item>
+        <item name="tabStyle">@style/Tab</item>
+        <item name="toolbarStyle">@style/Toolbar</item>
+        <item name="android:windowBackground">@color/colorWindowBackground</item>
+        <item name="materialButtonStyle">@style/Button</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="materialCardViewStyle">@style/CardStyle</item>
+        <item name="colorControlNormal">@color/toolbarIcon</item>
+        <item name="colorControlHighlight">@color/colorGrayLight</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textAppearance">@style/TextAppearance</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
+        <item name="android:fragmentSharedElementEnterTransition">@transition/image_shared_element_transition</item>
+        <item name="android:fragmentSharedElementReturnTransition">@transition/image_shared_element_transition</item>
+        <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle</item>
+        <item name="textInputStyle">@style/TextInputStyle</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="checkboxStyle">@style/CheckBoxStyle</item>
+        <item name="radioButtonStyle">@style/RadioButtonStyle</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
     <color name="colorPhotoViewBackground">#8000</color>
