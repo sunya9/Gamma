@@ -394,7 +394,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     private fun showReplyCompose(view: View, item: Post) {
         val pos = getViewPositionOnScreen(view)
-        val fragment = ComposePostFragment.replyInstance(pos.first, pos.second, item.mainPost)
+        val fragment = ComposePostDialogFragment.replyInstance(pos.first, pos.second, item.mainPost)
         fragment.show(childFragmentManager, DialogKey.Compose.name)
     }
 

@@ -16,6 +16,6 @@ data class LongPost(override val value: LongPostValue) : Raw<LongPost.LongPostVa
     data class LongPostValue(
         val body: String,
         val title: String?,
-        val tstamp: String?
+        val tstamp: Long?
     ) : Raw.RawValue, Parcelable
 }

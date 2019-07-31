@@ -11,6 +11,13 @@
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
     <item
+        android:id="@+id/menuLongPost"
+        android:checkable="true"
+        android:checked="false"
+        android:icon="@drawable/ic_note_add_black_24dp"
+        android:title="@string/add_long_post"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menuNsfw"
         android:checkable="true"
         android:checked="false"

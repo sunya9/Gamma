@@ -63,7 +63,7 @@ class PostService : IntentService("PostService") {
         when (intent.action) {
             Actions.SendPost.getActionName() -> {
                 val postBodyOuter = intent.getParcelableExtra<PostBodyOuter>(IntentKey.PostBody.name) ?: return
-                val raw = mutableListOf<PostRaw<*>>()
+                val raw = mutableListOf<PostRaw<*>>().apply { addAll(postBodyOuter.postBody.raw) }
                 val replacementFileRawList = postBodyOuter.files
                     .map { uploadFileUseCase.run(UploadFileInputData(it)).postOEmbedRaw }
                 raw.addAll(replacementFileRawList)

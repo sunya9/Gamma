@@ -1,48 +1,75 @@
 package net.unsweets.gamma.presentation.fragment
 
+
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorInflater
-import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.Application
-import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
-import android.view.animation.AccelerateInterpolator
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import dagger.android.support.DaggerAppCompatDialogFragment
 import kotlinx.android.synthetic.main.compose_thumbnail_image.view.*
-import kotlinx.android.synthetic.main.fragment_compose_post.*
-import kotlinx.android.synthetic.main.fragment_compose_post.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentComposePostBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
 import net.unsweets.gamma.domain.entity.PostBodyOuter
+import net.unsweets.gamma.domain.entity.raw.LongPost
+import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService
+import net.unsweets.gamma.util.LogUtil
 import net.unsweets.gamma.util.observeOnce
+import java.util.*
 import javax.inject.Inject
 
-class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDialogFragment.Listener {
+class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listener, AnimationCallback,
+    BackPressedHookable, ComposeLongPostFragment.Callback {
+    override fun onUpdateLongPost(longPost: LongPost?) {
+        viewModel.longPost = longPost
+    }
+
+    override fun onAnimationEnd(open: Boolean) {
+        if (open) {
+            focusToEditText()
+        }
+    }
+
+    override fun onBackPressed() {
+        cancelToCompose()
+    }
+
+    override fun onAnimationStart(open: Boolean) {
+        if (!open) {
+            hideKeyboard(binding.composeTextEditText)
+        }
+    }
+
+    interface Callback {
+        fun onFinish()
+        fun addFragment(fragment: Fragment)
+    }
+
     private enum class BundleKey {
-        CX, CY, Text, ReplyTarget
+        ReplyTarget
     }
 
     private enum class DialogKey {
@@ -53,26 +80,15 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         Storage
     }
 
-    companion object {
-        fun newInstance(cx: Int, cy: Int) = ComposePostFragment().apply {
-            arguments = Bundle().apply {
-                putInt(BundleKey.CX.name, cx)
-                putInt(BundleKey.CY.name, cy)
-            }
-        }
-
-        fun replyInstance(cx: Int, cy: Int, post: Post) = ComposePostFragment().apply {
-            arguments = Bundle().apply {
-                putInt(BundleKey.CX.name, cx)
-                putInt(BundleKey.CY.name, cy)
-                putParcelable(BundleKey.ReplyTarget.name, post)
-            }
-        }
-    }
 
     private enum class RequestCode { EditPhoto, Discard }
 
+    private var listener: Callback? = null
     private val thumbnailAdapterListener = object : ThumbnailAdapter.Callback {
+        override fun updateList(list: List<Uri>) {
+            viewModel.photos = list.toMutableList()
+        }
+
         override fun onClick(uri: Uri, index: Int) {
             val newIntent = EditPhotoActivity.newIntent(context, uri, index)
             startActivityForResult(newIntent, RequestCode.EditPhoto.ordinal)
@@ -109,6 +125,11 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = parentFragment as? Callback
+    }
+
     @Inject
     lateinit var getCurrentAccountUseCase: GetCurrentAccountUseCase
 
@@ -123,19 +144,15 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     private fun send() {
         val text = viewModel.text.value ?: return
         val isNsfw = viewModel.nsfw.value ?: false
+        val raw = mutableListOf<PostRaw<*>>()
+        viewModel.longPost?.let { raw.add(it.copy(value = it.value.copy(tstamp = Date().time))) }
         val postBodyOuter = PostBodyOuter(
-            PostBody(text, replyTarget?.id, isNsfw = isNsfw),
+            PostBody(text, replyTarget?.id, isNsfw = isNsfw, raw = raw.toList()),
             adapter.getItems()
         )
         PostService.newPostIntent(context, postBodyOuter)
-        finishWithAnim()
+        listener?.onFinish()
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle)
-    }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_compose_post, container, false)
@@ -170,12 +187,12 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
         viewModel.event.observe(this, eventObserver)
         viewModel.enableSendButton.observe(this, enableSendButtonObserver)
-        view.composeTextEditText.setOnFocusChangeListener { editText, b ->
+        binding.composeTextEditText.setOnFocusChangeListener { editText, b ->
             if (!b) return@setOnFocusChangeListener
             showKeyboard(editText)
         }
-        adapter = ThumbnailAdapter(thumbnailAdapterListener)
-        thumbnailRecyclerView.adapter = adapter
+        adapter = ThumbnailAdapter(viewModel.photos.toMutableList(), thumbnailAdapterListener)
+        binding.thumbnailRecyclerView.adapter = adapter
 
         setTintForToolbarIcons(binding.viewLeftActionMenuView.context, binding.viewLeftActionMenuView.menu)
 
@@ -189,7 +206,15 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         viewModel.text.observeOnce(this, Observer<String> {
             binding.composeTextEditText.setSelection(it.length)
         })
-
+        if (viewModel.initialized) {
+            focusToEditText()
+        } else {
+            viewModel.initialized = true
+        }
+        val menu = binding.viewLeftActionMenuView.menu ?: return
+        val longPostMenuItem = menu.findItem(R.id.menuLongPost) ?: return
+        longPostMenuItem.isChecked = viewModel.longPost != null
+        setTintForCheckableMenuItem(view.context, longPostMenuItem)
     }
 
     private fun setupToolbar() {
@@ -202,30 +227,6 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         binding.toolbar.setNavigationOnClickListener {
             cancelToCompose()
         }
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setOnShowListener {
-            if (savedInstanceState == null) {
-                revealAnimation(dialog.rootLayout)
-                view.let {
-                    val anim = AnimatorInflater.loadAnimator(context, R.animator.bg_compose_window)
-                    anim.setTarget(it)
-                    anim.start()
-                }
-            } else {
-                focusToEditText()
-            }
-        }
-
-        dialog.setOnKeyListener { _, keyCode, _ ->
-            if (keyCode != KeyEvent.KEYCODE_BACK) return@setOnKeyListener false
-            cancelToCompose()
-            true
-        }
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        return dialog
     }
 
     private fun requestGalleryDialog() {
@@ -253,7 +254,7 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
     }
 
     private fun showGalleryDialog() {
-        hideKeyboard(binding.composeTextEditText)
+//        hideKeyboard(binding.composeTextEditText)
         val fragment = GalleryItemListDialogFragment.chooseMultiple()
         fragment.show(childFragmentManager, DialogKey.Gallery.name)
     }
@@ -266,59 +267,13 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
 
     override fun onShow() {
-        hideKeyboard(binding.composeTextEditText)
     }
 
     override fun onDismiss() {
-        binding.composeTextEditText.post {
-            binding.composeTextEditText.apply {
-                requestFocus()
-            }
-            showKeyboardForce(binding.composeTextEditText.context)
-        }
-
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 
-    private fun revealAnimation(root: View) {
-        val viewTreeObserver = root.viewTreeObserver
-        if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    createRevealAnim(true, view!!)?.start()
-                }
-            })
-        }
-    }
-
-
-    fun createRevealAnim(open: Boolean = true, root: View): Animator? {
-        val args = arguments ?: return null
-        val cx = args.getInt(BundleKey.CX.name, -1)
-        val cy = args.getInt(BundleKey.CY.name, -1)
-        if ((cx < 0) || (cy < 0)) return null
-        val targetRadius = Math.hypot(root.width.toDouble(), root.height.toDouble()).toFloat()
-        val startRadius = if (open) 0F else targetRadius
-        val endRadius = if (open) targetRadius else 0F
-        val anim = ViewAnimationUtils.createCircularReveal(root, cx, cy, startRadius, endRadius)
-        anim.interpolator = AccelerateInterpolator()
-        if (!open) hideKeyboard(binding.composeTextEditText)
-        anim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
-                super.onAnimationEnd(animation)
-                if (!open) {
-                    root.visibility = View.INVISIBLE
-                    dismiss()
-                    return
-                } else {
-                    focusToEditText()
-                }
-            }
-        })
-        val duration = resources.getInteger(R.integer.compose_duration)
-        anim.duration = duration.toLong()
-        return anim
-    }
 
     private fun focusToEditText() {
 //        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
@@ -326,7 +281,6 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         showKeyboard(binding.composeTextEditText)
     }
 
-    private fun exitReveal() = createRevealAnim(false, binding.root)?.start() ?: dismiss()
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -334,8 +288,14 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
             R.id.menuInsertPhoto -> requestGalleryDialog()
             R.id.menuNsfw -> toggleNSFW(item)
             R.id.menuPost -> send()
+            R.id.menuLongPost -> composeLongPost()
         }
         return true
+    }
+
+    private fun composeLongPost() {
+        val fragment = ComposeLongPostFragment.newInstance(viewModel.longPost)
+        listener?.addFragment(fragment)
     }
 
     private fun toggleNSFW(item: MenuItem) {
@@ -355,21 +315,38 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
                 .build(RequestCode.Discard.ordinal)
             fragment.show(childFragmentManager, DialogKey.Discard.name)
         } else {
-            finishWithAnim()
+            listener?.onFinish()
         }
     }
 
-    private fun finishWithAnim() {
-        exitReveal()
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        LogUtil.e("onHiddenChanged ${hidden}")
+        if (!hidden) {
+            focusToEditText()
+        }
     }
 
-    class ThumbnailAdapter(private val listener: Callback) : RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        isVisible
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            focusToEditText()
+        }
+    }
+
+    class ThumbnailAdapter(private val items: MutableList<Uri> = mutableListOf(), private val listener: Callback) :
+        RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
         interface Callback {
             fun onRemove()
             fun onClick(uri: Uri, index: Int)
+            fun updateList(list: List<Uri>)
         }
 
-        private val items = ArrayList<Uri>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.compose_thumbnail_image, parent, false)
@@ -393,17 +370,20 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         private fun remove(index: Int) {
             items.removeAt(index)
             listener.onRemove()
+            listener.updateList(items)
             notifyItemRemoved(index)
         }
 
         fun add(uri: Uri) {
             val index = items.size
             items.add(index, uri)
+            listener.updateList(items)
             notifyItemInserted(index)
         }
 
         fun replace(uri: Uri, index: Int) {
             items[index] = uri
+            listener.updateList(items)
             notifyItemChanged(index)
         }
 
@@ -421,11 +401,14 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
         replyTargetArg: Post?,
         mentionToMyself: Boolean
     ) : BaseViewModel<Event>(app) {
+        var photos: List<Uri> = emptyList()
+        var initialized: Boolean = false
         val nsfw = MutableLiveData<Boolean>().apply { value = false }
         val replyTarget = MutableLiveData<Post>().apply { value = replyTargetArg }
         val replyTargetVisibility = Transformations.map(replyTarget) {
             if (it != null) View.VISIBLE else View.GONE
         }
+        var longPost: LongPost? = null
         private val maxTextLength = 256
         val text = MutableLiveData<String>().apply { value = "" }
         private val counter: LiveData<Int> = Transformations.map(text) {
@@ -464,5 +447,15 @@ class ComposePostFragment : DaggerAppCompatDialogFragment(), GalleryItemListDial
 
     sealed class Event {
         data class Send(val postBody: PostBody) : Event()
+    }
+
+    companion object {
+        fun newInstance() = ComposePostFragment()
+
+        fun replyInstance(post: Post) = ComposePostFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(ComposePostFragment.BundleKey.ReplyTarget.name, post)
+            }
+        }
     }
 }
