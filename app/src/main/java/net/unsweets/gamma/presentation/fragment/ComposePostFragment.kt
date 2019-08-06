@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat
@@ -36,7 +35,6 @@ import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService
-import net.unsweets.gamma.util.LogUtil
 import net.unsweets.gamma.util.observeOnce
 import java.util.*
 import javax.inject.Inject
@@ -189,7 +187,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         viewModel.enableSendButton.observe(this, enableSendButtonObserver)
         binding.composeTextEditText.setOnFocusChangeListener { editText, b ->
             if (!b) return@setOnFocusChangeListener
-            showKeyboard(editText)
+//            showKeyboard(editText)
         }
         adapter = ThumbnailAdapter(viewModel.photos.toMutableList(), thumbnailAdapterListener)
         binding.thumbnailRecyclerView.adapter = adapter
@@ -254,7 +252,6 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private fun showGalleryDialog() {
-//        hideKeyboard(binding.composeTextEditText)
         val fragment = GalleryItemListDialogFragment.chooseMultiple()
         fragment.show(childFragmentManager, DialogKey.Gallery.name)
     }
@@ -262,7 +259,6 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     override fun onGalleryItemClicked(uri: Uri, tag: String?) {
         adapter.add(uri)
         viewModel.previewAttachmentsVisibility.value = View.VISIBLE
-
     }
 
 
@@ -270,13 +266,11 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     override fun onDismiss() {
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+        focusToEditText()
     }
 
 
     private fun focusToEditText() {
-//        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         binding.composeTextEditText.requestFocus()
         showKeyboard(binding.composeTextEditText)
     }
@@ -319,14 +313,6 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         }
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        LogUtil.e("onHiddenChanged ${hidden}")
-        if (!hidden) {
-            focusToEditText()
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         isVisible
@@ -335,7 +321,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
-            focusToEditText()
+//            focusToEditText()
         }
     }
 

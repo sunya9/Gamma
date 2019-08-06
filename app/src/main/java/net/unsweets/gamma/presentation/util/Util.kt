@@ -17,17 +17,14 @@ import net.unsweets.gamma.R
 
 fun showKeyboard(view: View) {
     val imm = getImm(view.context)
-    imm.showSoftInput(view, 0)
-}
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
+    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY)
 
-fun showKeyboardForce(context: Context) {
-    val imm = getImm(context)
-    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 }
 
 fun hideKeyboard(view: View) {
     val imm = getImm(view.context)
-    imm.hideSoftInputFromWindow(view.windowToken, 0)
+    imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
 }
 
 private fun getImm(context: Context) = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
