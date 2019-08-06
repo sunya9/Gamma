@@ -18,4 +18,9 @@
         <item name="android:navigationBarColor">@color/navigationBar</item>
         <item name="android:navigationBarDividerColor">@color/navigationBarDivider</item>
     </style>
+
+    <style name="AppTheme.SplashTheme" parent="BaseSplashTheme">
+        <item name="android:navigationBarColor">@color/colorGray</item>
+        <item name="android:navigationBarDividerColor">@color/colorGray</item>
+    </style>
 </resources>

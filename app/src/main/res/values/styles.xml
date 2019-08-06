@@ -154,10 +154,13 @@
         <item name="strokeColor">@color/colorPrimary</item>
     </style>
 
-    <style name="AppTheme.SplashTheme">
+    <style name="BaseSplashTheme" parent="BaseTheme">
         <item name="android:windowBackground">@drawable/bg_splash</item>
         <item name="android:statusBarColor">@color/colorGray</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
+
+    <style name="AppTheme.SplashTheme" parent="BaseSplashTheme" />
 
     <style name="expandTitleTextAppearance" parent="TextAppearance">
         <item name="android:textColor">@android:color/white</item>
