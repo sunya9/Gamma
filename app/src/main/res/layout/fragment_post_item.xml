@@ -173,6 +173,13 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                         tools:text="@tools:sample/lorem" />
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/showLongPostButton"
+                        style="@style/Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/show_long_post" />
+
                     <FrameLayout
                         android:id="@+id/thumbnailViewPagerFrameLayout"
                         android:layout_width="match_parent"

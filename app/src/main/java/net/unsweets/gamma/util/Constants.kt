@@ -3,4 +3,5 @@ package net.unsweets.gamma.util
 object Constants {
     const val Gamma = "Gamma"
     const val ReverseDomain = "net.unsweets.gamma"
+    const val MaxPostTextLength = 256
 }

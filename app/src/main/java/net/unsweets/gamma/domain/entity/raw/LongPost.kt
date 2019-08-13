@@ -18,4 +18,8 @@ data class LongPost(override val value: LongPostValue) : Raw<LongPost.LongPostVa
         val title: String?,
         val tstamp: Long?
     ) : Raw.RawValue, Parcelable
+
+    companion object {
+        fun findLongPost(raw: List<Raw<*>>?): LongPost? = raw?.find { it is LongPost } as? LongPost
+    }
 }

@@ -161,4 +161,6 @@
     <string name="long_post_body_hint">Body</string>
     <string name="remove">Remove</string>
     <string name="add_long_post">Add longpost</string>
+    <string name="show_long_post">Show long post</string>
+    <string name="long_post_no_title">(No title)</string>
 </resources>

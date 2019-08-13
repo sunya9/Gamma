@@ -35,6 +35,7 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.entity.raw.LongPost
 import net.unsweets.gamma.domain.entity.raw.OEmbed
 import net.unsweets.gamma.domain.model.StreamType
 import net.unsweets.gamma.domain.model.io.GetPostInputData
@@ -186,7 +187,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         fragment.show(childFragmentManager, DialogKey.More.name)
     }
 
-    private enum class DialogKey { Compose, DeletePost, More }
+    private enum class DialogKey { Compose, DeletePost, More, LongPost }
 
 
     override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder, position: Int, isMainItem: Boolean) {
@@ -372,6 +373,15 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewHolder.isMainItem = item.id == mainPostId
         viewHolder.moreButton.setOnClickListener { showMoreMenu(item) }
         viewHolder.actionMoreImageView.setOnClickListener { showMoreMenu(item) }
+
+        val longPost = LongPost.findLongPost(raw)
+        viewHolder.showLongPostButton.visibility = getVisibility(longPost != null)
+        if (longPost != null) {
+            viewHolder.showLongPostButton.setOnClickListener {
+                val fragment = LongPostDialogFragment.newInstance(longPost)
+                fragment.show(childFragmentManager, DialogKey.LongPost.name)
+            }
+        }
     }
 
     private fun toggleRepost(repostType: RepostButtonType, item: Post, adapterPosition: Int) {
@@ -526,6 +536,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val threadButton: ImageButton = itemView.threadButton
         val moreButton: ImageButton = itemView.moreButton
         var isMainItem: Boolean = false
+        val showLongPostButton: MaterialButton = itemView.showLongPostButton
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :

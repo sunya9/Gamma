@@ -80,7 +80,10 @@ class ComposeLongPostFragment : Fragment(), BackPressedHookable {
         super.onViewCreated(view, savedInstanceState)
         binding.bodyEditText.requestFocus()
         viewModel.body.observeOnce(this, Observer {
-            binding.bodyEditText.setSelection(it.length)
+            binding.bodyEditText.also { view ->
+                view.requestFocus()
+                view.setSelection(it.length)
+            }
         })
         showKeyboard(binding.bodyEditText)
     }

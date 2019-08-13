@@ -35,6 +35,7 @@ import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService
+import net.unsweets.gamma.util.Constants
 import net.unsweets.gamma.util.observeOnce
 import java.util.*
 import javax.inject.Inject
@@ -98,10 +99,15 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         }
     }
 
-    private val enableSendButtonObserver = Observer<Boolean> {
-        val menu = binding.viewRightActionMenuView.menu ?: return@Observer
-        val menuItem = menu.findItem(R.id.menuPost) ?: return@Observer
-        menuItem.isEnabled = it
+    private val counterObserver = Observer<Int> {
+        syncMenuState(it)
+    }
+
+    private fun syncMenuState(count: Int) {
+        val menu = binding.viewRightActionMenuView.menu ?: return
+        val menuItem = menu.findItem(R.id.menuPost) ?: return
+        val enabled = (0 <= count) && count < Constants.MaxPostTextLength
+        menuItem.isEnabled = enabled
     }
     private val viewModel: ComposePostViewModel by lazy {
         ViewModelProviders.of(
@@ -152,6 +158,12 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         listener?.onFinish()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.event.observe(this, eventObserver)
+        viewModel.counter.observe(this, counterObserver)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_compose_post, container, false)
         binding.lifecycleOwner = this
@@ -162,6 +174,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             RequestCode.EditPhoto.ordinal -> {
+                focusToEditText()
                 if (resultCode != Activity.RESULT_OK || data == null) return
                 updatePhoto(data)
             }
@@ -169,7 +182,10 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
                 if (resultCode != Activity.RESULT_OK) return
                 cancelToCompose(true)
             }
-            else -> super.onActivityResult(requestCode, resultCode, data)
+            else -> {
+                focusToEditText()
+                super.onActivityResult(requestCode, resultCode, data)
+            }
         }
     }
 
@@ -182,9 +198,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
+        syncMenuState(viewModel.counter.value ?: 0)
 
-        viewModel.event.observe(this, eventObserver)
-        viewModel.enableSendButton.observe(this, enableSendButtonObserver)
         binding.composeTextEditText.setOnFocusChangeListener { editText, b ->
             if (!b) return@setOnFocusChangeListener
 //            showKeyboard(editText)
@@ -395,15 +410,12 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
             if (it != null) View.VISIBLE else View.GONE
         }
         var longPost: LongPost? = null
-        private val maxTextLength = 256
         val text = MutableLiveData<String>().apply { value = "" }
-        private val counter: LiveData<Int> = Transformations.map(text) {
+        val counter: LiveData<Int> = Transformations.map(text) {
             val text = it ?: ""
-            maxTextLength - text.codePointCount(0, text.length)
+            Constants.MaxPostTextLength - text.codePointCount(0, text.length)
         }
         val counterStr: LiveData<String> = Transformations.map(counter) { it.toString() }
-        val enableSendButton: LiveData<Boolean> =
-            Transformations.map(counter) { (0 <= it) && it < maxTextLength }
         val previewAttachmentsVisibility = MutableLiveData<Int>().apply { value = View.GONE }
         val initialText by lazy {
             val replyTargetUserUsername = replyTargetArg?.user?.username
