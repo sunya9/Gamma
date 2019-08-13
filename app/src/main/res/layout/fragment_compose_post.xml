@@ -131,10 +131,10 @@
                     android:id="@+id/composeTextEditText"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:gravity="top|start"
                     android:inputType="textMultiLine"
-                    android:layout_weight="1"
                     android:minLines="5"
                     android:padding="16dp"
                     android:text="@={viewModel.text}" />
