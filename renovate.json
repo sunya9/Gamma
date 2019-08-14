@@ -1,4 +1,10 @@
 {
+  "extends": [
+    "config:base"
+  ],
+  "gradle": {
+    "enabled": true
+  },
   "maven": {
     "enabled": true
   },
