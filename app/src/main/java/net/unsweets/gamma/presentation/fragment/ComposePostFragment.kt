@@ -134,11 +134,10 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private val viewModel: ComposePostViewModel by lazy {
-        ViewModelProviders.of(
+        ViewModelProvider(
             this,
             ComposePostViewModel.Factory(activity!!.application, replyTarget, mentionToMyself)
-        )
-            .get(ComposePostViewModel::class.java)
+        )[ComposePostViewModel::class.java]
     }
 
     private val replyTarget: Post? by lazy {

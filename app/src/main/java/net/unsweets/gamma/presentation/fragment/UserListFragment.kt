@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_user_item.view.*
@@ -30,8 +29,7 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
         this
     }
     override val viewModel: BaseListViewModel<User> by lazy {
-        ViewModelProviders.of(this, UserListViewModel.Factory(userListType, getUsersUseCase))
-            .get(UserListViewModel::class.java)
+        ViewModelProvider(this, UserListViewModel.Factory(userListType, getUsersUseCase))[UserListViewModel::class.java]
     }
 
 

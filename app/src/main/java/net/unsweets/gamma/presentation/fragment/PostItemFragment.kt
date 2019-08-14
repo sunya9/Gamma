@@ -21,7 +21,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -139,8 +138,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     lateinit var getPostUseCase: GetPostUseCase
     abstract val streamType: StreamType
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this, PostItemViewModel.Factory(streamType, getPostUseCase))
-            .get(PostItemViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            PostItemViewModel.Factory(streamType, getPostUseCase)
+        )[PostItemViewModel::class.java]
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt(StateKey.CurrentPosition.name, -1)
@@ -238,7 +239,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                     toggleStar(item, viewHolder.adapterPosition)
 
                 }
-                val starTextRes = if (item.mainPost.youBookmarked == true) R.string.unstar else R.string.star
+//                val starTextRes = if (item.mainPost.youBookmarked == true) R.string.unstar else R.string.star
 //                it.text = context.getString(starTextRes)
                 it.setImageResource(starDrawableRes)
                 it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)

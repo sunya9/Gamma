@@ -76,6 +76,7 @@ data class Post(
         if (repostedBy != null) it.addAll(repostedBy)
         it.distinctBy { user -> user.id }
     }
+    @IgnoredOnParcel
     val canonicalUrl by lazy {
         "https://posts.pnut.io/$id"
     }

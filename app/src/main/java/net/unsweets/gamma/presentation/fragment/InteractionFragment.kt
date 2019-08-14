@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.interaction_item.view.*
@@ -40,8 +39,10 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
     override lateinit var viewModel: InteractionViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this, InteractionViewModel.Factory(getInteractionUseCase))
-            .get(InteractionViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            InteractionViewModel.Factory(getInteractionUseCase)
+        )[InteractionViewModel::class.java]
         super.onCreate(savedInstanceState)
     }
 

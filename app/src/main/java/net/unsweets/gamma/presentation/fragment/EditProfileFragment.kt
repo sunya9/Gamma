@@ -146,11 +146,10 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
     }
 
     private val viewModel by lazy {
-        ViewModelProviders.of(
+        ViewModelProvider(
             this,
             EditProfileViewModel.Factory(userId, getProfileUseCase, updateProfileUseCase, updateUserImageUseCase)
-        )
-            .get(EditProfileViewModel::class.java)
+        )[EditProfileViewModel::class.java]
     }
 
     @Inject
@@ -373,16 +372,16 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                 }
                 val coverTask = async(start = CoroutineStart.LAZY) {
                     val newCoverUriValue = newCoverUri.value
-                    runCatching {
-                        if (newCoverUriValue is ImageState.NewImage) {
+                    if (newCoverUriValue is ImageState.NewImage) {
+                        runCatching {
                             updateUserImageUseCase.run(
                                 UpdateUserImageInputData(
                                     newCoverUriValue.uri,
                                     UpdateUserImageInputData.Type.Cover
                                 )
                             )
-                        } else Result.success(null)
-                    }
+                        }
+                    } else Result.success(null)
                 }
                 val profileTask = async(start = CoroutineStart.LAZY) {
                     runCatching {

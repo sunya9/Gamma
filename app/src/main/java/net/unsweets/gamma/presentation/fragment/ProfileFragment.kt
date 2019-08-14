@@ -58,11 +58,10 @@ class ProfileFragment : BaseFragment() {
     lateinit var followUseCase: FollowUseCase
 
     private val viewModel: ProfileViewModel by lazy {
-        ViewModelProviders.of(
+        ViewModelProvider(
             this,
             ProfileViewModel.Factory(activity!!.application, getProfileUseCase, followUseCase, userId)
-        )
-            .get(ProfileViewModel::class.java)
+        )[ProfileViewModel::class.java]
     }
 
     private val userId: String by lazy {

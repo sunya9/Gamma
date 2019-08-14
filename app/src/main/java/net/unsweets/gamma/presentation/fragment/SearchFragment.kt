@@ -41,7 +41,7 @@ class SearchFragment : BaseFragment() {
         }
     }
     private val viewModel by lazy {
-        ViewModelProviders.of(this, SearchViewModel.Factory()).get(SearchViewModel::class.java)
+        ViewModelProvider(this, SearchViewModel.Factory())[SearchViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

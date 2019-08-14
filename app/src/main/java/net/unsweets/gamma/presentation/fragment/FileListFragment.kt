@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.files_item.view.*
 import net.unsweets.gamma.R
@@ -35,7 +34,7 @@ class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this, FilesViewModel.Factory(getFilesUseCase)).get(FilesViewModel::class.java)
+        viewModel = ViewModelProvider(this, FilesViewModel.Factory(getFilesUseCase))[FilesViewModel::class.java]
 
         super.onCreate(savedInstanceState)
     }

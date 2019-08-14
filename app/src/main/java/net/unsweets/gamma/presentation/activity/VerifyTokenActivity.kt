@@ -3,7 +3,10 @@ package net.unsweets.gamma.presentation.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.lifecycle.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.model.io.VerifyTokenInputData
@@ -15,9 +18,7 @@ class VerifyTokenActivity : BaseActivity() {
     @Inject
     lateinit var verifyTokenUseCase: VerifyTokenUseCase
     private val viewModel: GetUserInfoViewModel by lazy {
-        ViewModelProviders
-            .of(this, GetUserInfoViewModel.Factory(verifyTokenUseCase))
-            .get(GetUserInfoViewModel::class.java)
+        ViewModelProvider(this, GetUserInfoViewModel.Factory(verifyTokenUseCase))[GetUserInfoViewModel::class.java]
     }
     private val eventObserver = Observer<Event> {
         when (it) {

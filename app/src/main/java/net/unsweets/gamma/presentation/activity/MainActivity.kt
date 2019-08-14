@@ -13,7 +13,7 @@ import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.snackbar.Snackbar
@@ -166,8 +166,10 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     }
 
     private val viewModel: MainActivityViewModel by lazy {
-        ViewModelProviders.of(this, MainActivityViewModel.Factory(getAuthenticatedUseCase))
-            .get(MainActivityViewModel::class.java)
+        ViewModelProvider(
+            this,
+            MainActivityViewModel.Factory(getAuthenticatedUseCase)
+        )[MainActivityViewModel::class.java]
     }
     private val fragmentMap: HashMap<Int, () -> PostItemFragment> = hashMapOf(
         net.unsweets.gamma.R.id.conversations to { PostItemFragment.getConversationInstance() },
@@ -186,7 +188,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         viewModel.event.observe(this, eventObserver)

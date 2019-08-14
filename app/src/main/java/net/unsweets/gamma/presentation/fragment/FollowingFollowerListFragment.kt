@@ -2,7 +2,6 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_with_toolbar.view.*
 import net.unsweets.gamma.R
@@ -28,7 +27,7 @@ abstract class FollowingFollowerListFragment : UserListFragment() {
             is UserListType.Followers -> user.counts.followers
             else -> null
         }
-        @StringRes val res = when (userListType) {
+        val res = when (userListType) {
             is UserListType.Following -> R.string.following_with_name
             is UserListType.Followers -> R.string.followers_with_name
             else -> null

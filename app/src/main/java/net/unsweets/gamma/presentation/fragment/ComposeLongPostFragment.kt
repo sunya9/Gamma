@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentComposeLongPostBinding
 import net.unsweets.gamma.domain.entity.raw.LongPost
@@ -48,7 +48,7 @@ class ComposeLongPostFragment : Fragment(), BackPressedHookable {
     private lateinit var binding: FragmentComposeLongPostBinding
     private var listener: Callback? = null
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(ComposeLongPostViewModel::class.java)
+        ViewModelProvider(this)[ComposeLongPostViewModel::class.java]
     }
     private val longPost by lazy {
         arguments?.getParcelable<LongPost>(BundleKey.LongPost.name)

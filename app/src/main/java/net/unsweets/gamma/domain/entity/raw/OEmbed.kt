@@ -26,7 +26,8 @@ open class OEmbed(override val value: OEmbedRawValue) : Raw<Raw.RawValue>, Parce
 
 
     // for fallback
-    object OEmbedValueImpl : OEmbedRawValue("", "")
+    @Parcelize
+    object OEmbedValueImpl : OEmbedRawValue("", ""), Parcelable
 
     @Parcelize
     @JsonClass(generateAdapter = true)
