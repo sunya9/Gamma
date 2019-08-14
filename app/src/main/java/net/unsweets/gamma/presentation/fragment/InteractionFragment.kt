@@ -84,7 +84,6 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
         }
         viewHolder.reactionUsersRecyclerView.adapter = when (concreteItem) {
             is Interaction.HasUsersFieldInteraction -> {
-                viewHolder.reactionUsersRecyclerView.removeItemDecoration(reactionSpacerDecoration)
                 ReactionUsersAdapter(concreteItem.users.orEmpty(), reactionUsersAdapterListener)
             }
             else -> null
@@ -107,13 +106,6 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
     private fun showPost(post: Post) {
         val fragment = ThreadFragment.newInstance(post, post.id)
         addFragment(fragment, post.id)
-    }
-
-    private val reactionSpacerDecoration by lazy {
-        val drawable = ContextCompat.getDrawable(context!!, R.drawable.spacer_width_half)!!
-        DividerItemDecoration(context, RecyclerView.HORIZONTAL).also {
-            it.setDrawable(drawable)
-        }
     }
 
 
@@ -149,10 +141,23 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
         val bodyTextView: TextView = view.bodyTextView
         val timeTextView: TextView = view.timeTextView
         val reactionUsersRecyclerView: RecyclerView = view.reactionUsersRecyclerView
+
+        init {
+            addSpacerDecoration()
+        }
+
+        private fun addSpacerDecoration() {
+            val context = itemView.context
+            val drawable = ContextCompat.getDrawable(context, R.drawable.spacer_width_half) ?: return
+            val reactionSpacerDecoration = DividerItemDecoration(context, RecyclerView.HORIZONTAL).also {
+                it.setDrawable(drawable)
+            }
+            reactionUsersRecyclerView.addItemDecoration(reactionSpacerDecoration)
+        }
     }
 
     class InteractionViewModel(private val getInteractionUseCase: GetInteractionUseCase) :
-        BaseListViewModel<Interaction>() {
+        BaseListFragment.BaseListViewModel<Interaction>() {
         override suspend fun getItems(params: PaginationParam): PnutResponse<List<Interaction>> {
             val modParams = GetInteractionsParam().apply { add(params) }
             LogUtil.e(modParams.toString())

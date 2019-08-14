@@ -352,10 +352,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 item.mainPost.reactionUsers,
                 reactionUsersAdapterListener
             ) else null
-            if (isMainItem)
-                it.addItemDecoration(reactionSpacerDecoration)
-            else
-                it.removeItemDecoration(reactionSpacerDecoration)
         }
         viewHolder.clientNameTextView.text = item.mainPost.source?.name
         viewHolder.clientNameTextView.setOnClickListener {
@@ -421,13 +417,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     private fun showThread(item: Post): Boolean {
         val fragment = getThreadInstance(item, item.id)
         return addFragment(fragment, item.id) == null
-    }
-
-    private val reactionSpacerDecoration by lazy {
-        val drawable = ContextCompat.getDrawable(context!!, R.drawable.spacer_width_half)!!
-        DividerItemDecoration(context, RecyclerView.HORIZONTAL).also {
-            it.setDrawable(drawable)
-        }
     }
 
     private val reactionUsersAdapterListener by lazy {
@@ -538,6 +527,19 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val moreButton: ImageButton = itemView.moreButton
         var isMainItem: Boolean = false
         val showLongPostButton: MaterialButton = itemView.showLongPostButton
+
+        init {
+            addSpacerDecoration()
+        }
+
+        private fun addSpacerDecoration() {
+            val context = itemView.context
+            val drawable = ContextCompat.getDrawable(context, R.drawable.spacer_width_half) ?: return
+            val reactionSpacerDecoration = DividerItemDecoration(context, RecyclerView.HORIZONTAL).also {
+                it.setDrawable(drawable)
+            }
+            reactionUsersRecyclerView.addItemDecoration(reactionSpacerDecoration)
+        }
     }
 
     class PostItemViewModel(private val streamType: StreamType, private val getPostUseCase: GetPostUseCase) :
