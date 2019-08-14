@@ -100,15 +100,39 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private val counterObserver = Observer<Int> {
-        syncMenuState(it)
+        updateSendMenuItem()
     }
 
-    private fun syncMenuState(count: Int) {
-        val menu = binding.viewRightActionMenuView.menu ?: return
-        val menuItem = menu.findItem(R.id.menuPost) ?: return
+    private fun updateSendMenuItem() {
+        val menuItem = findMenuItemWithinRightMenu(R.id.menuPost) ?: return
+        val count = viewModel.counter.value ?: 0
         val enabled = (0 <= count) && count < Constants.MaxPostTextLength
         menuItem.isEnabled = enabled
     }
+
+    private fun findMenuItemWithinRightMenu(menuId: Int): MenuItem? {
+        val menu = binding.viewRightActionMenuView.menu ?: return null
+        return menu.findItem(menuId)
+    }
+
+    private fun findMenuItemWithinLeftMenu(menuId: Int): MenuItem? {
+        val menu = binding.viewLeftActionMenuView.menu ?: return null
+        return menu.findItem(menuId)
+    }
+
+    private fun updateNsfwMenuItem() {
+        val nsfwMenuItem = findMenuItemWithinLeftMenu(R.id.menuNsfw) ?: return
+        val nsfwFlag = viewModel.nsfw.value ?: false
+        nsfwMenuItem.isChecked = nsfwFlag
+        setTintForCheckableMenuItem(context!!, nsfwMenuItem)
+    }
+
+
+    private fun syncMenuState() {
+        updateSendMenuItem()
+        updateNsfwMenuItem()
+    }
+
     private val viewModel: ComposePostViewModel by lazy {
         ViewModelProviders.of(
             this,
@@ -198,12 +222,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        syncMenuState(viewModel.counter.value ?: 0)
+        syncMenuState()
 
-        binding.composeTextEditText.setOnFocusChangeListener { editText, b ->
-            if (!b) return@setOnFocusChangeListener
-//            showKeyboard(editText)
-        }
         adapter = ThumbnailAdapter(viewModel.photos.toMutableList(), thumbnailAdapterListener)
         binding.thumbnailRecyclerView.adapter = adapter
 
