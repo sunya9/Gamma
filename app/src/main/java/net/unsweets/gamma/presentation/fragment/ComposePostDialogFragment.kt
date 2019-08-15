@@ -95,12 +95,13 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
                 false
             }
         }
+        dialog.window?.decorView?.visibility = View.GONE
         dialog.setOnShowListener {
             if (savedInstanceState == null) {
                 revealAnimation(dialog.rootLayout)
                 view.let {
                     val anim = AnimatorInflater.loadAnimator(context, R.animator.bg_compose_window)
-                    anim.setTarget(it)
+                    anim.setTarget(dialog.window)
                     anim.start()
                 }
             } else {
@@ -124,7 +125,6 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
         val endRadius = if (open) targetRadius else 0F
         val anim = ViewAnimationUtils.createCircularReveal(root, cx, cy, startRadius, endRadius)
         anim.interpolator = AccelerateInterpolator()
-//        if (!open) hideKeyboard(binding.composeTextEditText)
         val fragment = currentFragment as? AnimationCallback
         anim.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator?) {
@@ -160,6 +160,7 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    dialog?.window?.decorView?.visibility = View.VISIBLE
                     createRevealAnim(true, view!!)?.start()
                 }
             })
