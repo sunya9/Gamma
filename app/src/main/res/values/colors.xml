@@ -42,4 +42,5 @@
     <color name="green">#90cb6f</color>
     <color name="colorAvatarBorder">@android:color/white</color>
     <color name="toolbarIconDisabled">#a555</color>
+    <color name="colorPhotoViewBackground">#8000</color>
 </resources>
