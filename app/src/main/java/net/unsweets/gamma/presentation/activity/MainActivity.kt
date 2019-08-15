@@ -51,7 +51,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         updateDefaultAccountUseCase.run(UpdateDefaultAccountInputData(account.id))
         val restartIntent = intent
         finish()
-        overridePendingTransition(net.unsweets.gamma.R.anim.scale_up, net.unsweets.gamma.R.anim.scale_down)
+        overridePendingTransition(R.anim.scale_up, R.anim.scale_down)
         startActivity(restartIntent)
     }
 
@@ -86,34 +86,34 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
 
     private fun showActionResultSnackbar(post: Post, action: Action) {
         val actionNameRes = when (action) {
-            Action.Star -> if (post.mainPost.youBookmarked == true) net.unsweets.gamma.R.string.stars else net.unsweets.gamma.R.string.unstar
-            Action.Repost -> if (post.mainPost.youReposted == true) net.unsweets.gamma.R.string.repost else net.unsweets.gamma.R.string.delete_repost
-            Action.Delete -> net.unsweets.gamma.R.string.delete
+            Action.Star -> if (post.mainPost.youBookmarked == true) R.string.stars else R.string.unstar
+            Action.Repost -> if (post.mainPost.youReposted == true) R.string.repost else R.string.delete_repost
+            Action.Delete -> R.string.delete
         }
         val actionName = getString(actionNameRes)
         val username = post.mainPost.user?.username ?: return
         val content = post.content?.text ?: return
         val message =
-            getString(net.unsweets.gamma.R.string.action_result_snackbar_template, actionName, username, content)
+            getString(R.string.action_result_snackbar_template, actionName, username, content)
         showSnackBar(message)
     }
 
     override fun onPostReceive(post: Post) {
         val text = post.content?.text ?: return
-        showSnackBar(getString(net.unsweets.gamma.R.string.posted, text))
+        showSnackBar(getString(R.string.posted, text))
     }
 
     private fun showSnackBar(text: String) {
         val view = findViewById<View>(android.R.id.content) ?: return
         Snackbar.make(view, text, Snackbar.LENGTH_SHORT).apply {
-            setAnchorView(net.unsweets.gamma.R.id.fab)
+            setAnchorView(R.id.fab)
         }.show()
     }
 
     private lateinit var binding: ActivityMainBinding
 
     private val accountListView by lazy {
-        val view = layoutInflater.inflate(net.unsweets.gamma.R.layout.account_list, binding.navigationView, false)
+        val view = layoutInflater.inflate(R.layout.account_list, binding.navigationView, false)
         view.accountList.also { accountList ->
             accountList.adapter = AccountListAdapter(accounts, this)
         }
@@ -125,7 +125,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         val indicatorView: ImageView? = binding.navigationView.switchAccountIndicatorImageView
         indicatorView?.let { imageView ->
             val res =
-                if (it) net.unsweets.gamma.R.drawable.ic_arrow_drop_down_to_up else net.unsweets.gamma.R.drawable.ic_arrow_drop_up_to_down
+                if (it) R.drawable.ic_arrow_drop_down_to_up else R.drawable.ic_arrow_drop_up_to_down
             val avd = AnimatedVectorDrawableCompat.create(this, res) ?: return@let
             imageView.setImageDrawable(avd)
             avd.start()
@@ -137,7 +137,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
             }
             false -> {
                 binding.navigationView.removeHeaderView(accountListView)
-                menuInflater.inflate(net.unsweets.gamma.R.menu.navigation_drawer, menu)
+                menuInflater.inflate(R.menu.navigation_drawer, menu)
                 syncMenu()
             }
         }
@@ -145,8 +145,8 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     private val drawerToggle: ActionBarDrawerToggle by lazy {
         object : ActionBarDrawerToggle(
             this, drawerLayout, bottomAppBar,
-            net.unsweets.gamma.R.string.navigation_drawer_open,
-            net.unsweets.gamma.R.string.navigation_drawer_close
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         ) {
             override fun onDrawerClosed(drawerView: View) {
                 super.onDrawerClosed(drawerView)
@@ -172,7 +172,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         )[MainActivityViewModel::class.java]
     }
     private val fragmentMap: HashMap<Int, () -> PostItemFragment> = hashMapOf(
-        net.unsweets.gamma.R.id.conversations to { PostItemFragment.getConversationInstance() },
+        R.id.conversations to { PostItemFragment.getConversationInstance() },
         R.id.missedConversations to { PostItemFragment.getMissedConversationInstance() },
         R.id.newcomers to { PostItemFragment.getNewcomersInstance() },
         R.id.photos to { PostItemFragment.getPhotoInstance() },
