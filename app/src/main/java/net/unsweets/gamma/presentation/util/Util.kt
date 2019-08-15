@@ -17,8 +17,7 @@ import net.unsweets.gamma.R
 
 fun showKeyboard(view: View) {
     val imm = getImm(view.context)
-    imm.hideSoftInputFromWindow(view.windowToken, 0)
-    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
 
 }
 
