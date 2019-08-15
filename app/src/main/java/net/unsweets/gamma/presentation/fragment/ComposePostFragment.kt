@@ -358,7 +358,9 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
 
     private fun cancelToCompose(force: Boolean = false) {
-        val isChanged = viewModel.initialText != viewModel.text.value || adapter.getItems().isNotEmpty()
+        val hasAnyMedia = adapter.getItems().isNotEmpty()
+        val hasAnyRaw = viewModel.longPost != null || viewModel.spoiler != null
+        val isChanged = viewModel.initialText != viewModel.text.value || hasAnyMedia || hasAnyRaw
         if (!force && isChanged) {
             val fragment = BasicDialogFragment.Builder()
                 .setMessage(R.string.discard_changes)
