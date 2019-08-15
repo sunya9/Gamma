@@ -30,6 +30,7 @@ import net.unsweets.gamma.domain.entity.PostBody
 import net.unsweets.gamma.domain.entity.PostBodyOuter
 import net.unsweets.gamma.domain.entity.raw.LongPost
 import net.unsweets.gamma.domain.entity.raw.PostRaw
+import net.unsweets.gamma.domain.entity.raw.Spoiler
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.*
@@ -41,9 +42,14 @@ import java.util.*
 import javax.inject.Inject
 
 class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listener, AnimationCallback,
-    BackPressedHookable, ComposeLongPostFragment.Callback {
+    BackPressedHookable, ComposeLongPostFragment.Callback, SpoilerDialogFragment.Callback {
     override fun onUpdateLongPost(longPost: LongPost?) {
         viewModel.longPost = longPost
+    }
+
+    override fun onUpdateSpoiler(spoiler: Spoiler?) {
+        viewModel.spoiler = spoiler
+        updateSpoilerMenuItem()
     }
 
     override fun onAnimationEnd(open: Boolean) {
@@ -72,7 +78,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private enum class DialogKey {
-        Gallery, Discard
+        Gallery, Discard, Spoiler
     }
 
     private enum class PermissionRequestCode {
@@ -131,6 +137,13 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private fun syncMenuState() {
         updateSendMenuItem()
         updateNsfwMenuItem()
+        updateSpoilerMenuItem()
+    }
+
+    private fun updateSpoilerMenuItem() {
+        val spoilerMenuItem = findMenuItemWithinLeftMenu(R.id.menuSpoiler) ?: return
+        spoilerMenuItem.isChecked = viewModel.spoiler != null
+        setTintForCheckableMenuItem(context!!, spoilerMenuItem)
     }
 
     private val viewModel: ComposePostViewModel by lazy {
@@ -172,7 +185,10 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         val text = viewModel.text.value ?: return
         val isNsfw = viewModel.nsfw.value ?: false
         val raw = mutableListOf<PostRaw<*>>()
+
         viewModel.longPost?.let { raw.add(it.copy(value = it.value.copy(tstamp = Date().time))) }
+        viewModel.spoiler?.let { raw.add(it) }
+
         val postBodyOuter = PostBodyOuter(
             PostBody(text, replyTarget?.id, isNsfw = isNsfw, raw = raw.toList()),
             adapter.getItems()
@@ -317,8 +333,15 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
             R.id.menuNsfw -> toggleNSFW(item)
             R.id.menuPost -> send()
             R.id.menuLongPost -> composeLongPost()
+            R.id.menuSpoiler -> setSpoiler()
         }
         return true
+    }
+
+    private fun setSpoiler() {
+        val spoiler = viewModel.spoiler
+        val dialog = SpoilerDialogFragment.newInstance(spoiler)
+        dialog.show(childFragmentManager, DialogKey.Spoiler.name)
     }
 
     private fun composeLongPost() {
@@ -421,6 +444,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         replyTargetArg: Post?,
         mentionToMyself: Boolean
     ) : BaseViewModel<Event>(app) {
+        var spoiler: Spoiler? = null
         var photos: List<Uri> = emptyList()
         var initialized: Boolean = false
         val nsfw = MutableLiveData<Boolean>().apply { value = false }

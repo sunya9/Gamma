@@ -11,6 +11,13 @@
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
     <item
+        android:id="@+id/menuSpoiler"
+        android:checkable="true"
+        android:checked="false"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/spoiler"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menuLongPost"
         android:checkable="true"
         android:checked="false"
