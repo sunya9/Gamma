@@ -267,7 +267,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
                     .withSubtype(LongPost::class.java, "nl.chimpnut.blog.post")
                     .withSubtype(PollNotice::class.java, "io.pnut.core.poll-notice")
                     .withSubtype(ChannelInvite::class.java, "io.pnut.core.channel.invite")
-                    .withDefaultValue(RawImpl)
+                    .withDefaultValue(RawImpl())
             )
             // for create post
             .add(
