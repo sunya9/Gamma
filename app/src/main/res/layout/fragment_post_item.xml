@@ -304,6 +304,19 @@
                     tools:text="5s" />
 
                 <ImageView
+                    android:id="@+id/revisedIconImageView"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="@dimen/margin_half"
+                    android:contentDescription="@string/revised"
+                    android:scaleType="centerInside"
+                    android:tint="@color/colorGrayLight"
+                    app:layout_constraintBottom_toBottomOf="@id/relativeTimeTextView"
+                    app:layout_constraintEnd_toStartOf="@id/chatIconImageView"
+                    app:layout_constraintTop_toTopOf="@id/relativeTimeTextView"
+                    tools:src="@drawable/ic_outline_create_24dp" />
+
+                <ImageView
                     android:id="@+id/chatIconImageView"
                     android:layout_width="12dp"
                     android:layout_height="12dp"

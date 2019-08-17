@@ -379,6 +379,17 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 fragment.show(childFragmentManager, DialogKey.LongPost.name)
             }
         }
+        val revisionType = when {
+            item.mainPost.revision != null -> RevisionType.Original
+            item.mainPost.isRevised == true -> RevisionType.Revised
+            else -> RevisionType.None
+        }
+        revisionType.iconRes?.let { viewHolder.revisedIconImageView.setImageResource(it) }
+        viewHolder.revisedIconImageView.visibility = getVisibility(revisionType.iconRes != null)
+    }
+
+    private enum class RevisionType(val iconRes: Int?) {
+        None(null), Revised(R.drawable.ic_create_black_24dp), Original(R.drawable.ic_outline_create_24dp)
     }
 
     private fun toggleRepost(repostType: RepostButtonType, item: Post, adapterPosition: Int) {
@@ -527,6 +538,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val moreButton: ImageButton = itemView.moreButton
         var isMainItem: Boolean = false
         val showLongPostButton: MaterialButton = itemView.showLongPostButton
+        val revisedIconImageView: ImageView = itemView.revisedIconImageView
 
         init {
             addSpacerDecoration()
