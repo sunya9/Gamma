@@ -15,6 +15,7 @@ class EntityOnTouchListener: View.OnTouchListener {
             val res = method.onTouchEvent(v, text as Spannable, event)
             movementMethod = null
             isFocusable = false
+            v.performClick()
             return res
         }
     }
