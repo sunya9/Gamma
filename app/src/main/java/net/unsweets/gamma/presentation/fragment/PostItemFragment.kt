@@ -1,5 +1,6 @@
 package net.unsweets.gamma.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -112,7 +113,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val postTouchHelperCallback = PostTouchHelperCallback(context!!, adapter)
         ItemTouchHelper(postTouchHelperCallback)
     }
-    private val entityListener: View.OnTouchListener = EntityOnTouchListener()
 
     private val moveTransition: Transition by lazy {
         val transition =
@@ -192,101 +192,99 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
 
     override fun onBindViewHolder(item: Post, viewHolder: PostViewHolder, position: Int, isMainItem: Boolean) {
-        val url = item.mainPost.user?.getAvatarUrl(User.AvatarSize.Large).orEmpty()
         val context = viewHolder.itemView.context
         viewHolder.itemId
-        if (item.isDeleted == true) {
-            viewHolder.itemView.alpha = 0.5f
-            viewHolder.screenNameTextView.setText(R.string.deleted_post_user_name)
-            viewHolder.handleNameTextView.text = ""
-            viewHolder.bodyTextView.setText(R.string.this_post_has_deleted)
-            viewHolder.avatarView.setImageResource(R.drawable.ic_delete_black_24dp)
-            viewHolder.avatarView.isEnabled = false
-        } else {
-            viewHolder.itemView.alpha = 1f
-            viewHolder.avatarView.isEnabled = true
-            GlideApp.with(this).load(url).into(viewHolder.avatarView)
-            val iconTransition = getString(R.string.icon_transition)
-            val iconTransitionName =
-                "$iconTransition + ${viewHolder.adapterPosition} ${streamType::class.java.simpleName}"
-            viewHolder.avatarView.transitionName = iconTransitionName
-            viewHolder.avatarView.setOnClickListener {
-                currentPosition = viewHolder.adapterPosition
-                val transitionMap = HashMap(
-                    hashMapOf<View, String>(
-                        Pair(it, it.transitionName)
-                    )
-                )
-                val id = item.mainPost.user?.id ?: return@setOnClickListener
-                val fragment = ProfileFragment.newInstance(id, url, item.mainPost.user, it.transitionName)
-                sharedElementReturnTransition = moveTransition
-                fragment.sharedElementEnterTransition = moveTransition
-                (fragment.exitTransition as? TransitionSet)?.excludeTarget(it.transitionName, true)
-                FragmentHelper.addFragment(context!!, fragment, id, transitionMap)
-            }
-            item.mainPost.user?.let {
-                viewHolder.screenNameTextView.text = it.username
-                viewHolder.handleNameTextView.text = it.name
-            }
-            viewHolder.bodyTextView.apply {
-                text = item.mainPost.content?.getSpannableStringBuilder(context)
-                setOnTouchListener(entityListener)
-            }
-            val starDrawableRes =
-                if (item.mainPost.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
-            viewHolder.actionStarImageView.let {
-                it.setOnClickListener {
-                    toggleStar(item, viewHolder.adapterPosition)
+        val isDeleted = item.isDeleted == true
+        viewHolder.postItemForegroundView.alpha = if (isDeleted) 0.5f else 1f
+        val bgColor = context.getColor(if (isDeleted) R.color.colorWindowBackground else R.color.colorPrimary)
+        viewHolder.swipeActionsLayout.setBackgroundColor(bgColor)
+        viewHolder.screenNameTextView.text = item.mainPost.user?.username ?: getString(R.string.deleted_post_user_name)
+        viewHolder.handleNameTextView.text = item.mainPost.user?.name.orEmpty()
+        viewHolder.avatarView.isEnabled = !isDeleted
+        val starDrawableRes =
+            if (item.mainPost.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
+        viewHolder.actionStarImageView.let {
+            it.setOnClickListener {
+                toggleStar(item, viewHolder.adapterPosition)
 
-                }
+            }
 //                val starTextRes = if (item.mainPost.youBookmarked == true) R.string.unstar else R.string.star
 //                it.text = context.getString(starTextRes)
-                it.setImageResource(starDrawableRes)
-                it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
-            }
-            viewHolder.starButton.let {
-                it.setOnClickListener {
-                    toggleStar(item, viewHolder.adapterPosition)
-                }
-                it.setImageResource(starDrawableRes)
-            }
-            viewHolder.actionReplyImageView.setOnClickListener {
-                showReplyCompose(viewHolder.avatarView, item)
-            }
-            viewHolder.replyButton.setOnClickListener {
-                showReplyCompose(viewHolder.avatarView, item)
-            }
-            val repostType = when {
-                item.mainPost.youReposted == true -> RepostButtonType.DeleteRepost
-                item.mainPost.user?.me == true -> RepostButtonType.DeletePost
-                else -> RepostButtonType.Repost
-            }
-            viewHolder.actionRepostImageView.let {
-                //                it.setText(repostType.textRes)
-                it.setImageResource(repostType.iconRes)
-                it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
-                it.setOnClickListener {
-                    toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
-                }
-            }
-            viewHolder.repostButton.let {
-                it.setImageResource(repostType.iconRes)
-                it.setOnClickListener {
-                    toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
-                }
-            }
-            setupRepostView(item, viewHolder.repostedByTextView)
-            val hasConversation = item.mainPost.replyTo != null || (item.mainPost.counts?.replies ?: 0) > 0
-            viewHolder.chatIconImageView.visibility =
-                if (hasConversation) View.VISIBLE else View.GONE
-            if (hasConversation) {
-                val res =
-                    if (item.mainPost.replyTo != null) R.drawable.ic_chat_bubble_black_24dp else R.drawable.ic_chat_bubble_outline_black_24dp
-                viewHolder.chatIconImageView.setImageResource(res)
-
-            }
-
+            it.setImageResource(starDrawableRes)
+            it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
         }
+        viewHolder.starButton.isEnabled = !isDeleted
+        viewHolder.starButton.let {
+            it.setOnClickListener {
+                toggleStar(item, viewHolder.adapterPosition)
+            }
+            it.setImageResource(starDrawableRes)
+        }
+        viewHolder.actionReplyImageView.setOnClickListener {
+            showReplyCompose(viewHolder.avatarView, item)
+        }
+        viewHolder.replyButton.isEnabled = !isDeleted
+        viewHolder.replyButton.setOnClickListener {
+            showReplyCompose(viewHolder.avatarView, item)
+        }
+
+
+        val repostType = when {
+            item.mainPost.youReposted == true -> RepostButtonType.DeleteRepost
+            item.mainPost.user?.me == true -> RepostButtonType.DeletePost
+            else -> RepostButtonType.Repost
+        }
+        viewHolder.actionRepostImageView.let {
+            //                it.setText(repostType.textRes)
+            it.setImageResource(repostType.iconRes)
+            it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+            it.setOnClickListener {
+                toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
+            }
+        }
+        viewHolder.repostButton.isEnabled = !isDeleted
+        viewHolder.repostButton.let {
+            it.setImageResource(repostType.iconRes)
+            it.setOnClickListener {
+                toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
+            }
+        }
+
+        val hasConversation = item.mainPost.replyTo != null || (item.mainPost.counts?.replies ?: 0) > 0
+        viewHolder.chatIconImageView.visibility =
+            if (hasConversation) View.VISIBLE else View.GONE
+        if (hasConversation) {
+            val res =
+                if (item.mainPost.replyTo != null) R.drawable.ic_chat_bubble_black_24dp else R.drawable.ic_chat_bubble_outline_black_24dp
+            viewHolder.chatIconImageView.setImageResource(res)
+        }
+
+        viewHolder.bodyTextView.text =
+            item.mainPost.content?.getSpannableStringBuilder(context) ?: getString(R.string.this_post_has_deleted)
+
+        val url = item.mainPost.user?.getAvatarUrl(User.AvatarSize.Large).orEmpty()
+        GlideApp.with(this).load(url).into(viewHolder.avatarView)
+        val iconTransition = getString(R.string.icon_transition)
+        val iconTransitionName =
+            "$iconTransition + ${viewHolder.adapterPosition} ${streamType::class.java.simpleName}"
+        viewHolder.avatarView.transitionName = iconTransitionName
+        viewHolder.avatarView.setOnClickListener {
+            currentPosition = viewHolder.adapterPosition
+            val transitionMap = HashMap(
+                hashMapOf<View, String>(
+                    Pair(it, it.transitionName)
+                )
+            )
+            val id = item.mainPost.user?.id ?: return@setOnClickListener
+            val fragment = ProfileFragment.newInstance(id, url, item.mainPost.user, it.transitionName)
+            sharedElementReturnTransition = moveTransition
+            fragment.sharedElementEnterTransition = moveTransition
+            (fragment.exitTransition as? TransitionSet)?.excludeTarget(it.transitionName, true)
+            FragmentHelper.addFragment(context!!, fragment, id, transitionMap)
+        }
+
+        setupRepostView(item, viewHolder.repostedByTextView)
+
         viewHolder.starStateView.visibility = if (item.mainPost.youBookmarked == true) View.VISIBLE else View.GONE
         viewHolder.repostStateView.visibility = if (item.mainPost.youReposted == true) View.VISIBLE else View.GONE
 
@@ -449,17 +447,18 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     private fun setupRepostView(item: Post, repostedByTextView: TextView) {
         val originalUser = item.user
-        if (item.repostOf != null && originalUser != null) {
+        val visibility = if (item.repostOf != null && originalUser != null) {
             repostedByTextView.setOnClickListener {
                 val fragment = ProfileFragment.newInstance(originalUser.id)
                 addFragment(fragment, originalUser.id)
             }
             repostedByTextView.text =
                 repostedByTextView.context.getString(R.string.reposted_by_template, originalUser.username)
-            repostedByTextView.visibility = View.VISIBLE
+            true
         } else {
-            repostedByTextView.visibility = View.GONE
+            false
         }
+        repostedByTextView.visibility = getVisibility(visibility)
     }
 
     override fun getItemLayout(): Int = R.layout.fragment_post_item
@@ -489,6 +488,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
 
     // TODO: create the view holder for deleted post
+    @SuppressLint("ClickableViewAccessibility")
     class PostViewHolder(
         mView: View,
         itemTouchHelper: ItemTouchHelper
@@ -539,9 +539,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         var isMainItem: Boolean = false
         val showLongPostButton: MaterialButton = itemView.showLongPostButton
         val revisedIconImageView: ImageView = itemView.revisedIconImageView
-
+        val swipeActionsLayout: FrameLayout = itemView.swipeActionsLayout
         init {
             addSpacerDecoration()
+            bodyTextView.setOnTouchListener(EntityOnTouchListener())
         }
 
         private fun addSpacerDecoration() {
