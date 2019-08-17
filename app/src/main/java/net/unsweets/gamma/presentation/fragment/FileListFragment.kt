@@ -15,7 +15,7 @@ import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.GetFilesUseCase
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
-import net.unsweets.gamma.presentation.util.toFormatString
+import net.unsweets.gamma.util.toFormatString
 import javax.inject.Inject
 
 class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>(),

@@ -1,6 +1,8 @@
 package net.unsweets.gamma.util
 
+import android.content.Context
 import android.graphics.Color
+import android.text.format.DateFormat
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -13,6 +15,7 @@ import net.unsweets.gamma.domain.entity.PnutResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -55,4 +58,9 @@ fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observ
             removeObserver(this)
         }
     })
+}
+
+fun Date.toFormatString(context: Context?): String {
+    val dateFormatTemplate = context?.getString(R.string.file_date_format_template)
+    return DateFormat.format(dateFormatTemplate, this).toString()
 }
