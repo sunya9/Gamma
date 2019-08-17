@@ -20,5 +20,9 @@
         <item
             android:id="@+id/menuShare"
             android:title="@string/share" />
+        <item
+            android:id="@+id/menuShareUserPostsRss"
+            android:icon="@drawable/ic_rss_feed_black_24dp"
+            android:title="@string/share_user_posts_rss_url" />
     </group>
 </menu>

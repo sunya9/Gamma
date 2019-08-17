@@ -39,6 +39,7 @@ import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.ProfilePagerAdapter
 import net.unsweets.gamma.presentation.util.EntityOnTouchListener
 import net.unsweets.gamma.presentation.util.GlideApp
+import net.unsweets.gamma.presentation.util.ShareUtil
 import net.unsweets.gamma.util.SingleLiveEvent
 import java.util.*
 import javax.inject.Inject
@@ -49,6 +50,9 @@ class ProfileFragment : BaseFragment() {
         ID, IconUrl, User, IconTransitionName
     }
 
+    private val userPostsRssUrl: String by lazy {
+        "https://api.pnut.io/v0/feed/rss/users/$userId/posts"
+    }
     private val fetchingUserObserve = Observer<Boolean> {
         binding.swipeRefreshLayout.isRefreshing = it
     }
@@ -106,7 +110,6 @@ class ProfileFragment : BaseFragment() {
 
         binding.toolbar.let { toolbar ->
             toolbar.setNavigationOnClickListener { backToPrevFragment() }
-            toolbar.inflateMenu(R.menu.profile)
             toolbar.setOnMenuItemClickListener { onOptionsItemSelected(it) }
         }
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -133,9 +136,14 @@ class ProfileFragment : BaseFragment() {
             R.id.menuBlock -> toggleBlock()
             R.id.menuMute -> toggleMute()
             R.id.menuShare -> share()
+            R.id.menuShareUserPostsRss -> shareUserPostsRss()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    private fun shareUserPostsRss() {
+        activity?.let { ShareUtil.launchShareUrlIntent(it, userPostsRssUrl) }
     }
 
     private fun share() {

@@ -64,6 +64,7 @@
                         android:background="@{viewModel.toolbarBgColor}"
                         android:minHeight="?attr/actionBarSize"
                         android:paddingTop="@dimen/height_status_bar"
+                        app:menu="@menu/profile"
                         app:layout_collapseMode="pin"
                         app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
                         app:subtitle="@{`@` + viewModel.user.username}"

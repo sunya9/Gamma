@@ -165,4 +165,9 @@
     <string name="long_post_no_title">(No title)</string>
     <string name="topic">Topic</string>
     <string name="spoiler_alert">Spoiler alert</string>
+    <string name="share_tag_stream_rss">Share tag stream RSS</string>
+    <string name="share_user_posts_rss_url">Share user posts RSS</string>
+    <string name="share_text">Share</string>
+    <string name="share_url">Share URL</string>
+    <string name="share_search_posts_rss_url">Share search posts RSS</string>
 </resources>

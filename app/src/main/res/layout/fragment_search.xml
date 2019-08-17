@@ -30,6 +30,7 @@
                 android:elevation="0dp"
                 app:contentInsetStartWithNavigation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways"
+                app:menu="@menu/search"
                 app:navigationIcon="@drawable/ic_arrow_back_white_24dp">
 
                 <FrameLayout

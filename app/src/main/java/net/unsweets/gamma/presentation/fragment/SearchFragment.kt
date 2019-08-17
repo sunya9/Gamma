@@ -8,18 +8,69 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.*
+import androidx.viewpager.widget.ViewPager
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentSearchBinding
+import net.unsweets.gamma.presentation.util.ShareUtil
 import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.util.SingleLiveEvent
+import java.net.URLEncoder
+import java.nio.charset.Charset
 
 class SearchFragment : BaseFragment() {
+
+    private val menuItemClickListener = Toolbar.OnMenuItemClickListener {
+        when (it.itemId) {
+            R.id.menuSharePostSearch -> sharePostSearchRssUrl()
+            else -> return@OnMenuItemClickListener false
+        }
+        true
+
+    }
+
+    private fun sharePostSearchRssUrl() {
+        ShareUtil.launchShareUrlIntent(activity, postSearchRssUrl)
+    }
+
+    private val firstSearchObserver = Observer<Boolean> {
+        if (!it) return@Observer
+        updateMenu(0)
+    }
+    private val pageChangeListener = object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) {
+        }
+
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        }
+
+        override fun onPageSelected(position: Int) {
+            updateMenu(position)
+        }
+    }
+
+    private val postSearchRssUrl
+        get() = "https://api.pnut.io/v0/feed/rss/posts/search?q=${URLEncoder.encode(
+            viewModel.lastKeyword,
+            Charset.defaultCharset().name()
+        )}"
+
+    private fun updateMenu(position: Int) {
+        val searchType = adapter.fragments[position].searchType
+        updateMenuItemVisibility(R.id.menuSharePostSearch, searchType == SearchType.Post)
+    }
+
+    private fun updateMenuItemVisibility(itemId: Int, visibility: Boolean) {
+        val menu = binding.toolbar.menu ?: return
+        val menuItem = menu.findItem(itemId) ?: return
+        menuItem.isVisible = visibility
+    }
 
     private val adapter by lazy {
         SearchPagerAdapter(context!!, childFragmentManager, pagerInfo)
@@ -46,6 +97,7 @@ class SearchFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.event.observe(this, eventObserver)
+        viewModel.firstSearch.observe(this, firstSearchObserver)
         if (savedInstanceState != null) {
             savedInstanceState.getParcelable<PagerInfo>(StateKey.PagerInfo.name)?.let { pagerInfo = it }
         }
@@ -64,7 +116,9 @@ class SearchFragment : BaseFragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.searchTabLayout.setupWithViewPager(binding.searchViewPager)
+        binding.searchViewPager.addOnPageChangeListener(pageChangeListener)
         binding.toolbar.setNavigationOnClickListener { backToPrevFragment() }
+        binding.toolbar.setOnMenuItemClickListener(menuItemClickListener)
         binding.keywordEditText.setOnEditorActionListener { _, actionId, event ->
             when (event) {
                 null -> when (actionId) {
@@ -103,6 +157,7 @@ class SearchFragment : BaseFragment() {
 
     override fun onDestroyView() {
         hideKeyboard()
+        binding.searchViewPager.removeOnPageChangeListener(pageChangeListener)
         super.onDestroyView()
     }
 
@@ -118,7 +173,9 @@ class SearchFragment : BaseFragment() {
         outState.putParcelable(StateKey.PagerInfo.name, pagerInfo)
     }
 
-    data class FragmentInfo(val fragment: Fragment, val titleRes: Int)
+    enum class SearchType(val titleRes: Int) { Post(R.string.posts), User(R.string.users) }
+
+    data class FragmentInfo(val fragment: Fragment, val searchType: SearchType)
 
     class SearchPagerAdapter(
         private val context: Context,
@@ -126,15 +183,16 @@ class SearchFragment : BaseFragment() {
         var pagerInfo: PagerInfo
     ) :
         FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val fragments
+        val fragments
             get() = listOf(
-                FragmentInfo(PostItemFragment.SearchPostsFragment.newInstance(pagerInfo.keyword), R.string.posts),
-                FragmentInfo(UserListFragment.SearchUserListFragment.newInstance(pagerInfo.keyword), R.string.users)
+                FragmentInfo(PostItemFragment.SearchPostsFragment.newInstance(pagerInfo.keyword), SearchType.Post),
+                FragmentInfo(UserListFragment.SearchUserListFragment.newInstance(pagerInfo.keyword), SearchType.User)
             )
 
         override fun getItem(position: Int): Fragment = fragments[position].fragment
 
-        override fun getPageTitle(position: Int): CharSequence? = context.getString(fragments[position].titleRes)
+        override fun getPageTitle(position: Int): CharSequence? =
+            context.getString(fragments[position].searchType.titleRes)
 
         override fun getCount(): Int = if (pagerInfo.keyword.isNotEmpty()) fragments.size else 0
         override fun getItemId(position: Int): Long {
@@ -148,7 +206,9 @@ class SearchFragment : BaseFragment() {
 
     class SearchViewModel : ViewModel() {
         val keyword = MutableLiveData<String>().apply { value = "" }
+        var lastKeyword: String = ""
         val event = SingleLiveEvent<Event>()
+        var firstSearch = MutableLiveData<Boolean>().apply { value = false }
 
         class Factory : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -157,7 +217,12 @@ class SearchFragment : BaseFragment() {
             }
         }
 
-        fun search() = keyword.value?.takeIf { it.isNotEmpty() }?.let { event.emit(Event.Search(it)) }
+        fun search() = keyword.value?.takeIf { it.isNotEmpty() }?.let {
+            firstSearch.value = true
+            lastKeyword = it
+            event.emit(Event.Search(it))
+        }
+
         fun clear() {
             keyword.value = ""
         }
