@@ -355,7 +355,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         }
         viewHolder.clientNameTextView.text = item.mainPost.source?.name
         viewHolder.clientNameTextView.setOnClickListener {
-            item.mainPost.source?.link?.let { link -> openCustomTabUrl(context, link) }
+            item.mainPost.source?.link?.let { link -> Util.openCustomTabUrl(context, link) }
         }
         viewHolder.foregroundActionsLayout.visibility =
             getVisibility(mainPostId == item.id || expandedPostItemId == item.id)
@@ -400,7 +400,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
 
     private fun showReplyCompose(view: View, item: Post) {
-        val pos = getViewPositionOnScreen(view)
+        val pos = Util.getViewPositionOnScreen(view)
         val fragment = ComposePostDialogFragment.replyInstance(pos.first, pos.second, item.mainPost)
         fragment.show(childFragmentManager, DialogKey.Compose.name)
     }

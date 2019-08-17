@@ -34,9 +34,9 @@ import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.domain.usecases.UpdateDefaultAccountUseCase
 import net.unsweets.gamma.presentation.adapter.AccountListAdapter
 import net.unsweets.gamma.presentation.fragment.*
-import net.unsweets.gamma.presentation.util.DrawerContentFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper.addFragment
 import net.unsweets.gamma.presentation.util.LoginUtil
+import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel
 import net.unsweets.gamma.service.PostService
 import javax.inject.Inject
@@ -253,7 +253,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     private fun syncMenu() {
         uncheckMenuItem(navigationView.menu)
         val fragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentPlaceholder) as? DrawerContentFragment ?: return
+            supportFragmentManager.findFragmentById(R.id.fragmentPlaceholder) as? Util.DrawerContentFragment ?: return
         navigationView.menu.findItem(fragment.menuItemId)?.isChecked = true
     }
 

@@ -25,7 +25,7 @@ import net.unsweets.gamma.domain.usecases.UpdateProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateUserImageUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.ComputedLiveData
-import net.unsweets.gamma.presentation.util.hideKeyboard
+import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.util.SingleLiveEvent
 import net.unsweets.gamma.util.showAsError
 import javax.inject.Inject
@@ -281,7 +281,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
     }
 
     private fun save() {
-        hideKeyboard(view!!)
+        Util.hideKeyboard(view!!)
         viewModel.save()
     }
 

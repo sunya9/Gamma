@@ -80,7 +80,6 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
             is Interaction.Reply -> handlePost(concreteItem.objects)
             is Interaction.Follow -> handleUser(concreteItem.objects)
             is Interaction.PollResponse -> handlePoll(concreteItem.objects)
-            is Interaction.HasUsersFieldInteraction -> TODO()
         }
         viewHolder.reactionUsersRecyclerView.adapter = when (concreteItem) {
             is Interaction.HasUsersFieldInteraction -> {

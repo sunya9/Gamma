@@ -14,10 +14,10 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
 import net.unsweets.gamma.R
-import net.unsweets.gamma.presentation.util.DrawerContentFragment
+import net.unsweets.gamma.presentation.util.Util
 
 
-class HomeFragment : Fragment(), DrawerContentFragment {
+class HomeFragment : Fragment(), Util.DrawerContentFragment {
     private val items: List<Item> = listOf(
         Item(PostItemFragment.getHomeStreamInstance(), R.string.home),
         Item(PostItemFragment.getMentionStreamInstance(), R.string.mentions),

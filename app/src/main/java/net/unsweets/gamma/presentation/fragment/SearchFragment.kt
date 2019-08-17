@@ -16,8 +16,7 @@ import androidx.lifecycle.*
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentSearchBinding
-import net.unsweets.gamma.presentation.util.hideKeyboard
-import net.unsweets.gamma.presentation.util.showKeyboard
+import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.util.SingleLiveEvent
 
 class SearchFragment : BaseFragment() {
@@ -97,10 +96,10 @@ class SearchFragment : BaseFragment() {
 
     fun focusToEditText() {
         binding.keywordEditText.requestFocus()
-        showKeyboard(binding.keywordEditText)
+        Util.showKeyboard(binding.keywordEditText)
     }
 
-    private fun hideKeyboard() = hideKeyboard(binding.keywordEditText)
+    private fun hideKeyboard() = Util.hideKeyboard(binding.keywordEditText)
 
     override fun onDestroyView() {
         hideKeyboard()

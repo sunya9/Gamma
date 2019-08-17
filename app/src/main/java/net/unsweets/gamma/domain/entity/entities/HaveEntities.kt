@@ -11,7 +11,7 @@ import net.unsweets.gamma.presentation.fragment.PostItemFragment
 import net.unsweets.gamma.presentation.fragment.ProfileFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper
 import net.unsweets.gamma.presentation.util.TouchableSpan
-import net.unsweets.gamma.presentation.util.openCustomTabUrl
+import net.unsweets.gamma.presentation.util.Util
 
 interface HaveEntities {
     val entities: Entities?
@@ -69,7 +69,7 @@ interface HaveEntities {
 //                PendingIntent.getActivity(context, 0, this, 0)
 //            }
             val icon = BitmapFactory.decodeResource(context.resources, R.drawable.ic_create_black_24dp)
-            openCustomTabUrl(context, link)
+            Util.openCustomTabUrl(context, link)
         }
     }
 }

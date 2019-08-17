@@ -16,7 +16,7 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentComposeLongPostBinding
 import net.unsweets.gamma.domain.entity.raw.LongPost
 import net.unsweets.gamma.presentation.util.BackPressedHookable
-import net.unsweets.gamma.presentation.util.showKeyboard
+import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.util.SingleLiveEvent
 import net.unsweets.gamma.util.observeOnce
 
@@ -85,7 +85,7 @@ class ComposeLongPostFragment : Fragment(), BackPressedHookable {
                 view.setSelection(it.length)
             }
         })
-        showKeyboard(binding.bodyEditText)
+        Util.showKeyboard(binding.bodyEditText)
     }
 
     override fun onAttach(context: Context) {

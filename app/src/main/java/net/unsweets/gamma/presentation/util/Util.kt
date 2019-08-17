@@ -15,66 +15,68 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
 import net.unsweets.gamma.R
 
-fun showKeyboard(view: View) {
-    val imm = getImm(view.context)
-    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+object Util {
+    fun showKeyboard(view: View) {
+        val imm = getImm(view.context)
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
 
-}
-
-fun hideKeyboard(view: View) {
-    val imm = getImm(view.context)
-    imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
-}
-
-private fun getImm(context: Context) = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-
-interface DrawerContentFragment {
-    val menuItemId: Int
-}
-
-fun getViewPositionOnScreen(view: View): Pair<Int, Int> {
-    val pos = IntArray(2)
-    view.getLocationOnScreen(pos)
-    val cx = pos[0] + view.width / 2
-    val cy = pos[1] + view.height / 2
-    return Pair(cx, cy)
-}
-
-fun setTintForToolbarIcons(context: Context, menu: Menu) {
-    val colorStateList = AppCompatResources.getColorStateList(context, R.color.toolbar_icon_tint)
-    for (i in 0 until menu.size()) {
-        setTintForToolbarIcon(colorStateList, menu.getItem(i))
     }
-}
 
-fun setTintForToolbarIcon(colorStateList: ColorStateList, menuItem: MenuItem) {
-    MenuItemCompat.setIconTintList(menuItem, colorStateList)
-}
+    fun hideKeyboard(view: View) {
+        val imm = getImm(view.context)
+        imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
 
+    private fun getImm(context: Context) = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-fun setTintForCheckableMenuItem(context: Context, menuItem: MenuItem) {
-    when (menuItem.isChecked) {
-        true -> {
-            val color = ContextCompat.getColor(context, R.color.colorPrimary)
-            menuItem.icon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-        }
-        false -> {
-            menuItem.icon.clearColorFilter()
-            val colorStateList = AppCompatResources.getColorStateList(context, R.color.toolbar_icon_tint)
-            setTintForToolbarIcon(colorStateList, menuItem)
+    interface DrawerContentFragment {
+        val menuItemId: Int
+    }
+
+    fun getViewPositionOnScreen(view: View): Pair<Int, Int> {
+        val pos = IntArray(2)
+        view.getLocationOnScreen(pos)
+        val cx = pos[0] + view.width / 2
+        val cy = pos[1] + view.height / 2
+        return Pair(cx, cy)
+    }
+
+    fun setTintForToolbarIcons(context: Context, menu: Menu) {
+        val colorStateList = AppCompatResources.getColorStateList(context, R.color.toolbar_icon_tint)
+        for (i in 0 until menu.size()) {
+            setTintForToolbarIcon(colorStateList, menu.getItem(i))
         }
     }
-}
 
-fun openCustomTabUrl(context: Context, link: String) {
-    val packageName = CustomTabsClient.getPackageName(context, arrayListOf(context.packageName))
-    CustomTabsIntent
-        .Builder()
-        .setShowTitle(true)
+    fun setTintForToolbarIcon(colorStateList: ColorStateList, menuItem: MenuItem) {
+        MenuItemCompat.setIconTintList(menuItem, colorStateList)
+    }
+
+
+    fun setTintForCheckableMenuItem(context: Context, menuItem: MenuItem) {
+        when (menuItem.isChecked) {
+            true -> {
+                val color = ContextCompat.getColor(context, R.color.colorPrimary)
+                menuItem.icon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+            false -> {
+                menuItem.icon.clearColorFilter()
+                val colorStateList = AppCompatResources.getColorStateList(context, R.color.toolbar_icon_tint)
+                setTintForToolbarIcon(colorStateList, menuItem)
+            }
+        }
+    }
+
+    fun openCustomTabUrl(context: Context, link: String) {
+        val packageName = CustomTabsClient.getPackageName(context, arrayListOf(context.packageName))
+        CustomTabsIntent
+            .Builder()
+            .setShowTitle(true)
 //                .setActionButton(icon, menuLabel, pendingIntent, false)
-        .addDefaultShareMenuItem()
-        .enableUrlBarHiding()
-        .build()
-        .also { it.intent.`package` = packageName }
-        .launchUrl(context, Uri.parse(link))
+            .addDefaultShareMenuItem()
+            .enableUrlBarHiding()
+            .build()
+            .also { it.intent.`package` = packageName }
+            .launchUrl(context, Uri.parse(link))
+    }
 }

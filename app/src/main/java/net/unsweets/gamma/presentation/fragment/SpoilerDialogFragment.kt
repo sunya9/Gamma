@@ -18,7 +18,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentSpoilerDialogBinding
 import net.unsweets.gamma.domain.entity.raw.Spoiler
-import net.unsweets.gamma.presentation.util.showKeyboard
+import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.util.observeOnce
 
 class SpoilerDialogFragment : DialogFragment(), DialogInterface.OnClickListener {
@@ -130,7 +130,7 @@ class SpoilerDialogFragment : DialogFragment(), DialogInterface.OnClickListener 
                 view.setSelection(it.length)
             }
         })
-        showKeyboard(binding.spoilerEditText)
+        Util.showKeyboard(binding.spoilerEditText)
         return dialog
     }
 

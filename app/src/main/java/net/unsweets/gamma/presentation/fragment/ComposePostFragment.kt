@@ -33,7 +33,10 @@ import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.entity.raw.Spoiler
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
-import net.unsweets.gamma.presentation.util.*
+import net.unsweets.gamma.presentation.util.AnimationCallback
+import net.unsweets.gamma.presentation.util.BackPressedHookable
+import net.unsweets.gamma.presentation.util.GlideApp
+import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService
 import net.unsweets.gamma.util.Constants
@@ -64,7 +67,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     override fun onAnimationStart(open: Boolean) {
         if (!open) {
-            hideKeyboard(binding.composeTextEditText)
+            Util.hideKeyboard(binding.composeTextEditText)
         }
     }
 
@@ -130,7 +133,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         val nsfwMenuItem = findMenuItemWithinLeftMenu(R.id.menuNsfw) ?: return
         val nsfwFlag = viewModel.nsfw.value ?: false
         nsfwMenuItem.isChecked = nsfwFlag
-        setTintForCheckableMenuItem(context!!, nsfwMenuItem)
+        Util.setTintForCheckableMenuItem(context!!, nsfwMenuItem)
     }
 
 
@@ -143,7 +146,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private fun updateSpoilerMenuItem() {
         val spoilerMenuItem = findMenuItemWithinLeftMenu(R.id.menuSpoiler) ?: return
         spoilerMenuItem.isChecked = viewModel.spoiler != null
-        setTintForCheckableMenuItem(context!!, spoilerMenuItem)
+        Util.setTintForCheckableMenuItem(context!!, spoilerMenuItem)
     }
 
     private val viewModel: ComposePostViewModel by lazy {
@@ -242,7 +245,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         adapter = ThumbnailAdapter(viewModel.photos.toMutableList(), thumbnailAdapterListener)
         binding.thumbnailRecyclerView.adapter = adapter
 
-        setTintForToolbarIcons(binding.viewLeftActionMenuView.context, binding.viewLeftActionMenuView.menu)
+        Util.setTintForToolbarIcons(binding.viewLeftActionMenuView.context, binding.viewLeftActionMenuView.menu)
 
         binding.viewLeftActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
         binding.viewRightActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
@@ -262,7 +265,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         val menu = binding.viewLeftActionMenuView.menu ?: return
         val longPostMenuItem = menu.findItem(R.id.menuLongPost) ?: return
         longPostMenuItem.isChecked = viewModel.longPost != null
-        setTintForCheckableMenuItem(view.context, longPostMenuItem)
+        Util.setTintForCheckableMenuItem(view.context, longPostMenuItem)
     }
 
     private fun setupToolbar() {
@@ -322,7 +325,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     private fun focusToEditText() {
         binding.composeTextEditText.requestFocus()
-        showKeyboard(binding.composeTextEditText)
+        Util.showKeyboard(binding.composeTextEditText)
     }
 
 
@@ -352,7 +355,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private fun toggleNSFW(item: MenuItem) {
         val nextValue = !item.isChecked
         item.isChecked = nextValue
-        setTintForCheckableMenuItem(context!!, item)
+        Util.setTintForCheckableMenuItem(context!!, item)
         viewModel.nsfw.value = nextValue
     }
 

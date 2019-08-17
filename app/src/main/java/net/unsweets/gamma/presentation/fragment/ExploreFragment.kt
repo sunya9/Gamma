@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_with_toolbar.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.model.StreamType
-import net.unsweets.gamma.presentation.util.DrawerContentFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper
 import net.unsweets.gamma.presentation.util.SmoothScroller
+import net.unsweets.gamma.presentation.util.Util
 
 
-sealed class ExploreFragment : PostItemFragment(), DrawerContentFragment {
+sealed class ExploreFragment : PostItemFragment(), Util.DrawerContentFragment {
 
     override fun getFragmentLayout(): Int = R.layout.list_with_toolbar
     override fun getRecyclerView(view: View): RecyclerView = view.itemList
