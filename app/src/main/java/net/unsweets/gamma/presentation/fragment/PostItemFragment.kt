@@ -47,7 +47,6 @@ import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.adapter.ReactionUsersAdapter
 import net.unsweets.gamma.presentation.adapter.ThumbnailViewPagerAdapter
 import net.unsweets.gamma.presentation.util.*
-import net.unsweets.gamma.presentation.util.DateUtil.Companion.getShortDateStr
 import net.unsweets.gamma.service.PostService
 import java.util.*
 import javax.inject.Inject
@@ -288,8 +287,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewHolder.starStateView.visibility = if (item.mainPost.youBookmarked == true) View.VISIBLE else View.GONE
         viewHolder.repostStateView.visibility = if (item.mainPost.youReposted == true) View.VISIBLE else View.GONE
 
-        viewHolder.dateTextView.text = getShortDateStr(viewHolder.itemView.context, item.mainPost.createdAt)
-
+        viewHolder.dateTextView.text =
+            if (!isMainItem) DateUtil.getShortDateStr(viewHolder.itemView.context, item.mainPost.createdAt) else ""
+        viewHolder.absoluteDateTextView.text = DateUtil.getShortDateStrWithTime(context, item.mainPost.createdAt)
         viewHolder.contentsWrapperLayout.visibility = getVisibility(item.mainPost.showContents)
 
         val isNsfw = item.mainPost.nsfwMask
@@ -540,6 +540,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val showLongPostButton: MaterialButton = itemView.showLongPostButton
         val revisedIconImageView: ImageView = itemView.revisedIconImageView
         val swipeActionsLayout: FrameLayout = itemView.swipeActionsLayout
+        val absoluteDateTextView: TextView = itemView.absoluteDateTextView
+
         init {
             addSpacerDecoration()
             bodyTextView.setOnTouchListener(EntityOnTouchListener())

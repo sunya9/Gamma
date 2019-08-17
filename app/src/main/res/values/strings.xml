@@ -172,4 +172,5 @@
     <string name="share_search_posts_rss_url">Share search posts RSS</string>
     <string name="advanced_options">Advanced options</string>
     <string name="revised">Revised</string>
+    <string name="format_time">%tH:%tM:%tS</string>
 </resources>

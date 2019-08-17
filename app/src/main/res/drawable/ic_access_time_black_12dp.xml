@@ -1,0 +1,7 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="12dp"
+        android:height="12dp"
+        android:drawable="@drawable/ic_access_time_black_24dp"
+        android:gravity="center" />
+</layer-list>

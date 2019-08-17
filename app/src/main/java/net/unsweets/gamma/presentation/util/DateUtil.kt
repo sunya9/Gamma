@@ -35,11 +35,28 @@ class DateUtil {
                     val dateFormatTemplate = context.getString(R.string.date_short_date_this_year)
                     String.format(Locale.US, dateFormatTemplate, dateCal, dateCal, dateCal)
                 }
-                else -> {
-                    val dateFormatTemplate = context.getString(R.string.date_short_date_before_last_year)
-                    String.format(Locale.US, dateFormatTemplate, dateCal, dateCal, dateCal)
-                }
+                else -> formatAbsoluteShortDateStr(context, date)
             }
+        }
+
+        private fun formatAbsoluteShortDateStr(context: Context, date: Date?): String {
+            val dateCal = Calendar.getInstance().apply {
+                time = date
+            }
+            val dateFormatTemplate = context.getString(R.string.date_short_date_before_last_year)
+            return String.format(Locale.US, dateFormatTemplate, dateCal, dateCal, dateCal)
+        }
+
+        @JvmStatic
+        fun getShortDateStrWithTime(context: Context, date: Date?): String {
+            if (date == null) return ""
+            val dateCal = Calendar.getInstance().apply {
+                time = date
+            }
+            val absoluteShortDateStr = formatAbsoluteShortDateStr(context, date)
+            val timeFormatTemplate = context.getString(R.string.format_time)
+            val time = String.format(Locale.US, timeFormatTemplate, dateCal, dateCal, dateCal)
+            return "$absoluteShortDateStr $time"
         }
     }
 }
