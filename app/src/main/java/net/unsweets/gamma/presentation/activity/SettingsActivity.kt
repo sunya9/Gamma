@@ -11,6 +11,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
@@ -78,6 +79,9 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
             findPreference(getString(R.string.pref_account_header_title_key))?.let {
                 it.title = username
             }
+            findPreference(getString(R.string.pref_license_key))?.let {
+                it.intent = Intent(context, OssLicensesMenuActivity::class.java)
+            }
         }
 
         private enum class BundleKey { Username }
@@ -119,6 +123,12 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
             activity?.title = findPreference(rootKey).title
         }
     }
+
+//    class BehaviorAppearancePreferenceFragment: BasePreferenceFragment() {
+//        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+//            setPreferencesFromResource()
+//        }
+//    }
 
     class AccountPreferenceFragment : BasePreferenceFragment() {
         @Inject

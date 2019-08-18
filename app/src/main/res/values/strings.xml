@@ -173,4 +173,8 @@
     <string name="advanced_options">Advanced options</string>
     <string name="revised">Revised</string>
     <string name="format_time">%tH:%tM:%tS</string>
+    <string name="pref_general_header_title_key">pref_general_header_title_key</string>
+    <string name="pref_license_key">pref_license_key</string>
+    <string name="license">License</string>
+    <string name="pref_header_general">General</string>
 </resources>

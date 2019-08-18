@@ -6,4 +6,11 @@
             android:icon="@drawable/ic_person_black_24dp"
             android:title="@string/pref_header_account" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/pref_general_header_title_key"
+        android:title="@string/pref_header_general">
+        <Preference
+            android:key="@string/pref_license_key"
+            android:title="@string/license" />
+    </PreferenceCategory>
 </PreferenceScreen>
