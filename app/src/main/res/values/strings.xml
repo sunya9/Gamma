@@ -177,4 +177,6 @@
     <string name="pref_license_key">pref_license_key</string>
     <string name="license">License</string>
     <string name="pref_header_general">General</string>
+    <string name="pref_version_key">pref_version_key</string>
+    <string name="gamma_version">Gamma version</string>
 </resources>

@@ -12,5 +12,8 @@
         <Preference
             android:key="@string/pref_license_key"
             android:title="@string/license" />
+        <Preference
+            android:key="@string/pref_version_key"
+            android:title="@string/gamma_version" />
     </PreferenceCategory>
 </PreferenceScreen>

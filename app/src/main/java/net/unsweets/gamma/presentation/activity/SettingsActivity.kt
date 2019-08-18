@@ -3,6 +3,7 @@ package net.unsweets.gamma.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.preference.ListPreference
 import android.preference.PreferenceManager
@@ -17,6 +18,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_settings.*
+import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.domain.usecases.LogoutUseCase
@@ -81,6 +83,12 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
             }
             findPreference(getString(R.string.pref_license_key))?.let {
                 it.intent = Intent(context, OssLicensesMenuActivity::class.java)
+            }
+            findPreference((getString(R.string.pref_version_key)))?.let {
+                it.summary = BuildConfig.VERSION_NAME
+                it.intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}")
+                }
             }
         }
 
