@@ -16,7 +16,6 @@ import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
-import net.unsweets.gamma.util.Constants
 import net.unsweets.gamma.util.await
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -52,7 +51,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
             MultipartBody.Part.createFormData("content", fileBody.name, content),
             RequestBody.create(MediaType.parse("text/plain"), fileBody.name),
             RequestBody.create(MediaType.parse("text/plain"), fileBody.kind.name),
-            RequestBody.create(MediaType.parse("text/plain"), Constants.ReverseDomain),
+            RequestBody.create(MediaType.parse("text/plain"), BuildConfig.APPLICATION_ID),
             RequestBody.create(MediaType.parse("text/plain"), "true")
         ).execute().body()!!
     }

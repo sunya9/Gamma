@@ -13,7 +13,7 @@ import net.unsweets.gamma.domain.model.io.*
 import net.unsweets.gamma.domain.usecases.*
 import javax.inject.Inject
 
-private const val actionPrefix = "net.unsweets.gamma.service.PostService"
+private const val actionPrefix = "${BuildConfig.APPLICATION_ID}.service.PostService"
 
 class PostService : IntentService("PostService") {
     private enum class IntentKey { PostBody, PostId, NewState }
