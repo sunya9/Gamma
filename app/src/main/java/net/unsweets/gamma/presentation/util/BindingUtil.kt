@@ -1,6 +1,5 @@
 package net.unsweets.gamma.presentation.util
 
-import android.content.Context
 import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
@@ -11,14 +10,8 @@ import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.button.MaterialButton
 import net.unsweets.gamma.R
-import net.unsweets.gamma.domain.entity.Post
 
 object BindingUtil {
-    @JvmStatic
-    fun getComposePostTitle(context: Context, replyTarget: Post?): String {
-        return if (replyTarget != null) "" else context.getString(R.string.compose_a_post)
-    }
-
     @BindingAdapter("glideSrc")
     @JvmStatic
     fun ImageView.glideSrc(url: String?) {

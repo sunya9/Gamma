@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import dagger.android.AndroidInjection
+import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBodyOuter
 import net.unsweets.gamma.domain.entity.raw.PostRaw
@@ -65,7 +66,12 @@ class PostService : IntentService("PostService") {
                 val postBodyOuter = intent.getParcelableExtra<PostBodyOuter>(IntentKey.PostBody.name) ?: return
                 val raw = mutableListOf<PostRaw<*>>().apply { addAll(postBodyOuter.postBody.raw) }
                 val replacementFileRawList = postBodyOuter.files
-                    .map { uploadFileUseCase.run(UploadFileInputData(it)).postOEmbedRaw }
+                    .map {
+                        val inputStream = contentResolver.openInputStream(it.uri)
+                        val res = uploadFileUseCase.run(UploadFileInputData(it, inputStream)).postOEmbedRaw
+                        inputStream?.close()
+                        res
+                    }
                 raw.addAll(replacementFileRawList)
                 val modifiedPostBody = postBodyOuter.postBody.copy(raw = raw)
                 val postOutputData = postUseCase.run(PostInputData(modifiedPostBody))

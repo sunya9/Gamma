@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -22,15 +23,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.compose_thumbnail_image.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentComposePostBinding
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBody
 import net.unsweets.gamma.domain.entity.PostBodyOuter
+import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.entity.raw.LongPost
 import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.entity.raw.Spoiler
+import net.unsweets.gamma.domain.model.UriInfo
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.AnimationCallback
@@ -46,6 +50,7 @@ import javax.inject.Inject
 
 class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listener, AnimationCallback,
     BackPressedHookable, ComposeLongPostFragment.Callback, SpoilerDialogFragment.Callback {
+
     override fun onUpdateLongPost(longPost: LongPost?) {
         viewModel.longPost = longPost
     }
@@ -77,7 +82,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private enum class BundleKey {
-        ReplyTarget
+        ReplyTarget, InitialText, InitialPhoto
     }
 
     private enum class DialogKey {
@@ -93,8 +98,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     private var listener: Callback? = null
     private val thumbnailAdapterListener = object : ThumbnailAdapter.Callback {
-        override fun updateList(list: List<Uri>) {
-            viewModel.photos = list.toMutableList()
+        override fun updateList(list: List<UriInfo>) {
+            viewModel.media = list.toMutableList()
         }
 
         override fun onClick(uri: Uri, index: Int) {
@@ -152,7 +157,13 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private val viewModel: ComposePostViewModel by lazy {
         ViewModelProvider(
             this,
-            ComposePostViewModel.Factory(activity!!.application, replyTarget, mentionToMyself)
+            ComposePostViewModel.Factory(
+                activity!!.application,
+                replyTarget,
+                mentionToMyself,
+                initialText,
+                currentUserId
+            )
         )[ComposePostViewModel::class.java]
     }
 
@@ -177,11 +188,17 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     lateinit var getCurrentAccountUseCase: GetCurrentAccountUseCase
 
     private val currentUserId: String by lazy {
-        getCurrentAccountUseCase.run(Unit).account?.id ?: ""
+        getCurrentAccountUseCase.run(Unit).account?.id.orEmpty()
     }
 
     private val mentionToMyself: Boolean by lazy {
         replyTarget != null && replyTarget?.user?.id == currentUserId
+    }
+    private val initialText by lazy {
+        arguments?.getString(BundleKey.InitialText.name)
+    }
+    private val uriInfo by lazy {
+        arguments?.getParcelableArrayList<UriInfo>(BundleKey.InitialPhoto.name)
     }
 
     private fun send() {
@@ -204,6 +221,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         super.onCreate(savedInstanceState)
         viewModel.event.observe(this, eventObserver)
         viewModel.counter.observe(this, counterObserver)
+        uriInfo?.let { viewModel.media = it }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -233,7 +251,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     private fun updatePhoto(data: Intent) {
         val editPhotoResult = EditPhotoActivity.parseIntent(data)
-        adapter.replace(editPhotoResult.uri, editPhotoResult.index)
+        val uriInfo = adapter.getItems()[editPhotoResult.index].copy(uri = editPhotoResult.uri)
+        adapter.replace(uriInfo, editPhotoResult.index)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -242,7 +261,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         setupToolbar()
         syncMenuState()
 
-        adapter = ThumbnailAdapter(viewModel.photos.toMutableList(), thumbnailAdapterListener)
+        adapter = ThumbnailAdapter(viewModel.media.toMutableList(), thumbnailAdapterListener)
+        viewModel.previewAttachmentsVisibility.value = if (adapter.getItems().isNotEmpty()) View.VISIBLE else View.GONE
         binding.thumbnailRecyclerView.adapter = adapter
 
         Util.setTintForToolbarIcons(binding.viewLeftActionMenuView.context, binding.viewLeftActionMenuView.menu)
@@ -273,7 +293,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
             if (replyTarget != null)
                 getString(R.string.compose_reply_title_template, replyTarget?.user?.username)
             else
-                getString(R.string.compose_a_post)
+                getString(R.string.compose_post)
         binding.toolbar.setOnMenuItemClickListener(::onOptionsItemSelected)
         binding.toolbar.setNavigationOnClickListener {
             cancelToCompose()
@@ -310,7 +330,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     override fun onGalleryItemClicked(uri: Uri, tag: String?) {
-        adapter.add(uri)
+        adapter.add(UriInfo(uri))
         viewModel.previewAttachmentsVisibility.value = View.VISIBLE
     }
 
@@ -363,7 +383,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private fun cancelToCompose(force: Boolean = false) {
         val hasAnyMedia = adapter.getItems().isNotEmpty()
         val hasAnyRaw = viewModel.longPost != null || viewModel.spoiler != null
-        val isChanged = viewModel.initialText != viewModel.text.value || hasAnyMedia || hasAnyRaw
+        val isChanged = viewModel.computedInitialText != viewModel.text.value || hasAnyMedia || hasAnyRaw
         if (!force && isChanged) {
             val fragment = BasicDialogFragment.Builder()
                 .setMessage(R.string.discard_changes)
@@ -387,12 +407,12 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         }
     }
 
-    class ThumbnailAdapter(private val items: MutableList<Uri> = mutableListOf(), private val listener: Callback) :
+    class ThumbnailAdapter(private val items: MutableList<UriInfo> = mutableListOf(), private val listener: Callback) :
         RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
         interface Callback {
             fun onRemove()
             fun onClick(uri: Uri, index: Int)
-            fun updateList(list: List<Uri>)
+            fun updateList(list: List<UriInfo>)
         }
 
 
@@ -404,15 +424,15 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         override fun getItemCount(): Int = items.size
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val url = items[position]
+            val uriInfo = items[position]
             GlideApp
                 .with(holder.thumbnailView)
-                .load(url)
+                .load(uriInfo.uri)
                 .sizeMultiplier(.7f)
                 .into(holder.thumbnailView)
 
             holder.removeButton.setOnClickListener { remove(holder.adapterPosition) }
-            holder.thumbnailView.setOnClickListener { listener.onClick(url, position) }
+            holder.thumbnailView.setOnClickListener { listener.onClick(uriInfo.uri, position) }
         }
 
         private fun remove(index: Int) {
@@ -422,15 +442,21 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
             notifyItemRemoved(index)
         }
 
-        fun add(uri: Uri) {
+        fun addAll(uriList: List<UriInfo>) {
+            items.addAll(uriList)
+            listener.updateList(items)
+            notifyItemRangeInserted(0, uriList.size)
+        }
+
+        fun add(uriInfo: UriInfo) {
             val index = items.size
-            items.add(index, uri)
+            items.add(index, uriInfo)
             listener.updateList(items)
             notifyItemInserted(index)
         }
 
-        fun replace(uri: Uri, index: Int) {
-            items[index] = uri
+        fun replace(uriInfo: UriInfo, index: Int) {
+            items[index] = uriInfo
             listener.updateList(items)
             notifyItemChanged(index)
         }
@@ -444,13 +470,16 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
 
-    class ComposePostViewModel(
+    class ComposePostViewModel private constructor(
         app: Application,
         replyTargetArg: Post?,
-        mentionToMyself: Boolean
+        mentionToMyself: Boolean,
+        initialText: String? = null,
+        currentUserId: String
     ) : BaseViewModel<Event>(app) {
+        val myAccountAvatarUrl = User.getAvatarUrl(currentUserId, User.AvatarSize.Large)
         var spoiler: Spoiler? = null
-        var photos: List<Uri> = emptyList()
+        var media: List<UriInfo> = emptyList()
         var initialized: Boolean = false
         val nsfw = MutableLiveData<Boolean>().apply { value = false }
         val replyTarget = MutableLiveData<Post>().apply { value = replyTargetArg }
@@ -465,27 +494,36 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         }
         val counterStr: LiveData<String> = Transformations.map(counter) { it.toString() }
         val previewAttachmentsVisibility = MutableLiveData<Int>().apply { value = View.GONE }
-        val initialText by lazy {
+        val computedInitialText by lazy {
             val replyTargetUserUsername = replyTargetArg?.user?.username
-            if (replyTargetUserUsername != null && !mentionToMyself)
-                "@$replyTargetUserUsername "
-            else
-                ""
+            when {
+                replyTargetUserUsername != null && !mentionToMyself -> "@$replyTargetUserUsername "
+                initialText != null -> "$initialText "
+                else -> ""
+            }
         }
 
         init {
-            text.value = initialText
+            text.value = computedInitialText
         }
 
         class Factory(
             private val app: Application,
             private val replyTarget: Post?,
-            private val mentionToMyself: Boolean
+            private val mentionToMyself: Boolean,
+            private val initialText: String? = null,
+            private val currentUserId: String
         ) :
             ViewModelProvider.AndroidViewModelFactory(app) {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return ComposePostViewModel(app, replyTarget, mentionToMyself) as T
+                return ComposePostViewModel(
+                    app,
+                    replyTarget,
+                    mentionToMyself,
+                    initialText,
+                    currentUserId
+                ) as T
             }
 
         }
@@ -495,12 +533,24 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         data class Send(val postBody: PostBody) : Event()
     }
 
+    @Parcelize
+    data class ComposePostFragmentOption(
+        val initialText: String? = null,
+        val intentExtraDataList: ArrayList<UriInfo>? = null
+    ) : Parcelable
+
     companion object {
-        fun newInstance() = ComposePostFragment()
+
+        fun newInstance(composePostFragmentOption: ComposePostFragmentOption? = null) = ComposePostFragment().apply {
+            arguments = Bundle().apply {
+                putString(BundleKey.InitialText.name, composePostFragmentOption?.initialText)
+                putParcelableArrayList(BundleKey.InitialPhoto.name, composePostFragmentOption?.intentExtraDataList)
+            }
+        }
 
         fun replyInstance(post: Post) = ComposePostFragment().apply {
             arguments = Bundle().apply {
-                putParcelable(ComposePostFragment.BundleKey.ReplyTarget.name, post)
+                putParcelable(BundleKey.ReplyTarget.name, post)
             }
         }
     }

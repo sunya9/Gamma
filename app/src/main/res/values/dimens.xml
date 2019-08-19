@@ -44,4 +44,5 @@
     <dimen name="elevation_main_item">4dp</dimen>
     <dimen name="pad_main_item">@dimen/margin_regular</dimen>
     <dimen name="height_foreground_actions_layout">48dp</dimen>
+    <dimen name="size_post_item_avatar_mini">36dp</dimen>
 </resources>

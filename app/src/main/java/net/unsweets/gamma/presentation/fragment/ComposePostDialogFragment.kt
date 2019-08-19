@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
 import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -40,20 +42,38 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
     }
 
     private enum class BundleKey {
-        CX, CY, ReplyTarget
+        CX, CY, ReplyTarget, ComposePostFragmentOption
     }
 
+    private var listener: Callback? = null
+
+    interface Callback {
+        fun onDismiss()
+    }
     private val replyTarget: Post? by lazy {
         arguments?.getParcelable<Post>(BundleKey.ReplyTarget.name)
+    }
+    private val composePostFragmentOption by lazy {
+        arguments?.getParcelable<ComposePostFragment.ComposePostFragmentOption>(BundleKey.ComposePostFragmentOption.name)
     }
 
     private val composePostFragment by lazy {
         val rt = replyTarget
         when {
             rt != null -> ComposePostFragment.replyInstance(rt)
-            else -> ComposePostFragment.newInstance()
+            else -> ComposePostFragment.newInstance(composePostFragmentOption)
         }
 
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = context as? Callback
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +98,14 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
 
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        listener?.onDismiss()
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.setOnDismissListener(this)
         dialog.setOnKeyListener { _, keyCode, event ->
             val fm = childFragmentManager
             val fragment = currentFragment
@@ -172,10 +198,15 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
     }
 
     companion object {
-        fun newInstance(cx: Int, cy: Int) = ComposePostDialogFragment().apply {
+        fun newInstance(
+            cx: Int,
+            cy: Int,
+            composePostFragmentOption: ComposePostFragment.ComposePostFragmentOption? = null
+        ) = ComposePostDialogFragment().apply {
             arguments = Bundle().apply {
                 putInt(BundleKey.CX.name, cx)
                 putInt(BundleKey.CY.name, cy)
+                putParcelable(BundleKey.ComposePostFragmentOption.name, composePostFragmentOption)
             }
         }
 

@@ -11,10 +11,13 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract fun contributeVerifyTokenActivity(): VerifyTokenActivity
+
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeBaseActivity(): BaseActivity
+
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeMainActivity(): MainActivity
+
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeFilesActivity(): FilesActivity
 
@@ -26,4 +29,7 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeEditPhotoActivity(): EditPhotoActivity
+
+    @ContributesAndroidInjector(modules = [FragmentModule::class])
+    abstract fun contributeShareActivity(): ShareActivity
 }
