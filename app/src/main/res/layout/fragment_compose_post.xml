@@ -31,7 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_close_black_24dp"
-            tools:title="@string/compose_a_post">
+            tools:title="@string/compose_post">
 
             <TextView
                 android:id="@+id/counterTextView"

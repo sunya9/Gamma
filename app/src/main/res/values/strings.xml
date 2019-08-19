@@ -16,7 +16,7 @@
     <string name="photos">Photos</string>
     <string name="trending">Trending</string>
     <string name="global">Global</string>
-    <string name="compose_a_post">Compose a post</string>
+    <string name="compose_post">Compose post</string>
     <string name="post">Post</string>
     <string name="app_description">pnut.io client for android.</string>
     <string name="login_with_pnut">Login</string>
