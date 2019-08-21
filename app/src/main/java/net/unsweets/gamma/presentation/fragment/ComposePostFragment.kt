@@ -3,7 +3,6 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.Manifest
 import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -34,6 +33,7 @@ import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.entity.raw.LongPost
 import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.entity.raw.Spoiler
+import net.unsweets.gamma.domain.model.Account
 import net.unsweets.gamma.domain.model.UriInfo
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
@@ -41,15 +41,19 @@ import net.unsweets.gamma.presentation.util.AnimationCallback
 import net.unsweets.gamma.presentation.util.BackPressedHookable
 import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.presentation.util.Util
-import net.unsweets.gamma.presentation.viewmodel.BaseViewModel
 import net.unsweets.gamma.service.PostService
 import net.unsweets.gamma.util.Constants
+import net.unsweets.gamma.util.SingleLiveEvent
 import net.unsweets.gamma.util.observeOnce
 import java.util.*
 import javax.inject.Inject
 
 class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listener, AnimationCallback,
-    BackPressedHookable, ComposeLongPostFragment.Callback, SpoilerDialogFragment.Callback {
+    BackPressedHookable, ComposeLongPostFragment.Callback, SpoilerDialogFragment.Callback,
+    ChangeAccountDialogFragment.Callback {
+    override fun changeAccount(account: Account) {
+        viewModel.currentUserIdLiveData.value = account.id
+    }
 
     override fun onUpdateLongPost(longPost: LongPost?) {
         viewModel.longPost = longPost
@@ -86,7 +90,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private enum class DialogKey {
-        Gallery, Discard, Spoiler
+        Gallery, Discard, Spoiler, Accounts
     }
 
     private enum class PermissionRequestCode {
@@ -158,7 +162,6 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         ViewModelProvider(
             this,
             ComposePostViewModel.Factory(
-                activity!!.application,
                 replyTarget,
                 mentionToMyself,
                 initialText,
@@ -176,7 +179,14 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private lateinit var adapter: ThumbnailAdapter
 
     private val eventObserver = Observer<Event> {
+        when (it) {
+            is Event.ShowAccountList -> showAccountList()
+        }
+    }
 
+    private fun showAccountList() {
+        val fragment = ChangeAccountDialogFragment.newInstance(viewModel.currentUserIdLiveData.value.orEmpty())
+        fragment.show(childFragmentManager, DialogKey.Accounts.name)
     }
 
     override fun onAttach(context: Context) {
@@ -204,12 +214,13 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private fun send() {
         val text = viewModel.text.value ?: return
         val isNsfw = viewModel.nsfw.value ?: false
+        val currentUserId = viewModel.currentUserIdLiveData.value ?: return
         val raw = mutableListOf<PostRaw<*>>()
-
         viewModel.longPost?.let { raw.add(it.copy(value = it.value.copy(tstamp = Date().time))) }
         viewModel.spoiler?.let { raw.add(it) }
 
         val postBodyOuter = PostBodyOuter(
+            currentUserId,
             PostBody(text, replyTarget?.id, isNsfw = isNsfw, raw = raw.toList()),
             adapter.getItems()
         )
@@ -469,15 +480,20 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         }
     }
 
+    sealed class Event {
+        object ShowAccountList : Event()
+    }
 
     class ComposePostViewModel private constructor(
-        app: Application,
         replyTargetArg: Post?,
         mentionToMyself: Boolean,
         initialText: String? = null,
         currentUserId: String
-    ) : BaseViewModel<Event>(app) {
-        val myAccountAvatarUrl = User.getAvatarUrl(currentUserId, User.AvatarSize.Large)
+    ) : ViewModel() {
+        val event = SingleLiveEvent<Event>()
+        val currentUserIdLiveData: MutableLiveData<String> = MutableLiveData<String>().apply { value = currentUserId }
+        val myAccountAvatarUrl: LiveData<String> =
+            Transformations.map(currentUserIdLiveData) { User.getAvatarUrl(it, User.AvatarSize.Large) }
         var spoiler: Spoiler? = null
         var media: List<UriInfo> = emptyList()
         var initialized: Boolean = false
@@ -507,18 +523,18 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
             text.value = computedInitialText
         }
 
+        fun showAccountList() = event.emit((Event.ShowAccountList))
+
         class Factory(
-            private val app: Application,
             private val replyTarget: Post?,
             private val mentionToMyself: Boolean,
             private val initialText: String? = null,
             private val currentUserId: String
         ) :
-            ViewModelProvider.AndroidViewModelFactory(app) {
+            ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return ComposePostViewModel(
-                    app,
                     replyTarget,
                     mentionToMyself,
                     initialText,
@@ -527,10 +543,6 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
             }
 
         }
-    }
-
-    sealed class Event {
-        data class Send(val postBody: PostBody) : Event()
     }
 
     @Parcelize

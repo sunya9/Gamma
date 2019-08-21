@@ -180,4 +180,6 @@
     <string name="pref_version_key">pref_version_key</string>
     <string name="gamma_version">Gamma version</string>
     <string name="cannot_load_file">Cannot load file</string>
+    <string name="accounts">Accounts</string>
+    <string name="account_not_found">Account not found</string>
 </resources>

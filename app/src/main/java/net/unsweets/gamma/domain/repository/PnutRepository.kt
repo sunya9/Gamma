@@ -148,8 +148,8 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         return defaultPnutService.createPost(postBody).await()
     }
 
-    override fun createPostSync(postBody: PostBody): PnutResponse<Post> {
-        return defaultPnutService.createPost(postBody).execute().body()!!
+    override fun createPostSync(postBody: PostBody, token: String): PnutResponse<Post> {
+        return createPnutService(token).createPost(postBody).execute().body()!!
     }
 
     override suspend fun updatePost(postId: String, postBody: PostBody): PnutResponse<Post> {

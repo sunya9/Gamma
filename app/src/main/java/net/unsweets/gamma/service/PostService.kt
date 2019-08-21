@@ -74,7 +74,7 @@ class PostService : IntentService("PostService") {
                     }
                 raw.addAll(replacementFileRawList)
                 val modifiedPostBody = postBodyOuter.postBody.copy(raw = raw)
-                val postOutputData = postUseCase.run(PostInputData(modifiedPostBody))
+                val postOutputData = postUseCase.run(PostInputData(modifiedPostBody, postBodyOuter.accountId))
                 resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
             }
             Actions.Star.getActionName() -> {

@@ -26,7 +26,7 @@ interface IPnutRepository {
     suspend fun getThread(postId: String, params: GetPostsParam): PnutResponse<List<Post>>
 
     suspend fun createPost(postBody: PostBody): PnutResponse<Post>
-    fun createPostSync(postBody: PostBody): PnutResponse<Post>
+    fun createPostSync(postBody: PostBody, token: String): PnutResponse<Post>
     suspend fun updatePost(postId: String, postBody: PostBody): PnutResponse<Post>
     fun deletePost(postId: String): PnutResponse<Post>
 

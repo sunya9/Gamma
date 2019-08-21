@@ -84,4 +84,7 @@ abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract fun conrtirbuteSearchUserListFragment(): UserListFragment.SearchUserListFragment
+
+    @ContributesAndroidInjector
+    abstract fun conrtirbuteChangeAccountDialogFragment(): ChangeAccountDialogFragment
 }

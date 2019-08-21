@@ -6,6 +6,7 @@ import net.unsweets.gamma.domain.model.UriInfo
 
 @Parcelize
 data class PostBodyOuter(
+    val accountId: String,
     val postBody: PostBody,
     val files: List<UriInfo> = emptyList()
 ) : Parcelable

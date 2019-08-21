@@ -5,4 +5,5 @@ import java.io.IOException
 
 sealed class ErrorCollections(val exception: Exception, val displayErrorMessageRes: Int) : Exception() {
     object CannotLoadFile : ErrorCollections(IOException(), R.string.cannot_load_file)
+    object AccountNotFound : ErrorCollections(NullPointerException(), R.string.account_not_found)
 }
