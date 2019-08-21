@@ -182,4 +182,5 @@
     <string name="cannot_load_file">Cannot load file</string>
     <string name="accounts">Accounts</string>
     <string name="account_not_found">Account not found</string>
+    <string name="cannot_open_url">Cannot open URL.</string>
 </resources>

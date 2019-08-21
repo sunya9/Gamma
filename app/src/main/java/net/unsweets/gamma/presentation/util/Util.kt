@@ -8,8 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuItemCompat
@@ -68,15 +68,22 @@ object Util {
     }
 
     fun openCustomTabUrl(context: Context, link: String) {
-        val packageName = CustomTabsClient.getPackageName(context, arrayListOf(context.packageName))
-        CustomTabsIntent
-            .Builder()
-            .setShowTitle(true)
+        try {
+            CustomTabsIntent
+                .Builder()
+                .setShowTitle(true)
 //                .setActionButton(icon, menuLabel, pendingIntent, false)
-            .addDefaultShareMenuItem()
-            .enableUrlBarHiding()
-            .build()
-            .also { it.intent.`package` = packageName }
-            .launchUrl(context, Uri.parse(link))
+                .addDefaultShareMenuItem()
+                .enableUrlBarHiding()
+                .setToolbarColor(context.getColor(R.color.colorWindowBackground))
+                .setStartAnimations(context, R.anim.slide_in_left, R.anim.slide_out_left)
+                .setExitAnimations(context, R.anim.slide_in_right, R.anim.slide_out_right)
+                .build()
+                .launchUrl(context, Uri.parse(link))
+        } catch (e: Exception) {
+            // TODO: to improve error handling
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
+
     }
 }
