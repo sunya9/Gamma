@@ -15,7 +15,8 @@ import net.unsweets.gamma.presentation.util.GlideApp
 
 class AccountListAdapter(
     private val accounts: List<Account>,
-    private val listener: Listener
+    private val listener: Listener,
+    private val showAddAccountButton: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private enum class ItemViewType { Body, Footer }
@@ -34,11 +35,11 @@ class AccountListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val type = if (itemCount - 1 > position) ItemViewType.Body else ItemViewType.Footer
+        val type = if (!showAddAccountButton || itemCount - 1 > position) ItemViewType.Body else ItemViewType.Footer
         return type.ordinal
     }
 
-    override fun getItemCount(): Int = accounts.size + 1 // item + footer
+    override fun getItemCount(): Int = if (showAddAccountButton) accounts.size + 1 else accounts.size // item + footer
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val ordinal = getItemViewType(position)
