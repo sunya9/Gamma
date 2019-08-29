@@ -8,6 +8,8 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'com.google.gms.oss.licenses.plugin'
 
+apply plugin: 'io.fabric'
+
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -127,6 +129,9 @@ dependencies {
     implementation 'com.github.thefuntasty.hauler:library:2.0.0'
 
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-analytics:17.1.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
@@ -136,3 +141,5 @@ dependencies {
 androidExtensions {
     experimental = true
 }
+
+apply plugin: 'com.google.gms.google-services'
