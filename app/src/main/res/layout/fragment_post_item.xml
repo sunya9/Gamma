@@ -20,7 +20,7 @@
             android:id="@+id/swipeActionsLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:background="?colorPrimary"
             android:elevation="@dimen/elevation_main_item">
 
             <ImageView
@@ -94,62 +94,82 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:background="@color/colorWindowBackground"
+                android:background="?android:attr/windowBackground"
                 android:elevation="@dimen/elevation_list_item_elevation"
                 android:foreground="?attr/selectableItemBackground"
                 tools:translationX="100dp">
 
-                <View
-                    android:id="@+id/starStateView"
-                    android:layout_width="@dimen/width_post_state"
-                    android:layout_height="0dp"
-                    android:background="@drawable/bg_star_state"
-                    app:layout_constraintBottom_toTopOf="@id/repostStateView"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/repostStateView"
-                    android:layout_width="@dimen/width_post_state"
-                    android:layout_height="0dp"
-                    android:background="@drawable/bg_repost_state"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/starStateView" />
-
-                <TextView
-                    android:id="@+id/repostedByTextView"
+                <FrameLayout
+                    android:id="@+id/spoilerMaskLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_regular"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:text="@string/reposted_by_template"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:layout_marginTop="@dimen/margin_quoter"
+                    android:layout_marginEnd="@dimen/margin_regular"
+                    android:layout_marginBottom="@dimen/margin_regular"
+                    android:background="?android:attr/windowBackground"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/screenNameTextView"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
+                    app:layout_constraintVertical_bias="0">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/avatarImageView"
-                    android:layout_width="@dimen/size_post_item_avatar"
-                    android:layout_height="@dimen/size_post_item_avatar"
-                    android:layout_marginStart="@dimen/margin_regular"
-                    app:layout_constraintDimensionRatio="w,1:1"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/screenNameTextView"
-                    tools:src="@tools:sample/avatars" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/showSpoilerButton"
+                        style="@style/Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/show_spoiler" />
+                </FrameLayout>
 
-                <TextView
-                    android:id="@+id/screenNameTextView"
-                    android:layout_width="wrap_content"
+                <FrameLayout
+                    android:id="@+id/nsfwMaskLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_regular"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintStart_toEndOf="@+id/avatarImageView"
-                    app:layout_constraintTop_toBottomOf="@id/repostedByTextView"
-                    app:layout_goneMarginTop="@dimen/margin_regular"
-                    tools:text="@tools:sample/first_names" />
+                    android:layout_marginTop="@dimen/margin_quoter"
+                    android:layout_marginEnd="@dimen/margin_regular"
+                    android:layout_marginBottom="@dimen/margin_regular"
+                    android:background="?android:attr/windowBackground"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/screenNameTextView"
+                    app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
+                    app:layout_constraintVertical_bias="0">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/showNsfwButton"
+                        style="@style/Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/show_nsfw_contents" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/revisedIconImageView"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="@dimen/margin_half"
+                    android:contentDescription="@string/revised"
+                    android:scaleType="centerInside"
+                    android:tint="@color/colorGrayLight"
+                    app:layout_constraintBottom_toBottomOf="@id/relativeTimeTextView"
+                    app:layout_constraintEnd_toStartOf="@id/chatIconImageView"
+                    app:layout_constraintTop_toTopOf="@id/relativeTimeTextView"
+                    tools:src="@drawable/ic_outline_create_24dp" />
+
+                <ImageView
+                    android:id="@+id/chatIconImageView"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="@dimen/margin_half"
+                    android:contentDescription="@string/conversation_mark"
+                    android:scaleType="centerInside"
+                    android:tint="@color/colorGrayLight"
+                    app:layout_constraintBottom_toBottomOf="@id/relativeTimeTextView"
+                    app:layout_constraintEnd_toStartOf="@id/relativeTimeTextView"
+                    app:layout_constraintTop_toTopOf="@id/relativeTimeTextView"
+                    tools:src="@drawable/ic_chat_bubble_black_24dp" />
 
                 <LinearLayout
                     android:id="@+id/contentsWrapperLayout"
@@ -164,7 +184,6 @@
                     app:layout_constraintStart_toStartOf="@+id/screenNameTextView"
                     app:layout_constraintTop_toBottomOf="@+id/screenNameTextView"
                     app:layout_constraintVertical_bias="0">
-
                     <TextView
                         android:id="@+id/bodyTextView"
                         android:layout_width="match_parent"
@@ -172,14 +191,12 @@
                         android:gravity="top|start"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                         tools:text="@tools:sample/lorem" />
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/showLongPostButton"
                         style="@style/Button.Outlined"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/show_long_post" />
-
                     <FrameLayout
                         android:id="@+id/thumbnailViewPagerFrameLayout"
                         android:layout_width="match_parent"
@@ -213,18 +230,18 @@
                         android:layout_marginTop="@dimen/margin_half"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/absoluteDateTextView"
-                            android:layout_width="wrap_content"
+                        <ImageView
+                            android:id="@+id/horizontalDivider"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:clickable="true"
-                            android:drawableStart="@drawable/ic_access_time_black_12dp"
-                            android:drawablePadding="@dimen/margin_quoter"
-                            android:focusable="true"
-                            android:gravity="start|center_vertical"
+                            android:layout_marginTop="@dimen/margin_half"
+                            android:layout_marginBottom="@dimen/margin_half"
+                            android:src="@drawable/divider_full_bleed"
+                            app:layout_constraintBottom_toTopOf="@id/replyCountTextView"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:text="18 Aug 19" />
+                            app:layout_constraintTop_toBottomOf="@id/clientNameTextView"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:id="@+id/clientNameTextView"
@@ -240,18 +257,18 @@
                             app:layout_constraintTop_toTopOf="parent"
                             tools:text="via Gamma" />
 
-                        <ImageView
-                            android:id="@+id/horizontalDivider"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/absoluteDateTextView"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_half"
-                            android:layout_marginBottom="@dimen/margin_half"
-                            android:src="@drawable/divider_full_bleed"
-                            app:layout_constraintBottom_toTopOf="@id/replyCountTextView"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            android:clickable="true"
+                            android:drawableStart="@drawable/ic_access_time_black_12dp"
+                            android:drawablePadding="@dimen/margin_quoter"
+                            android:focusable="true"
+                            android:gravity="start|center_vertical"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/clientNameTextView"
-                            tools:ignore="ContentDescription" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="18 Aug 19" />
 
                         <TextView
                             android:id="@+id/replyCountTextView"
@@ -296,6 +313,30 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/repostedByTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_regular"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/reposted_by_template"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    app:layout_constraintStart_toStartOf="@id/screenNameTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/screenNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_regular"
+                    android:layout_marginTop="4dp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    app:layout_constraintStart_toEndOf="@+id/avatarImageView"
+                    app:layout_constraintTop_toBottomOf="@id/repostedByTextView"
+                    app:layout_goneMarginTop="@dimen/margin_regular"
+                    tools:text="@tools:sample/first_names" />
+
+                <TextView
                     android:id="@+id/handleNameTextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -317,77 +358,33 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     tools:text="5s" />
 
-                <ImageView
-                    android:id="@+id/revisedIconImageView"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginEnd="@dimen/margin_half"
-                    android:contentDescription="@string/revised"
-                    android:scaleType="centerInside"
-                    android:tint="@color/colorGrayLight"
-                    app:layout_constraintBottom_toBottomOf="@id/relativeTimeTextView"
-                    app:layout_constraintEnd_toStartOf="@id/chatIconImageView"
-                    app:layout_constraintTop_toTopOf="@id/relativeTimeTextView"
-                    tools:src="@drawable/ic_outline_create_24dp" />
+                <View
+                    android:id="@+id/starStateView"
+                    android:layout_width="@dimen/width_post_state"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_star_state"
+                    app:layout_constraintBottom_toTopOf="@id/repostStateView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/chatIconImageView"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginEnd="@dimen/margin_half"
-                    android:contentDescription="@string/conversation_mark"
-                    android:scaleType="centerInside"
-                    android:tint="@color/colorGrayLight"
-                    app:layout_constraintBottom_toBottomOf="@id/relativeTimeTextView"
-                    app:layout_constraintEnd_toStartOf="@id/relativeTimeTextView"
-                    app:layout_constraintTop_toTopOf="@id/relativeTimeTextView"
-                    tools:src="@drawable/ic_chat_bubble_black_24dp" />
-
-                <FrameLayout
-                    android:id="@+id/spoilerMaskLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_quoter"
-                    android:layout_marginEnd="@dimen/margin_regular"
-                    android:layout_marginBottom="@dimen/margin_regular"
-                    android:background="@color/colorWindowBackground"
+                <View
+                    android:id="@+id/repostStateView"
+                    android:layout_width="@dimen/width_post_state"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_repost_state"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/screenNameTextView"
-                    app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
-                    app:layout_constraintVertical_bias="0">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/starStateView" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/showSpoilerButton"
-                        style="@style/Button.Outlined"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/show_spoiler" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/nsfwMaskLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_quoter"
-                    android:layout_marginEnd="@dimen/margin_regular"
-                    android:layout_marginBottom="@dimen/margin_regular"
-                    android:background="@color/colorWindowBackground"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/screenNameTextView"
-                    app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
-                    app:layout_constraintVertical_bias="0">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/showNsfwButton"
-                        style="@style/Button.Outlined"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/show_nsfw_contents" />
-                </FrameLayout>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/avatarImageView"
+                    android:layout_width="@dimen/size_post_item_avatar"
+                    android:layout_height="@dimen/size_post_item_avatar"
+                    android:layout_marginStart="@dimen/margin_regular"
+                    app:layout_constraintDimensionRatio="w,1:1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/screenNameTextView"
+                    tools:src="@tools:sample/avatars" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
 

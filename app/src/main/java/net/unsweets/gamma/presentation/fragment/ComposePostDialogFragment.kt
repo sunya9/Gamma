@@ -18,6 +18,7 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.presentation.util.AnimationCallback
 import net.unsweets.gamma.presentation.util.BackPressedHookable
+import net.unsweets.gamma.presentation.util.ThemeColorUtil
 import net.unsweets.gamma.util.LogUtil
 import kotlin.math.hypot
 
@@ -78,6 +79,7 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeColorUtil.applyTheme(this)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 

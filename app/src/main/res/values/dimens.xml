@@ -13,13 +13,14 @@
     <dimen name="size_btn_edit_picture_icon">32dp</dimen>
 
     <!--margin-->
-    <dimen name="margin_profile_card_negative">70dp</dimen>
+    <dimen name="margin_profile_card_negative">100dp</dimen>
     <dimen name="margin_activity_horizontal_half">8dp</dimen>
     <dimen name="margin_activity_horizontal">16dp</dimen>
     <dimen name="margin_list_item_x">16dp</dimen>
     <dimen name="margin_list_item_half">8dp</dimen>
     <dimen name="margin_list_bottom">100dp</dimen>
     <dimen name="margin_inset_divider">72dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
     <dimen name="margin_regular">16dp</dimen>
     <dimen name="margin_half">8dp</dimen>
     <dimen name="margin_quoter">4dp</dimen>
@@ -45,4 +46,6 @@
     <dimen name="pad_main_item">@dimen/margin_regular</dimen>
     <dimen name="height_foreground_actions_layout">48dp</dimen>
     <dimen name="size_post_item_avatar_mini">36dp</dimen>
+    <dimen name="size_color_preview">20dp</dimen>
+    <dimen name="secondary_alpha">0.8</dimen>
 </resources>

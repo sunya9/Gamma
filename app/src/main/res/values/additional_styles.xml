@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AdditionalStyle" />
+
+    <style name="AdditionalStyle.Red">
+        <item name="colorPrimary">#f44336</item>
+        <item name="colorAccent">#f44336</item>
+        <item name="colorControlActivated">#f44336</item>
+        <item name="colorPrimaryDark">#ba000d</item>
+    </style>
+
+    <style name="AdditionalStyle.Pink">
+        <item name="colorPrimary">#e91e63</item>
+        <item name="colorAccent">#e91e63</item>
+        <item name="colorControlActivated">#e91e63</item>
+        <item name="colorPrimaryDark">#b0003a</item>
+    </style>
+
+    <style name="AdditionalStyle.Purple">
+        <item name="colorPrimary">#9c27b0</item>
+        <item name="colorAccent">#9c27b0</item>
+        <item name="colorControlActivated">#9c27b0</item>
+        <item name="colorPrimaryDark">#6a0080</item>
+    </style>
+
+    <style name="AdditionalStyle.DeepPurple">
+        <item name="colorPrimary">#673ab7</item>
+        <item name="colorAccent">#673ab7</item>
+        <item name="colorControlActivated">#673ab7</item>
+        <item name="colorPrimaryDark">#320b86</item>
+    </style>
+
+    <style name="AdditionalStyle.Indigo">
+        <item name="colorPrimary">#3f51b5</item>
+        <item name="colorAccent">#3f51b5</item>
+        <item name="colorControlActivated">#3f51b5</item>
+        <item name="colorPrimaryDark">#002984</item>
+    </style>
+
+    <style name="AdditionalStyle.Blue">
+        <item name="colorPrimary">#2196f3</item>
+        <item name="colorAccent">#2196f3</item>
+        <item name="colorControlActivated">#2196f3</item>
+        <item name="colorPrimaryDark">#0069c0</item>
+    </style>
+
+    <style name="AdditionalStyle.LightBlue">
+        <item name="colorPrimary">#03a9f4</item>
+        <item name="colorAccent">#03a9f4</item>
+        <item name="colorControlActivated">#03a9f4</item>
+        <item name="colorPrimaryDark">#007ac1</item>
+    </style>
+
+    <style name="AdditionalStyle.Cyan">
+        <item name="colorPrimary">#00bcd4</item>
+        <item name="colorAccent">#00bcd4</item>
+        <item name="colorControlActivated">#00bcd4</item>
+        <item name="colorPrimaryDark">#008ba3</item>
+    </style>
+
+    <style name="AdditionalStyle.Teal">
+        <item name="colorPrimary">#009688</item>
+        <item name="colorAccent">#009688</item>
+        <item name="colorControlActivated">#009688</item>
+        <item name="colorPrimaryDark">#00675b</item>
+    </style>
+
+    <style name="AdditionalStyle.Green">
+        <item name="colorPrimary">#4caf50</item>
+        <item name="colorAccent">#4caf50</item>
+        <item name="colorControlActivated">#4caf50</item>
+        <item name="colorPrimaryDark">#087f23</item>
+    </style>
+
+    <style name="AdditionalStyle.LightGreen">
+        <item name="colorPrimary">#8bc34a</item>
+        <item name="colorAccent">#8bc34a</item>
+        <item name="colorControlActivated">#8bc34a</item>
+        <item name="colorPrimaryDark">#5a9216</item>
+    </style>
+
+    <style name="AdditionalStyle.Lime">
+        <item name="colorPrimary">#cddc39</item>
+        <item name="colorAccent">#cddc39</item>
+        <item name="colorControlActivated">#cddc39</item>
+        <item name="colorPrimaryDark">#99aa00</item>
+    </style>
+
+    <style name="AdditionalStyle.Amber">
+        <item name="colorPrimary">#ffc107</item>
+        <item name="colorAccent">#ffc107</item>
+        <item name="colorControlActivated">#ffc107</item>
+        <item name="colorPrimaryDark">#c79100</item>
+    </style>
+
+    <style name="AdditionalStyle.Orange">
+        <item name="colorPrimary">#ff9800</item>
+        <item name="colorAccent">#ff9800</item>
+        <item name="colorControlActivated">#ff9800</item>
+        <item name="colorPrimaryDark">#c66900</item>
+    </style>
+
+    <style name="AdditionalStyle.DeepOrange">
+        <item name="colorPrimary">#ff5722</item>
+        <item name="colorAccent">#ff5722</item>
+        <item name="colorControlActivated">#ff5722</item>
+        <item name="colorPrimaryDark">#c41c00</item>
+    </style>
+
+    <style name="AdditionalStyle.Brown">
+        <item name="colorPrimary">#795548</item>
+        <item name="colorAccent">#795548</item>
+        <item name="colorControlActivated">#795548</item>
+        <item name="colorPrimaryDark">#4b2c20</item>
+    </style>
+
+    <style name="AdditionalStyle.Grey">
+        <item name="colorPrimary">#9e9e9e</item>
+        <item name="colorAccent">#9e9e9e</item>
+        <item name="colorControlActivated">#9e9e9e</item>
+        <item name="colorPrimaryDark">#707070</item>
+    </style>
+
+    <style name="AdditionalStyle.BlueGrey">
+        <item name="colorPrimary">#607d8b</item>
+        <item name="colorAccent">#607d8b</item>
+        <item name="colorControlActivated">#607d8b</item>
+        <item name="colorPrimaryDark">#34515e</item>
+    </style>
+</resources>

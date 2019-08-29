@@ -22,7 +22,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_gallery_item_list_dialog.*
 import kotlinx.android.synthetic.main.fragment_gallery_item_list_dialog_item.view.*
 import net.unsweets.gamma.R
@@ -31,7 +30,7 @@ import net.unsweets.gamma.util.Constants
 import java.io.File
 
 
-class GalleryItemListDialogFragment : BottomSheetDialogFragment() {
+class GalleryItemListDialogFragment : BaseBottomSheetDialogFragment() {
     private var currentPhotoPath: Uri? = null
     private var listener: Listener? = null
 

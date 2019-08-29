@@ -277,6 +277,10 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         binding.thumbnailRecyclerView.adapter = adapter
 
         Util.setTintForToolbarIcons(binding.viewLeftActionMenuView.context, binding.viewLeftActionMenuView.menu)
+        Util.setTintForToolbarIcons(
+            binding.viewRightActionMenuView.context,
+            binding.viewRightActionMenuView.menu
+        )
 
         binding.viewLeftActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
         binding.viewRightActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)

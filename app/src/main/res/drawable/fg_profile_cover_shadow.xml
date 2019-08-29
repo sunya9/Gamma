@@ -8,29 +8,28 @@
     </item>
     <item>
         <layer-list>
+            <!--            <item>-->
+            <!--                <shape>-->
+            <!--                    <solid android:color="#0000" />-->
+            <!--                </shape>-->
+            <!--            </item>-->
             <item>
-                <shape>
-                    <solid android:color="#0000" />
-                </shape>
-            </item>
-            <item android:gravity="top">
                 <shape>
                     <gradient
                         android:angle="270"
-                        android:endColor="#0000"
-                        android:startColor="#8000" />
-                    <size android:height="?attr/actionBarSize" />
+                        android:endColor="?android:attr/windowBackground"
+                        android:startColor="#5000" />
                 </shape>
             </item>
-            <item android:gravity="bottom">
-                <shape>
-                    <gradient
-                        android:angle="90"
-                        android:endColor="#0000"
-                        android:startColor="#8000" />
-                    <size android:height="@dimen/margin_profile_card_negative" />
-                </shape>
-            </item>
+            <!--            <item android:gravity="bottom">-->
+            <!--                <shape>-->
+            <!--                    <gradient-->
+            <!--                        android:angle="90"-->
+            <!--                        android:endColor="#0000"-->
+            <!--                        android:startColor="?attr/colorPrimary" />-->
+            <!--                    <size android:height="@dimen/margin_profile_card_negative" />-->
+            <!--                </shape>-->
+            <!--            </item>-->
         </layer-list>
     </item>
 </ripple>

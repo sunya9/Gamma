@@ -88,7 +88,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
 
     fun scrollToTop() {
         val recyclerView = getRecyclerView(view ?: return)
-        recyclerView.layoutManager?.startSmoothScroll(SmoothScroller(recyclerView.context))
+        context?.let { recyclerView.layoutManager?.startSmoothScroll(SmoothScroller(it)) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

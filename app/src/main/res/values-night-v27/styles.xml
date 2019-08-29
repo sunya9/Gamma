@@ -3,4 +3,10 @@
     <style name="AppTheme" parent="@style/BaseTheme">
         <item name="android:windowLightNavigationBar">false</item>
     </style>
+
+    <style name="BottomSheetDialog" parent="BaseBottomSheetDialog">
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:navigationBarColor">@color/navigationBar</item>
+        <item name="android:navigationBarDividerColor">@color/navigationBarDivider</item>
+    </style>
 </resources>

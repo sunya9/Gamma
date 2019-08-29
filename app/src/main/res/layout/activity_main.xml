@@ -19,10 +19,9 @@
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:id="@+id/coordinatorLayout"
-            app:statusBarBackground="@android:color/transparent"
             android:layout_height="match_parent">
 
-            <net.unsweets.gamma.presentation.view.WindowInsetsFrameLayout
+            <FrameLayout
                 android:id="@+id/fragmentPlaceholder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -33,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 app:hideOnScroll="false"
+                app:menu="@menu/main"
                 app:navigationIcon="@drawable/ic_menu_black_24dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton

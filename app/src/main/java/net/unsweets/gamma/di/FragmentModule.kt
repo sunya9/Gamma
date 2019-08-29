@@ -23,9 +23,11 @@ abstract class FragmentModule {
     // compose post fragments
     @ContributesAndroidInjector
     abstract fun contributeComposePostDialogFragment(): ComposePostDialogFragment
+
     // compose post fragments
     @ContributesAndroidInjector
     abstract fun contributeComposePostFragment(): ComposePostFragment
+
     // profile fragments
     @ContributesAndroidInjector
     abstract fun contributeProfileFragment(): ProfileFragment
@@ -87,4 +89,7 @@ abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract fun conrtirbuteChangeAccountDialogFragment(): ChangeAccountDialogFragment
+
+    @ContributesAndroidInjector
+    abstract fun conrtirbuteBehaviorAppearancePreferenceFragment(): SettingsActivity.BehaviorAppearancePreferenceFragment
 }

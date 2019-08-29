@@ -11,14 +11,11 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="false"
-        android:background="@color/toolbarBg">
+        android:layout_height="wrap_content">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:fitsSystemWindows="true"
             >
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
@@ -26,8 +23,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="center_horizontal"
                 app:tabGravity="center"
-                app:tabIndicatorColor="@color/colorPrimary"
-                android:background="@android:color/transparent"
                 app:tabMode="auto">
 
                 <com.google.android.material.tabs.TabItem

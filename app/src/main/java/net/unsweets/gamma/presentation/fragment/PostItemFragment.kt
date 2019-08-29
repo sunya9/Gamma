@@ -195,7 +195,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewHolder.itemId
         val isDeleted = item.isDeleted == true
         viewHolder.postItemForegroundView.alpha = if (isDeleted) 0.5f else 1f
-        val bgColor = context.getColor(if (isDeleted) R.color.colorWindowBackground else R.color.colorPrimary)
+        val bgColor =
+            if (isDeleted) context.getColor(R.color.colorWindowBackground) else Util.getPrimaryColor(
+                context
+            )
         viewHolder.swipeActionsLayout.setBackgroundColor(bgColor)
         viewHolder.screenNameTextView.text = item.mainPost.user?.username ?: getString(R.string.deleted_post_user_name)
         viewHolder.handleNameTextView.text = item.mainPost.user?.name.orEmpty()

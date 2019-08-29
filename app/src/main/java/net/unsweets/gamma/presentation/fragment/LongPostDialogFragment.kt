@@ -5,12 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_long_post_dialog.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.raw.LongPost
 
-class LongPostDialogFragment : BottomSheetDialogFragment() {
+class LongPostDialogFragment : BaseBottomSheetDialogFragment() {
     private val longPost: LongPost by lazy {
         arguments?.getParcelable<LongPost>(BundleKey.LongPost.name)
             ?: throw NullPointerException("You must set LongPost")

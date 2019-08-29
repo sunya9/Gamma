@@ -5,6 +5,6 @@
         android:propertyName="backgroundColor"
         android:repeatCount="0"
         android:startOffset="0"
-        android:valueFrom="@color/colorPrimary"
-        android:valueTo="@color/colorWindowBackground" />
+        android:valueFrom="?attr/colorPrimary"
+        android:valueTo="?android:attr/windowBackground" />
 </set>

@@ -1,14 +1,24 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:key="@string/pref_settings_root_key"
     android:title="@string/settings">
     <PreferenceCategory android:key="@string/pref_account_header_title_key">
         <Preference
             android:fragment="net.unsweets.gamma.presentation.activity.SettingsActivity$AccountPreferenceFragment"
             android:icon="@drawable/ic_person_black_24dp"
+            app:key="@string/pref_account_key"
             android:title="@string/pref_header_account" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/pref_general_header_title_key"
         android:title="@string/pref_header_general">
+        <Preference
+            android:fragment="net.unsweets.gamma.presentation.activity.SettingsActivity$BehaviorAppearancePreferenceFragment"
+            android:icon="@drawable/ic_palette_black_24dp"
+            android:key="@string/pref_behavior_appearance_key"
+            android:title="@string/behavior_and_appearances" />
+    </PreferenceCategory>
+    <PreferenceCategory>
         <Preference
             android:key="@string/pref_license_key"
             android:title="@string/license" />

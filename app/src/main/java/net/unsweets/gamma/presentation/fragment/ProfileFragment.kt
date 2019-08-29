@@ -21,7 +21,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.transition.ChangeBounds
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -40,6 +39,7 @@ import net.unsweets.gamma.presentation.adapter.ProfilePagerAdapter
 import net.unsweets.gamma.presentation.util.EntityOnTouchListener
 import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.presentation.util.ShareUtil
+import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.util.SingleLiveEvent
 import java.util.*
 import javax.inject.Inject
@@ -245,13 +245,15 @@ class ProfileFragment : BaseFragment() {
         val fm = fragmentManager ?: return
         val fragment = EditProfileFragment.newInstance(userId).also {
             //            val transition = TransitionInflater.from(context).inflateTransition(R.transition.edit_profile)
-            sharedElementEnterTransition = ChangeBounds()
+//            sharedElementEnterTransition = ChangeBounds()
         }
-        fragment.setTargetFragment(this, RequestCode.UpdateProfile.ordinal)
+//        fragment.setTargetFragment(this, RequestCode.UpdateProfile.ordinal)
         // TODO: fix fragment transition
         val ft = fm.beginTransaction()
             .addSharedElement(binding.userMainActionButton, binding.userMainActionButton.transitionName)
-        fragment.show(ft, DialogKey.EditProfile.name)
+//        fragment.show(ft, DialogKey.EditProfile.name)
+        fragment.show(childFragmentManager, DialogKey.EditProfile.name)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -307,7 +309,19 @@ class ProfileFragment : BaseFragment() {
             }
         }
         val fetchingUser = MutableLiveData<Boolean>().apply { value = false }
-
+        val actionButtonTextColor = Transformations.map(user) {
+            when (it?.youFollow) {
+                false -> Util.getAccentColor(app)
+                else -> Util.getWindowBackgroundColor(app)
+            }
+        }
+        val actionButtonTintColor = Transformations.map(user) {
+            when (it?.youFollow) {
+                true -> Util.getAccentColor(app)
+                else -> Util.getWindowBackgroundColor(app)
+            }
+        }
+        val actionButtonRippleColor = Util.getPrimaryColorDark(app)
         init {
             if (user.value == null) getUser()
         }

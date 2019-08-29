@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:key="@string/pref_behavior_appearance_key"
+    android:title="@string/behavior_and_appearances">
+    <DropDownPreference
+        android:defaultValue="0"
+        android:entries="@array/dark_mode"
+        android:entryValues="@array/dark_mode_values"
+        android:icon="@drawable/ic_brightness_2_black_24dp"
+        android:key="@string/pref_dark_theme_key"
+        android:title="@string/use_dark_theme"
+        app:useSimpleSummaryProvider="true" />
+    <net.unsweets.gamma.presentation.view.ThemeColorPreference
+        android:icon="@drawable/ic_palette_black_24dp"
+        android:key="@string/pref_change_primary_color_key"
+        android:title="@string/change_theme_color"
+        app:widgetLayout="@layout/primary_color_preview" />
+</PreferenceScreen>

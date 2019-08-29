@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#d36854</color>
-    <color name="colorPrimaryDarker">#9d3a2b</color>
+    <color name="colorPrimaryDark">#9d3a2b</color>
     <color name="colorPrimaryLighter">#ff9881</color>
-    <!--<color name="colorPrimaryDark">@color/colorGray</color>-->
-    <!--<color name="colorPrimaryDark">@color/toolbarBg</color>-->
-    <color name="colorPrimaryDark">@color/toolbarBg</color>
-    <!--<color name="colorAccent">#4a484c</color>-->
     <color name="colorAccent">#d36854</color>
     <color name="colorAttention">#d44646</color>
     <color name="colorSecondary">@color/colorGray</color>
@@ -16,6 +12,7 @@
     <color name="textColorTertiary">@color/colorGrayDark</color>
     <color name="textColorTertiaryInverse">@color/colorGrayLighter</color>
     <color name="textColorPrimary">@android:color/black</color>
+    <color name="colorSurface">@android:color/white</color>
     <!--color palette -->
     <color name="colorSolid">#ededed</color>
     <color name="colorError">#d44646</color>
@@ -43,4 +40,5 @@
     <color name="colorAvatarBorder">@android:color/white</color>
     <color name="toolbarIconDisabled">#a555</color>
     <color name="colorPhotoViewBackground">#8000</color>
+    <color name="textColor">#000</color>
 </resources>

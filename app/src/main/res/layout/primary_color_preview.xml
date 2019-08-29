@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/colorPreviewImageView"
+    android:layout_width="@dimen/size_color_preview"
+    android:layout_height="@dimen/size_color_preview"
+    android:background="@drawable/bg_primary_color_preview"
+    tools:ignore="ContentDescription"
+    tools:src="@color/colorPrimary" />

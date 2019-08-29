@@ -21,23 +21,11 @@
             android:layout_width="@dimen/size_post_item_avatar"
             android:layout_height="wrap_content"
             android:scaleType="center"
+            android:tint="?android:attr/textColorSecondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
             tools:src="@drawable/ic_star_black_24dp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/reactionUsersRecyclerView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_half"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iconView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:spanCount="1"
-            tools:listitem="@layout/reaction_user_item" />
 
         <TextView
             android:id="@+id/messageTextView"
@@ -58,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/messageTextView"
             app:layout_constraintTop_toBottomOf="@id/messageTextView"
@@ -70,5 +59,18 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/messageTextView"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="5s" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reactionUsersRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_half"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iconView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:spanCount="1"
+            tools:listitem="@layout/reaction_user_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

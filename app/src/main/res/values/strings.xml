@@ -183,4 +183,21 @@
     <string name="accounts">Accounts</string>
     <string name="account_not_found">Account not found</string>
     <string name="cannot_open_url">Cannot open URL.</string>
+    <string name="change_theme_color">Change theme color</string>
+    <string name="behavior_and_appearances">Behavior &amp; Appearances</string>
+    <string name="default_text">Default</string>
+    <string name="pref_dark_theme_key">pref_dark_theme_key2</string>
+    <string name="use_dark_theme">Use dark theme</string>
+    <string-array name="dark_mode">
+        <item>Follow system</item>
+        <item>Always off</item>
+        <item>Always on</item>
+        <item>Enable after sunset</item>
+    </string-array>
+    <string-array name="dark_mode_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".presentation.activity.FilesActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -12,8 +11,7 @@
         style="@style/Toolbar.Up"
         android:layout_width="match_parent"
         android:layout_height="152dp"
-        android:background="@android:color/white"
-        android:fitsSystemWindows="true">
+        android:background="@android:color/white">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"

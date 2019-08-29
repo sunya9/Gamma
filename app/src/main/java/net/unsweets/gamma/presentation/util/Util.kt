@@ -2,16 +2,19 @@ package net.unsweets.gamma.presentation.util
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.AttrRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.MenuItemCompat
 import net.unsweets.gamma.R
 
@@ -27,7 +30,8 @@ object Util {
         imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
-    private fun getImm(context: Context) = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    private fun getImm(context: Context) =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
     interface DrawerContentFragment {
         val menuItemId: Int
@@ -42,7 +46,8 @@ object Util {
     }
 
     fun setTintForToolbarIcons(context: Context, menu: Menu) {
-        val colorStateList = AppCompatResources.getColorStateList(context, R.color.toolbar_icon_tint)
+        val colorStateList =
+            AppCompatResources.getColorStateList(context, R.color.toolbar_icon_tint)
         for (i in 0 until menu.size()) {
             setTintForToolbarIcon(colorStateList, menu.getItem(i))
         }
@@ -56,12 +61,13 @@ object Util {
     fun setTintForCheckableMenuItem(context: Context, menuItem: MenuItem) {
         when (menuItem.isChecked) {
             true -> {
-                val color = ContextCompat.getColor(context, R.color.colorPrimary)
+                val color = getPrimaryColor(context)
                 menuItem.icon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
             }
             false -> {
                 menuItem.icon.clearColorFilter()
-                val colorStateList = AppCompatResources.getColorStateList(context, R.color.toolbar_icon_tint)
+                val colorStateList =
+                    AppCompatResources.getColorStateList(context, R.color.toolbar_icon_tint)
                 setTintForToolbarIcon(colorStateList, menuItem)
             }
         }
@@ -84,6 +90,22 @@ object Util {
             // TODO: to improve error handling
             Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
         }
-
     }
+
+    fun getPrimaryColor(context: Context) = getAttributeValue(context, R.attr.colorPrimary)
+    fun getAccentColor(context: Context) = getAttributeValue(context, R.attr.colorAccent)
+
+    private fun getAttributeValue(context: Context, @AttrRes resourceId: Int): Int {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(resourceId, typedValue, true)
+        return typedValue.data
+    }
+
+    fun getPrimaryColorDark(context: Context) =
+        ColorUtils.blendARGB(getPrimaryColor(context), Color.BLACK, 0.1f)
+
+    fun getWindowBackgroundColor(context: Context): Int =
+        getAttributeValue(context, android.R.attr.windowBackground)
+
+
 }

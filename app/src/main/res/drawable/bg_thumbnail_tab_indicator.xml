@@ -8,7 +8,7 @@
             <size
                 android:width="@dimen/size_thumbnail_tab_item_dot"
                 android:height="@dimen/size_thumbnail_tab_item_dot" />
-            <solid android:color="@color/colorPrimary" />
+            <solid android:color="?attr/colorAccent" />
         </shape>
     </item>
 </layer-list>

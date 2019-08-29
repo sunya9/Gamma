@@ -13,14 +13,13 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         tools:context=".presentation.fragment.SearchFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/searchAppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/toolbarBg">
+            android:background="?colorSurface">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -72,9 +71,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
-                app:tabGravity="center"
-                app:tabIndicatorColor="@color/colorPrimary"
-                app:tabMode="auto" />
+                app:tabGravity="fill"
+                app:tabIndicatorColor="?attr/colorPrimary"
+                app:tabMode="fixed" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.viewpager.widget.ViewPager

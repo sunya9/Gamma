@@ -201,7 +201,6 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     }
 
     private fun setupBottomAppBar() {
-        bottomAppBar.inflateMenu(R.menu.main)
         bottomAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.menuSearch -> showSearchFragment()

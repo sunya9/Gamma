@@ -4,15 +4,20 @@ package net.unsweets.gamma.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.DaggerAppCompatDialogFragment
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentEditProfileBinding
@@ -25,13 +30,29 @@ import net.unsweets.gamma.domain.usecases.UpdateProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateUserImageUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.ComputedLiveData
+import net.unsweets.gamma.presentation.util.ThemeColorUtil
 import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.util.SingleLiveEvent
 import net.unsweets.gamma.util.showAsError
 import javax.inject.Inject
 
 class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemListDialogFragment.Listener,
-    DaggerAppCompatDialogFragment() {
+    DialogFragment(), HasAndroidInjector {
+
+    @Inject
+    internal lateinit var androidInjector: DispatchingAndroidInjector<Any>
+
+    override fun androidInjector(): AndroidInjector<Any> {
+        return androidInjector
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        AndroidSupportInjection.inject(this)
+    }
+
+
+
     override fun onMenuShow(menu: Menu, tag: String?) {
         val imageState = when (tag) {
             DialogKey.Avatar.name -> viewModel.newAvatarUri.value
@@ -161,7 +182,8 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+//        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+        ThemeColorUtil.applyTheme(this)
         viewModel.saving.observe(this, savingObserver)
         viewModel.event.observe(this, eventObserver)
         viewModel.loading.observe(this, loadingObserver)
@@ -265,6 +287,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                 false
             }
         }
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         return dialog
     }
 

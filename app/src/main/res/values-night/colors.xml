@@ -6,8 +6,10 @@
     <color name="textColorTertiary">@color/colorGrayLighter</color>
     <color name="textColorTertiaryInverse">@color/colorGrayDark</color>
     <color name="bgNavigationDrawerItem">@color/colorGray</color>
-    <color name="toolbarIcon">@color/colorGrayLightest</color>
-    <color name="textColorPrimary">@android:color/white</color>
+    <color name="toolbarIcon">@android:color/white</color>
+    <color name="textColorPrimary">?android:attr/textColorSecondary</color>
     <color name="navigationBar">@android:color/black</color>
     <color name="navigationBarDivider">@android:color/transparent</color>
+    <color name="colorSurface">@color/colorGrayDarker</color>
+    <color name="textColor">#000</color>
 </resources>

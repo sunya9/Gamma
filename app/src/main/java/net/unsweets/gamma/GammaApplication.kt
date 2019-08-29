@@ -1,8 +1,11 @@
 package net.unsweets.gamma
 
+import android.app.Activity
 import android.content.Intent
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
+import androidx.preference.PreferenceManager
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import kotlinx.coroutines.CoroutineScope
@@ -12,6 +15,7 @@ import net.unsweets.gamma.di.AppModule
 import net.unsweets.gamma.di.DaggerAppComponent
 import net.unsweets.gamma.domain.usecases.SetupTokenUseCase
 import net.unsweets.gamma.presentation.activity.LoginActivity
+import net.unsweets.gamma.presentation.util.ThemeColorUtil
 
 class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
     val module by lazy { AppModule(this) }
@@ -21,11 +25,31 @@ class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
     }
 
     override fun onCreate() {
+        updateBaseTheme()
+        updateTheme()
         super.onCreate()
         val config = BundledEmojiCompatConfig(this)
             .setReplaceAll(true)
         EmojiCompat.init(config)
         if (!setToken()) return backToLoginActivity() // failed
+    }
+
+    enum class DarkMode(val value: Int) {
+        FollowSystem(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM),
+        Off(AppCompatDelegate.MODE_NIGHT_NO),
+        On(AppCompatDelegate.MODE_NIGHT_YES),
+        Auto(AppCompatDelegate.MODE_NIGHT_AUTO)
+    }
+
+    fun updateBaseTheme() {
+        val pm = PreferenceManager.getDefaultSharedPreferences(this)
+        val darkMode = try {
+            val strInt = pm.getString(getString(R.string.pref_dark_theme_key), "0") ?: "0"
+            DarkMode.values()[strInt.toInt()]
+        } catch (e: Exception) {
+            DarkMode.FollowSystem
+        }
+        AppCompatDelegate.setDefaultNightMode(darkMode.value)
     }
 
     private fun backToLoginActivity() {
@@ -43,5 +67,13 @@ class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
                 module.providePreferenceRepository()
             ).run(Unit)
         }.existDefaultAccount
+    }
+
+    fun updateTheme() {
+        ThemeColorUtil.applyTheme(this)
+    }
+
+    companion object {
+        fun getInstance(activity: Activity) = activity.application as GammaApplication
     }
 }

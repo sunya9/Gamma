@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="@string/pref_account_key"
     android:title="@string/pref_header_account">
     <Preference
+        android:icon="@drawable/ic_arrow_forward_black_24dp"
         android:key="@string/pref_logout_account_key"
         android:title="@string/pref_logout_account_title" />
 </PreferenceScreen>

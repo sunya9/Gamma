@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.view.View
-import androidx.core.content.res.ResourcesCompat
 import net.unsweets.gamma.R
 import net.unsweets.gamma.presentation.fragment.PostItemFragment
 import net.unsweets.gamma.presentation.fragment.ProfileFragment
@@ -19,8 +18,8 @@ interface HaveEntities {
     val text: String?
     fun getSpannableStringBuilder(context: Context): SpannableStringBuilder {
         val builder = SpannableStringBuilder(text ?: "")
-        val normalColor = ResourcesCompat.getColor(context.resources, R.color.colorPrimary, context.theme)
-        val pressedColor = ResourcesCompat.getColor(context.resources, R.color.colorPrimaryDarker, context.theme)
+        val normalColor = Util.getPrimaryColor(context)
+        val pressedColor = Util.getPrimaryColorDark(context)
         if (entities == null || text == null) return builder
         entities?.let {
             arrayListOf(it.links, it.mentions, it.tags)

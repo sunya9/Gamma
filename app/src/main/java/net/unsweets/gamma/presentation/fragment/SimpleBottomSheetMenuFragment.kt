@@ -5,11 +5,10 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_simple_bottom_sheet_menu.view.*
 import net.unsweets.gamma.R
 
-class SimpleBottomSheetMenuFragment : BottomSheetDialogFragment() {
+class SimpleBottomSheetMenuFragment : BaseBottomSheetDialogFragment() {
 
 
     interface Callback {
@@ -30,7 +29,8 @@ class SimpleBottomSheetMenuFragment : BottomSheetDialogFragment() {
     }
 
     private val menuRes by lazy {
-        arguments?.getInt(BundleKey.Menu.name) ?: throw IllegalArgumentException("You must set menu resource")
+        arguments?.getInt(BundleKey.Menu.name)
+            ?: throw IllegalArgumentException("You must set menu resource")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
