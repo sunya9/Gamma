@@ -80,4 +80,7 @@ data class Post(
     val canonicalUrl by lazy {
         "https://posts.pnut.io/$id"
     }
+
+    @IgnoredOnParcel
+    val isDeletedNonNull = isDeleted == true
 }
