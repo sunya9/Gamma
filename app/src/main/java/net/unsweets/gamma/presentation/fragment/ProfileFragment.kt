@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.transition.ChangeBounds
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -64,7 +65,12 @@ class ProfileFragment : BaseFragment() {
     private val viewModel: ProfileViewModel by lazy {
         ViewModelProvider(
             this,
-            ProfileViewModel.Factory(activity!!.application, getProfileUseCase, followUseCase, userId)
+            ProfileViewModel.Factory(
+                activity!!.application,
+                getProfileUseCase,
+                followUseCase,
+                userId
+            )
         )[ProfileViewModel::class.java]
     }
 
@@ -122,7 +128,10 @@ class ProfileFragment : BaseFragment() {
 
         toolbarSetup(binding.appBar, binding.swipeRefreshLayout)
         setEnterSharedElementCallback(object : SharedElementCallback() {
-            override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
+            override fun onMapSharedElements(
+                names: List<String>,
+                sharedElements: MutableMap<String, View>
+            ) {
                 sharedElements[names[0]] = binding.circleImageView
             }
         })
@@ -201,7 +210,12 @@ class ProfileFragment : BaseFragment() {
             val textColor = viewModel.toolbarTextColor.value ?: return@OnOffsetChangedListener
             val bgColor = viewModel.toolbarBgColor.value ?: return@OnOffsetChangedListener
             swipeRefreshLayout.isEnabled = per == 0f
-            viewModel.toolbarTextColor.postValue(ColorUtils.setAlphaComponent(textColor, per.toInt()))
+            viewModel.toolbarTextColor.postValue(
+                ColorUtils.setAlphaComponent(
+                    textColor,
+                    per.toInt()
+                )
+            )
             viewModel.toolbarBgColor.postValue(ColorUtils.setAlphaComponent(bgColor, per.toInt()))
         })
         viewModel.toolbarBgColor.value = ContextCompat.getColor(context!!, R.color.colorStatusBar)
@@ -244,15 +258,18 @@ class ProfileFragment : BaseFragment() {
     private fun showEditProfileDialog() {
         val fm = fragmentManager ?: return
         val fragment = EditProfileFragment.newInstance(userId).also {
-            //            val transition = TransitionInflater.from(context).inflateTransition(R.transition.edit_profile)
-//            sharedElementEnterTransition = ChangeBounds()
+            //            val transition =
+//                TransitionInflater.from(context).inflateTransition(R.transition.edit_profile)
+            sharedElementEnterTransition = ChangeBounds()
         }
-//        fragment.setTargetFragment(this, RequestCode.UpdateProfile.ordinal)
+        fragment.setTargetFragment(this, RequestCode.UpdateProfile.ordinal)
         // TODO: fix fragment transition
         val ft = fm.beginTransaction()
-            .addSharedElement(binding.userMainActionButton, binding.userMainActionButton.transitionName)
-//        fragment.show(ft, DialogKey.EditProfile.name)
-        fragment.show(childFragmentManager, DialogKey.EditProfile.name)
+            .addSharedElement(
+                binding.userMainActionButton,
+                binding.userMainActionButton.transitionName
+            )
+        fragment.show(ft, DialogKey.EditProfile.name)
 
     }
 
@@ -274,10 +291,12 @@ class ProfileFragment : BaseFragment() {
     ) : AndroidViewModel(app) {
         val event = SingleLiveEvent<Event>()
         val user = MutableLiveData<User>()
-        val iconUrl = when {
-            userId != null -> User.getAvatarUrl(userId, null)
-            user.value != null -> user.value?.getAvatarUrl(null)
-            else -> ""
+        val iconUrl = Transformations.map(user) {
+            when {
+                it != null -> it.getAvatarUrl(null)
+                userId != null -> User.getAvatarUrl(userId, null)
+                else -> ""
+            }
         }
         val usernameWithAt: LiveData<String> = Transformations.map(user) { "@${it?.username}" }
         val since: LiveData<CharSequence?> = Transformations.map(user) {
@@ -322,6 +341,7 @@ class ProfileFragment : BaseFragment() {
             }
         }
         val actionButtonRippleColor = Util.getPrimaryColorDark(app)
+
         init {
             if (user.value == null) getUser()
         }
