@@ -16,6 +16,7 @@ import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import net.unsweets.gamma.util.MicroTimestampAdapter
 import net.unsweets.gamma.util.await
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,11 +31,13 @@ class PnutRepository(private val context: Context) : IPnutRepository {
     }
 
     override suspend fun updateCover(uri: Uri): PnutResponse<User> {
-        return defaultPnutService.updateCover(createUserImageRequestBody(uri, UserImageKey.Cover)).await()
+        return defaultPnutService.updateCover(createUserImageRequestBody(uri, UserImageKey.Cover))
+            .await()
     }
 
     override suspend fun updateAvatar(uri: Uri): PnutResponse<User> {
-        return defaultPnutService.updateAvatar(createUserImageRequestBody(uri, UserImageKey.Avatar)).await()
+        return defaultPnutService.updateAvatar(createUserImageRequestBody(uri, UserImageKey.Avatar))
+            .await()
     }
 
     private enum class UserImageKey { Avatar, Cover }
@@ -56,7 +59,10 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         ).execute().body()!!
     }
 
-    override suspend fun getThread(postId: String, params: GetPostsParam): PnutResponse<List<Post>> {
+    override suspend fun getThread(
+        postId: String,
+        params: GetPostsParam
+    ): PnutResponse<List<Post>> {
         return defaultPnutService.getThread(postId, params.toMap()).await()
     }
 
@@ -84,7 +90,10 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         return defaultPnutService.searchPosts(params.toMap()).await()
     }
 
-    override suspend fun getTagStream(tag: String, getPostsParam: GetPostsParam): PnutResponse<List<Post>> {
+    override suspend fun getTagStream(
+        tag: String,
+        getPostsParam: GetPostsParam
+    ): PnutResponse<List<Post>> {
         return defaultPnutService.getTaggedPosts(tag, getPostsParam.toMap()).await()
     }
 
@@ -92,7 +101,10 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         return createPnutService(token).token().await()
     }
 
-    override suspend fun getFollowing(userId: String, getUsersParam: GetUsersParam): PnutResponse<List<User>> {
+    override suspend fun getFollowing(
+        userId: String,
+        getUsersParam: GetUsersParam
+    ): PnutResponse<List<User>> {
         return defaultPnutService.getFollowing(userId, getUsersParam.toMap()).await()
     }
 
@@ -112,11 +124,17 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         return defaultPnutService.getMentions(getPostsParam.toMap()).await()
     }
 
-    override suspend fun getStars(userId: String, getPostsParam: GetPostsParam): PnutResponse<List<Post>> {
+    override suspend fun getStars(
+        userId: String,
+        getPostsParam: GetPostsParam
+    ): PnutResponse<List<Post>> {
         return defaultPnutService.getStars(userId, getPostsParam.toMap()).await()
     }
 
-    override suspend fun getUserPosts(userId: String, getPostsParam: GetPostsParam): PnutResponse<List<Post>> {
+    override suspend fun getUserPosts(
+        userId: String,
+        getPostsParam: GetPostsParam
+    ): PnutResponse<List<Post>> {
         return defaultPnutService.getUserPosts(userId, getPostsParam.toMap()).await()
     }
 
@@ -168,7 +186,10 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         return defaultPnutService.putMyProfile(profileBody).await()
     }
 
-    override suspend fun getFollowers(userId: String, getUsersParam: GetUsersParam): PnutResponse<List<User>> {
+    override suspend fun getFollowers(
+        userId: String,
+        getUsersParam: GetUsersParam
+    ): PnutResponse<List<User>> {
         return defaultPnutService.getFollowers(userId, getUsersParam.toMap()).await()
     }
 
@@ -200,7 +221,10 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         return defaultPnutService.getChannelsCreatedByMe(paginationParam).await()
     }
 
-    override suspend fun getMessages(channelId: String, paginationParam: PaginationParam): PnutResponse<List<Message>> {
+    override suspend fun getMessages(
+        channelId: String,
+        paginationParam: PaginationParam
+    ): PnutResponse<List<Message>> {
         return defaultPnutService.getChannelMessages(channelId, paginationParam.toMap()).await()
     }
 
@@ -244,7 +268,8 @@ class PnutRepository(private val context: Context) : IPnutRepository {
 
     private fun getAuthorizationHeaderInterceptor(token: String): Interceptor =
         Interceptor {
-            val request = it.request().newBuilder().addHeader("Authorization", "Bearer $token").build()
+            val request =
+                it.request().newBuilder().addHeader("Authorization", "Bearer $token").build()
             it.proceed(request)
         }
 
@@ -268,6 +293,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
                     .withSubtype(ChannelInvite::class.java, "io.pnut.core.channel.invite")
                     .withDefaultValue(RawImpl())
             )
+            .add(MicroTimestampAdapter())
             // for create post
             .add(
                 PolymorphicJsonAdapterFactory.of(PostRaw::class.java, "type")

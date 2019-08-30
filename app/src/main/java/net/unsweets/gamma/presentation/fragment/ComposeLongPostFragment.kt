@@ -35,7 +35,7 @@ class ComposeLongPostFragment : Fragment(), BackPressedHookable {
         val longPost = if (!it.body.isNullOrEmpty()) {
             LongPost(
                 LongPost.LongPostValue(
-                    it.body, it.title, null
+                    it.body, it.title, 0L
                 )
             )
         } else {
