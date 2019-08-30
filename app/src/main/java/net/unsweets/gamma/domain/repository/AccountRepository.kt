@@ -32,7 +32,10 @@ class AccountRepository(context: Context) : AbstractPreferenceRepository(context
         )
     }
 
-    private val delimiter = ","
+    companion object {
+        private const val delimiter = ","
+    }
+
     override fun setAccountIds(ids: List<String>) {
         editor.putString(Key.AccountList.name, ids.joinToString(delimiter)).commit()
     }
