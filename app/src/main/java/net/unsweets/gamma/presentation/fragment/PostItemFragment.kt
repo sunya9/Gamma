@@ -1,6 +1,7 @@
 package net.unsweets.gamma.presentation.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -22,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +34,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_post_item.view.*
 import net.unsweets.gamma.R
+import net.unsweets.gamma.broadcast.PostReceiver
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.User
@@ -55,7 +58,52 @@ import javax.inject.Inject
 abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder>,
     ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback,
-    SimpleBottomSheetMenuFragment.Callback {
+    SimpleBottomSheetMenuFragment.Callback, PostReceiver.Callback {
+    override fun onPostReceive(post: Post) {
+
+    }
+
+    override fun onStarReceive(post: Post) {
+        val viewHolder = getRecyclerView(
+            view ?: return
+        ).findViewHolderForItemId(post.id.toLong()) as? PostViewHolder ?: return
+        updatePost(post)
+        updateStarView(viewHolder, post)
+    }
+
+    private fun updatePost(post: Post) {
+        adapter.updateItem(post)
+    }
+
+    override fun onRepostReceive(post: Post) {
+        val viewHolder = getRecyclerView(
+            view ?: return
+        ).findViewHolderForItemId(post.id.toLong()) as? PostViewHolder ?: return
+        updatePost(post)
+        updateRepostView(viewHolder, post)
+    }
+
+    override fun onDeletePostReceive(post: Post) {
+    }
+
+    private val receiverManager by lazy {
+        activity?.let { LocalBroadcastManager.getInstance(it.applicationContext) }
+    }
+
+    private val postReceiver by lazy {
+        PostReceiver(this)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        receiverManager?.registerReceiver(postReceiver, PostService.getIntentFilter())
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        receiverManager?.unregisterReceiver(postReceiver)
+    }
+
     enum class BundleKey { MainPostId }
 
     override fun onMenuShow(menu: Menu, tag: String?) {
@@ -203,25 +251,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewHolder.screenNameTextView.text = item.mainPost.user?.username ?: getString(R.string.deleted_post_user_name)
         viewHolder.handleNameTextView.text = item.mainPost.user?.name.orEmpty()
         viewHolder.avatarView.isEnabled = !isDeleted
-        val starDrawableRes =
-            if (item.mainPost.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
-        viewHolder.actionStarImageView.let {
-            it.setOnClickListener {
-                toggleStar(item, viewHolder.adapterPosition)
 
-            }
-//                val starTextRes = if (item.mainPost.youBookmarked == true) R.string.unstar else R.string.star
-//                it.text = context.getString(starTextRes)
-            it.setImageResource(starDrawableRes)
-            it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
-        }
-        viewHolder.starButton.isEnabled = !isDeleted
-        viewHolder.starButton.let {
-            it.setOnClickListener {
-                toggleStar(item, viewHolder.adapterPosition)
-            }
-            it.setImageResource(starDrawableRes)
-        }
+        updateStarView(viewHolder, item)
         viewHolder.actionReplyImageView.setOnClickListener {
             showReplyCompose(viewHolder.avatarView, item)
         }
@@ -230,27 +261,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             showReplyCompose(viewHolder.avatarView, item)
         }
 
-
-        val repostType = when {
-            item.mainPost.youReposted == true -> RepostButtonType.DeleteRepost
-            item.mainPost.user?.me == true -> RepostButtonType.DeletePost
-            else -> RepostButtonType.Repost
-        }
-        viewHolder.actionRepostImageView.let {
-            //                it.setText(repostType.textRes)
-            it.setImageResource(repostType.iconRes)
-            it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
-            it.setOnClickListener {
-                toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
-            }
-        }
-        viewHolder.repostButton.isEnabled = !isDeleted
-        viewHolder.repostButton.let {
-            it.setImageResource(repostType.iconRes)
-            it.setOnClickListener {
-                toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
-            }
-        }
+        updateRepostView(viewHolder, item)
 
         val hasConversation = item.mainPost.replyTo != null || (item.mainPost.counts?.replies ?: 0) > 0
         viewHolder.chatIconImageView.visibility =
@@ -284,11 +295,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             (fragment.exitTransition as? TransitionSet)?.excludeTarget(it.transitionName, true)
             FragmentHelper.addFragment(context!!, fragment, id, transitionMap)
         }
-
-        setupRepostView(item, viewHolder.repostedByTextView)
-
-        viewHolder.starStateView.visibility = if (item.mainPost.youBookmarked == true) View.VISIBLE else View.GONE
-        viewHolder.repostStateView.visibility = if (item.mainPost.youReposted == true) View.VISIBLE else View.GONE
 
         viewHolder.dateTextView.text =
             if (!isMainItem) DateUtil.getShortDateStr(viewHolder.itemView.context, item.mainPost.createdAt) else ""
@@ -328,14 +334,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         }
         viewHolder.detailInfoLayout.visibility = getVisibility(isMainItem)
         val replyCount = item.mainPost.counts?.replies ?: 0
-        val repostCount = item.mainPost.counts?.reposts ?: 0
-        val starCount = item.mainPost.counts?.bookmarks ?: 0
         val replyText = resources.getQuantityString(R.plurals.reply_count_template, replyCount, replyCount)
-        val repostText = resources.getQuantityString(R.plurals.repost_count_template, repostCount, repostCount)
-        val starText = resources.getQuantityString(R.plurals.star_count_template, starCount, starCount)
+
         viewHolder.replyCountTextView.text = replyText
-        viewHolder.repostCountTextView.text = repostText
-        viewHolder.starCountTextView.text = starText
 
         viewHolder.rootCardView.let {
             it.isClickable = !isMainItem
@@ -387,6 +388,66 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         }
         revisionType.iconRes?.let { viewHolder.revisedIconImageView.setImageResource(it) }
         viewHolder.revisedIconImageView.visibility = getVisibility(revisionType.iconRes != null)
+    }
+
+    private fun updateRepostView(viewHolder: PostViewHolder, item: Post) {
+        val repostType = when {
+            item.mainPost.youReposted == true -> RepostButtonType.DeleteRepost
+            item.mainPost.user?.me == true -> RepostButtonType.DeletePost
+            else -> RepostButtonType.Repost
+        }
+        viewHolder.actionRepostImageView.let {
+            //                it.setText(repostType.textRes)
+            it.setImageResource(repostType.iconRes)
+            it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+            it.setOnClickListener {
+                toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
+            }
+        }
+        viewHolder.repostButton.isEnabled = !item.isDeletedNonNull
+        viewHolder.repostButton.let {
+            it.setImageResource(repostType.iconRes)
+            it.setOnClickListener {
+                toggleRepost(repostType, item.mainPost, viewHolder.adapterPosition)
+            }
+        }
+        setupRepostView(item, viewHolder.repostedByTextView)
+
+        viewHolder.repostStateView.visibility =
+            if (item.mainPost.youReposted == true) View.VISIBLE else View.GONE
+        val repostCount = item.mainPost.counts?.reposts ?: 0
+        val repostText =
+            resources.getQuantityString(R.plurals.repost_count_template, repostCount, repostCount)
+        viewHolder.repostCountTextView.text = repostText
+    }
+
+    private fun updateStarView(viewHolder: PostViewHolder, item: Post) {
+        val starDrawableRes =
+            if (item.mainPost.youBookmarked == true) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
+        viewHolder.actionStarImageView.let {
+            it.setOnClickListener {
+                toggleStar(item, viewHolder.adapterPosition)
+
+            }
+//                val starTextRes = if (item.mainPost.youBookmarked == true) R.string.unstar else R.string.star
+//                it.text = context.getString(starTextRes)
+            it.setImageResource(starDrawableRes)
+            it.drawable?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+        }
+        viewHolder.starButton.isEnabled = !item.isDeletedNonNull
+        viewHolder.starButton.let {
+            it.setOnClickListener {
+                toggleStar(item, viewHolder.adapterPosition)
+            }
+            it.setImageResource(starDrawableRes)
+        }
+        viewHolder.starStateView.visibility =
+            if (item.mainPost.youBookmarked == true) View.VISIBLE else View.GONE
+        val starCount = item.mainPost.counts?.bookmarks ?: 0
+        val starText =
+            resources.getQuantityString(R.plurals.star_count_template, starCount, starCount)
+        viewHolder.starCountTextView.text = starText
+
     }
 
     private enum class RevisionType(val iconRes: Int?) {

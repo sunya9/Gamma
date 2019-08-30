@@ -36,13 +36,15 @@ import net.unsweets.gamma.presentation.adapter.AccountListAdapter
 import net.unsweets.gamma.presentation.fragment.*
 import net.unsweets.gamma.presentation.util.FragmentHelper.addFragment
 import net.unsweets.gamma.presentation.util.LoginUtil
+import net.unsweets.gamma.presentation.util.SnackbarCallback
 import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel
 import net.unsweets.gamma.service.PostService
 import net.unsweets.gamma.util.oneline
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback, AccountListAdapter.Listener {
+class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback,
+    AccountListAdapter.Listener {
     override fun onDeletePostReceive(post: Post) {
         showActionResultSnackBar(post, Action.Delete)
     }
@@ -63,11 +65,25 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     }
 
     override fun onRepostReceive(post: Post) {
-        showActionResultSnackBar(post, Action.Repost)
+        showActionResultSnackBar(
+            post,
+            Action.Repost,
+            SnackbarCallback(R.string.undo, View.OnClickListener {
+                val currentState = post.youReposted ?: true
+                PostService.newRepostIntent(this, post.id, !currentState)
+            })
+        )
     }
 
     override fun onStarReceive(post: Post) {
-        showActionResultSnackBar(post, Action.Star)
+        showActionResultSnackBar(
+            post,
+            Action.Star,
+            SnackbarCallback(R.string.undo, View.OnClickListener {
+                val currentState = post.youBookmarked ?: true
+                PostService.newStarIntent(this, post.id, !currentState)
+            })
+        )
     }
 
     private enum class Action { Star, Repost, Delete }
@@ -85,7 +101,11 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     private val accounts
         get() = getAccountListUseCase.run(Unit).accounts.filterNot { it == currentAccount }
 
-    private fun showActionResultSnackBar(post: Post, action: Action) {
+    private fun showActionResultSnackBar(
+        post: Post,
+        action: Action,
+        snackbarCallback: SnackbarCallback? = null
+    ) {
         val actionNameRes = when (action) {
             Action.Star -> if (post.mainPost.youBookmarked == true) R.string.stars else R.string.unstar
             Action.Repost -> if (post.mainPost.youReposted == true) R.string.repost else R.string.delete_repost
@@ -96,7 +116,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         val content = post.content?.text ?: return
         val message =
             getString(R.string.action_result_snackbar_template, actionName, username, content)
-        showSnackBar(message)
+        showSnackBar(message, snackbarCallback)
     }
 
     override fun onPostReceive(post: Post) {
@@ -104,11 +124,16 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         showSnackBar(getString(R.string.posted, text))
     }
 
-    private fun showSnackBar(text: String) {
+    private fun showSnackBar(text: String, snackbarCallback: SnackbarCallback? = null) {
         val view = findViewById<View>(android.R.id.content) ?: return
         Snackbar.make(view, text, Snackbar.LENGTH_SHORT).oneline().apply {
             setAnchorView(R.id.fab)
-        }.show()
+            if (snackbarCallback != null) setAction(
+                snackbarCallback.actionResId,
+                snackbarCallback.callback
+            )
+        }
+            .show()
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -212,7 +237,11 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
 
     private fun showSearchFragment() {
         val existFragment =
-            addFragment(supportFragmentManager, SearchFragment.newInstance(), SearchFragment::class.java.simpleName)
+            addFragment(
+                supportFragmentManager,
+                SearchFragment.newInstance(),
+                SearchFragment::class.java.simpleName
+            )
         (existFragment as? SearchFragment)?.focusToEditText()
     }
 
@@ -253,7 +282,8 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     private fun syncMenu() {
         uncheckMenuItem(navigationView.menu)
         val fragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentPlaceholder) as? Util.DrawerContentFragment ?: return
+            supportFragmentManager.findFragmentById(R.id.fragmentPlaceholder) as? Util.DrawerContentFragment
+                ?: return
         navigationView.menu.findItem(fragment.menuItemId)?.isChecked = true
     }
 

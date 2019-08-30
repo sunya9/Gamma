@@ -141,12 +141,18 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
 
     }
 
+    fun updateItem(item: T) {
+        val index = options.listLiveData.value?.indexOf(item) ?: -1
+        if (index < 0) return
+        options.listLiveData.value?.set(index, item)
+        notifyItemRemoved(index)
+    }
+
     fun removeItem(item: T) {
         val index = options.listLiveData.value?.indexOf(item) ?: -1
         if (index < 0) return
         options.listLiveData.value?.removeAt(index)
         notifyItemRemoved(index)
-
     }
 
     class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
