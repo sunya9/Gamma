@@ -2,6 +2,7 @@ package net.unsweets.gamma.util
 
 import android.content.Context
 import android.graphics.Color
+import android.text.TextUtils
 import android.text.format.DateFormat
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -26,6 +27,14 @@ fun Snackbar.showAsError() {
     val textView = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     textView.setTextColor(Color.WHITE)
     show()
+}
+
+fun Snackbar.oneline(): Snackbar {
+    val view = this.view
+    val textView = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+    textView.maxLines = 1
+    textView.ellipsize = TextUtils.TruncateAt.END
+    return this
 }
 
 suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> = suspendCancellableCoroutine { cont ->

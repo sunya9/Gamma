@@ -39,11 +39,12 @@ import net.unsweets.gamma.presentation.util.LoginUtil
 import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel
 import net.unsweets.gamma.service.PostService
+import net.unsweets.gamma.util.oneline
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback, AccountListAdapter.Listener {
     override fun onDeletePostReceive(post: Post) {
-        showActionResultSnackbar(post, Action.Delete)
+        showActionResultSnackBar(post, Action.Delete)
     }
 
     override fun onAccountClick(account: Account) {
@@ -62,11 +63,11 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     }
 
     override fun onRepostReceive(post: Post) {
-        showActionResultSnackbar(post, Action.Repost)
+        showActionResultSnackBar(post, Action.Repost)
     }
 
     override fun onStarReceive(post: Post) {
-        showActionResultSnackbar(post, Action.Star)
+        showActionResultSnackBar(post, Action.Star)
     }
 
     private enum class Action { Star, Repost, Delete }
@@ -84,7 +85,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     private val accounts
         get() = getAccountListUseCase.run(Unit).accounts.filterNot { it == currentAccount }
 
-    private fun showActionResultSnackbar(post: Post, action: Action) {
+    private fun showActionResultSnackBar(post: Post, action: Action) {
         val actionNameRes = when (action) {
             Action.Star -> if (post.mainPost.youBookmarked == true) R.string.stars else R.string.unstar
             Action.Repost -> if (post.mainPost.youReposted == true) R.string.repost else R.string.delete_repost
@@ -105,7 +106,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
 
     private fun showSnackBar(text: String) {
         val view = findViewById<View>(android.R.id.content) ?: return
-        Snackbar.make(view, text, Snackbar.LENGTH_SHORT).apply {
+        Snackbar.make(view, text, Snackbar.LENGTH_SHORT).oneline().apply {
             setAnchorView(R.id.fab)
         }.show()
     }
