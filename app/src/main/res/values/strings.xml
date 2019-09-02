@@ -188,6 +188,10 @@
     <string name="default_text">Default</string>
     <string name="pref_dark_theme_key">pref_dark_theme_key2</string>
     <string name="use_dark_theme">Use dark theme</string>
+    <string name="communication_error">Communication error</string>
+    <string name="post_not_bookmarked">Post not bookmarked.</string>
+    <string name="no_repost_found_to_delete">No repost found to delete.</string>
+    <string name="avatar_over_size">Avatar must be less than 2MiB, with Content-Length specified.</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

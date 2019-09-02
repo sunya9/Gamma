@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.account_list.view.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
 import net.unsweets.gamma.R
+import net.unsweets.gamma.broadcast.ErrorReceiver
 import net.unsweets.gamma.broadcast.PostReceiver
 import net.unsweets.gamma.databinding.ActivityMainBinding
 import net.unsweets.gamma.databinding.NavigationDrawerHeaderBinding
@@ -40,11 +41,18 @@ import net.unsweets.gamma.presentation.util.SnackbarCallback
 import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.presentation.viewmodel.MainActivityViewModel
 import net.unsweets.gamma.service.PostService
+import net.unsweets.gamma.util.ErrorIntent
 import net.unsweets.gamma.util.oneline
+import net.unsweets.gamma.util.showAsError
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callback,
-    AccountListAdapter.Listener {
+    AccountListAdapter.Listener, ErrorReceiver.Callback {
+    override fun onReceiveError(message: String) {
+        val view = findViewById<View>(android.R.id.content) ?: return
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).showAsError()
+    }
+
     override fun onDeletePostReceive(post: Post) {
         showActionResultSnackBar(post, Action.Delete)
     }
@@ -190,6 +198,9 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     private val postReceiver by lazy {
         PostReceiver(this)
     }
+    private val errorReceiver by lazy {
+        ErrorReceiver(this)
+    }
 
     private val viewModel: MainActivityViewModel by lazy {
         ViewModelProvider(
@@ -249,11 +260,13 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     override fun onStart() {
         super.onStart()
         receiverManager.registerReceiver(postReceiver, PostService.getIntentFilter())
+        receiverManager.registerReceiver(errorReceiver, ErrorIntent.getIntentFilter())
     }
 
     override fun onStop() {
         super.onStop()
         receiverManager.unregisterReceiver(postReceiver)
+        receiverManager.unregisterReceiver(errorReceiver)
     }
 
     private fun setupFragment(firstStart: Boolean) {

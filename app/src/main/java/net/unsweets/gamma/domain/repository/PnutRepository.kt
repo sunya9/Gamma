@@ -18,6 +18,7 @@ import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.util.MicroTimestampAdapter
 import net.unsweets.gamma.util.await
+import net.unsweets.gamma.util.bodyOrThrow
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -56,7 +57,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
             RequestBody.create(MediaType.parse("text/plain"), fileBody.kind.name),
             RequestBody.create(MediaType.parse("text/plain"), BuildConfig.APPLICATION_ID),
             RequestBody.create(MediaType.parse("text/plain"), "true")
-        ).execute().body()!!
+        ).execute().bodyOrThrow()
     }
 
     override suspend fun getThread(
@@ -67,19 +68,19 @@ class PnutRepository(private val context: Context) : IPnutRepository {
     }
 
     override fun createRepostSync(postId: String): PnutResponse<Post> {
-        return defaultPnutService.createRepost(postId).execute().body()!!
+        return defaultPnutService.createRepost(postId).execute().bodyOrThrow()
     }
 
     override fun deleteRepostSync(postId: String): PnutResponse<Post> {
-        return defaultPnutService.deleteRepost(postId).execute().body()!!
+        return defaultPnutService.deleteRepost(postId).execute().bodyOrThrow()
     }
 
     override fun createStarPostSync(postId: String): PnutResponse<Post> {
-        return defaultPnutService.createStar(postId).execute().body()!!
+        return defaultPnutService.createStar(postId).execute().bodyOrThrow()
     }
 
     override fun deleteStarPostSync(postId: String): PnutResponse<Post> {
-        return defaultPnutService.deleteStar(postId).execute().body()!!
+        return defaultPnutService.deleteStar(postId).execute().bodyOrThrow()
     }
 
     override suspend fun getToken(): PnutResponse<Token> {
@@ -167,7 +168,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
     }
 
     override fun createPostSync(postBody: PostBody, token: String): PnutResponse<Post> {
-        return createPnutService(token).createPost(postBody).execute().body()!!
+        return createPnutService(token).createPost(postBody).execute().bodyOrThrow()
     }
 
     override suspend fun updatePost(postId: String, postBody: PostBody): PnutResponse<Post> {
@@ -175,7 +176,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
     }
 
     override fun deletePost(postId: String): PnutResponse<Post> {
-        return defaultPnutService.deletePost(postId).execute().body()!!
+        return defaultPnutService.deletePost(postId).execute().bodyOrThrow()
     }
 
     override suspend fun getUserProfile(userId: String): PnutResponse<User> {

@@ -32,6 +32,7 @@ import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.ComputedLiveData
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
 import net.unsweets.gamma.presentation.util.Util
+import net.unsweets.gamma.util.ErrorCollections
 import net.unsweets.gamma.util.SingleLiveEvent
 import net.unsweets.gamma.util.showAsError
 import javax.inject.Inject
@@ -121,9 +122,12 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
         }
     }
 
-    private fun showErrorSnackBar(t: Throwable?) {
-        val errorMessage = getString(R.string.error_template, t?.message.orEmpty())
-        Snackbar.make(view!!, errorMessage, Snackbar.LENGTH_SHORT).showAsError()
+    private fun showErrorSnackBar(t: Throwable) {
+        val message: String = when (t) {
+            is ErrorCollections.CommunicationError -> t.getMessage(context)
+            else -> t.localizedMessage
+        }
+        Snackbar.make(view!!, message, Snackbar.LENGTH_LONG).showAsError()
     }
 
     private enum class IntentKey { User }
@@ -182,7 +186,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
         ThemeColorUtil.applyTheme(this)
         viewModel.saving.observe(this, savingObserver)
         viewModel.event.observe(this, eventObserver)
@@ -314,7 +318,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
         }
 
         data class Saved(val user: User) : Event()
-        data class Failed(val t: Throwable?) : Event()
+        data class Failed(val t: Throwable) : Event()
     }
 
     sealed class ImageState {
@@ -422,19 +426,15 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                 val avatarRes = avatarTask.await()
                 val coverRes = coverTask.await()
                 val profileRes = profileTask.await()
-
                 val eventVal = if (avatarRes.isFailure || coverRes.isFailure || profileRes.isFailure) {
                     val t = avatarRes.exceptionOrNull() ?: coverRes.exceptionOrNull() ?: profileRes.exceptionOrNull()
-                    Event.Failed(t)
+                    t?.let { Event.Failed(it) }
                 } else {
                     profileRes.getOrNull()?.let { Event.Saved(it.user) }
                 }
-                event.emit(eventVal)
-                loading.value = false
-
+                eventVal?.let { event.emit(it) }
+                loading.postValue(false)
             }
-
-
         }
 
         fun showDialogToChangeAvatar() {

@@ -12,6 +12,7 @@ import net.unsweets.gamma.domain.entity.PostBodyOuter
 import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.model.io.*
 import net.unsweets.gamma.domain.usecases.*
+import net.unsweets.gamma.util.ErrorIntent
 import javax.inject.Inject
 
 private const val actionPrefix = "${BuildConfig.APPLICATION_ID}.service.PostService"
@@ -57,11 +58,14 @@ class PostService : IntentService("PostService") {
         intent?.let { handleIntent(it) } ?: return
     }
 
-    private fun handleIntent(intent: Intent) {
-        val resultIntent = Intent().also {
+    private fun createResultIntent(intent: Intent): Intent {
+        return Intent().also {
             it.action = intent.action
         }
-        when (intent.action) {
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val resultIntent: Result<Intent> = when (intent.action) {
             Actions.SendPost.getActionName() -> {
                 val postBodyOuter = intent.getParcelableExtra<PostBodyOuter>(IntentKey.PostBody.name) ?: return
                 val raw = mutableListOf<PostRaw<*>>().apply { addAll(postBodyOuter.postBody.raw) }
@@ -74,35 +78,59 @@ class PostService : IntentService("PostService") {
                     }
                 raw.addAll(replacementFileRawList)
                 val modifiedPostBody = postBodyOuter.postBody.copy(raw = raw)
-                val postOutputData = postUseCase.run(PostInputData(modifiedPostBody, postBodyOuter.accountId))
-                resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
+                runCatching {
+                    val postOutputData =
+                        postUseCase.run(PostInputData(modifiedPostBody, postBodyOuter.accountId))
+                    createResultIntent(intent).putExtra(
+                        ResultIntentKey.Post.name,
+                        postOutputData.res.data
+                    )
+                }
             }
             Actions.Star.getActionName() -> {
                 val postId = intent.getStringExtra(IntentKey.PostId.name) ?: return
                 val newState = intent.getBooleanExtra(IntentKey.NewState.name, true)
-                val postOutputData = starUseCase.run(StarInputData(postId, newState))
-                resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
+                runCatching {
+                    val postOutputData = starUseCase.run(StarInputData(postId, newState))
+                    createResultIntent(intent).putExtra(
+                        ResultIntentKey.Post.name,
+                        postOutputData.res.data
+                    )
+                }
             }
             Actions.Repost.getActionName() -> {
                 val postId = intent.getStringExtra(IntentKey.PostId.name) ?: return
                 val newState = intent.getBooleanExtra(IntentKey.NewState.name, true)
-                val postOutputData = repostUseCase.run(
-                    RepostInputData(
-                        postId,
-                        newState
+                runCatching {
+                    val postOutputData = repostUseCase.run(
+                        RepostInputData(
+                            postId,
+                            newState
+                        )
                     )
-                )
-                resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
+                    createResultIntent(intent).putExtra(
+                        ResultIntentKey.Post.name,
+                        postOutputData.res.data
+                    )
+                }
             }
             Actions.DeletePost.getActionName() -> {
                 val postId = intent.getStringExtra(IntentKey.PostId.name) ?: return
-                val postOutputData = deletePostUseCase.run(DeletePostInputData(postId))
-                resultIntent.putExtra(ResultIntentKey.Post.name, postOutputData.res.data)
+                runCatching {
+                    val postOutputData = deletePostUseCase.run(DeletePostInputData(postId))
+                    createResultIntent(intent).putExtra(
+                        ResultIntentKey.Post.name,
+                        postOutputData.res.data
+                    )
+                }
             }
             else -> return
         }
-        LocalBroadcastManager.getInstance(baseContext).sendBroadcast(resultIntent)
+        val responseIntent =
+            resultIntent.getOrDefault(ErrorIntent.createErrorIntent(resultIntent.exceptionOrNull()))
+        LocalBroadcastManager.getInstance(baseContext).sendBroadcast(responseIntent)
     }
+
 
     companion object {
         @JvmStatic

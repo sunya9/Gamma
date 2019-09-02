@@ -37,26 +37,35 @@ fun Snackbar.oneline(): Snackbar {
     return this
 }
 
-suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> = suspendCancellableCoroutine { cont ->
-    enqueue(object : Callback<PnutResponse<T>> {
-        override fun onFailure(call: Call<PnutResponse<T>>, t: Throwable) {
-            if (!cont.isCancelled) {
-                cont.resumeWithException(t)
+suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> =
+    suspendCancellableCoroutine { cont ->
+        enqueue(object : Callback<PnutResponse<T>> {
+            override fun onFailure(call: Call<PnutResponse<T>>, t: Throwable) {
+                if (!cont.isCancelled) {
+                    cont.resumeWithException(t)
+                }
             }
+
+            override fun onResponse(
+                call: Call<PnutResponse<T>>,
+                response: Response<PnutResponse<T>>
+            ) {
+                response.body()?.let { cont.resume(it) }
+                    ?: response.errorBody()?.let {
+                        cont.cancel(
+                            ErrorCollections.CommunicationError.create(
+                                it.string()
+                            )
+                        )
+                    }
+
+            }
+        })
+
+        cont.invokeOnCancellation {
+            cancel()
         }
-
-        override fun onResponse(call: Call<PnutResponse<T>>, response: Response<PnutResponse<T>>) {
-            LogUtil.e(response.toString())
-            response.body()?.let { cont.resume(it) }
-                ?: response.errorBody()?.let { cont.cancel(Throwable(it.string())) }
-
-        }
-    })
-
-    cont.invokeOnCancellation {
-        cancel()
     }
-}
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
 
@@ -72,4 +81,17 @@ fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observ
 fun Date.toFormatString(context: Context?): String {
     val dateFormatTemplate = context?.getString(R.string.file_date_format_template)
     return DateFormat.format(dateFormatTemplate, this).toString()
+}
+
+fun <T> Response<T>.bodyOrThrow(): T {
+    val res = this
+    val body = res.body()
+    val errorBody = res.errorBody()
+    if (body != null) return body
+    if (errorBody != null) {
+        val json = errorBody.string()
+        LogUtil.e(json)
+        throw ErrorCollections.CommunicationError.create(json)
+    }
+    throw Constants.unknownErrorException
 }
