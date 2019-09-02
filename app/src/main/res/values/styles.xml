@@ -201,19 +201,18 @@
 
     <style name="AppTheme.SplashTheme" parent="BaseSplashTheme" />
 
-    <style name="AppTheme.Share">
+    <style name="BaseShareTHeme" parent="AppTheme">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementsUseOverlay">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <!--        <item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
-        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="AppTheme.Share" parent="BaseShareTHeme" />
 
     <style name="expandTitleTextAppearance" parent="TextAppearance">
         <item name="android:textColor">@android:color/white</item>

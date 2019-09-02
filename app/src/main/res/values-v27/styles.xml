@@ -19,6 +19,12 @@
         <item name="android:navigationBarDividerColor">@color/navigationBarDivider</item>
     </style>
 
+    <style name="AppTheme.Share" parent="BaseShareTHeme">
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@color/colorGray</item>
+        <item name="android:navigationBarDividerColor">@color/colorGray</item>
+    </style>
+
     <style name="AppTheme.SplashTheme" parent="BaseSplashTheme">
         <item name="android:navigationBarColor">@color/colorGray</item>
         <item name="android:navigationBarDividerColor">@color/colorGray</item>
