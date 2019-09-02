@@ -2,9 +2,11 @@ package net.unsweets.gamma.domain.entity
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Token (
     val app: Client,
     val scopes: List<Scope>,
@@ -26,6 +28,7 @@ data class Token (
     }
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class Storage(val available: Long, val total: Long) : Parcelable
 }
 

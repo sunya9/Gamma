@@ -13,7 +13,6 @@ import javax.inject.Singleton
     ]
 )
 class AppModule(private val application: Application) {
-    //    private val database = Room.databaseBuilder(application, Database::class.java, "gamma.db").build()
     private val accountRepository = AccountRepository(application)
     private val pnutRepository = PnutRepository(application)
     private val preferenceRepository = PreferenceRepository(application)
@@ -28,6 +27,10 @@ class AppModule(private val application: Application) {
     @Provides
     @Singleton
     fun providePnutRepository(): IPnutRepository = pnutRepository
+
+    @Provides
+    fun providePnutCacheRepository(): IPnutCacheRepository =
+        PnutCacheRepository(accountRepository.getDefaultAccount()?.id, application)
 
     @Provides
     @Singleton

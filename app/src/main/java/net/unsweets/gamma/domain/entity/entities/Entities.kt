@@ -2,9 +2,11 @@ package net.unsweets.gamma.domain.entity.entities
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Entities(
     val links: List<SealedEntity.LinkEntities>,
     val mentions: List<SealedEntity.MentionEntities>,
@@ -12,6 +14,7 @@ data class Entities(
 ) : Parcelable {
     sealed class SealedEntity : BaseEntities, Parcelable {
         @Parcelize
+        @JsonClass(generateAdapter = true)
         data class LinkEntities(
             override val text: String,
             override val len: Int,
@@ -22,6 +25,7 @@ data class Entities(
         ) : SealedEntity()
 
         @Parcelize
+        @JsonClass(generateAdapter = true)
         data class MentionEntities(
             override val text: String,
             override val len: Int,
@@ -32,6 +36,7 @@ data class Entities(
         ) : SealedEntity()
 
         @Parcelize
+        @JsonClass(generateAdapter = true)
         data class TagEntities(
             override val len: Int,
             override val pos: Int,

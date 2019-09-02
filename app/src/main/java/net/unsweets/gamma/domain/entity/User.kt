@@ -2,6 +2,7 @@ package net.unsweets.gamma.domain.entity
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.domain.entity.entities.Entities
@@ -11,6 +12,7 @@ import net.unsweets.gamma.domain.entity.image.Cover
 import java.util.*
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class User(
     val badge: Badge?,
     val content: UserContent,
@@ -34,6 +36,7 @@ data class User(
     override val uniqueKey: String by lazy { id }
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class UserContent(
         @Json(name = "avatar_image") val avatarImage: Avatar,
         @Json(name = "cover_image") val coverImage: Cover,
@@ -44,6 +47,7 @@ data class User(
     ) : HaveEntities, Parcelable
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class UserCount(
         val bookmarks: Int,
         val clients: Int,
@@ -54,12 +58,14 @@ data class User(
     ) : Parcelable
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class Badge(
         val id: String,
         val name: String
     ) : Parcelable
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class VerifiedDomain(
         val domain: String,
         val link: String

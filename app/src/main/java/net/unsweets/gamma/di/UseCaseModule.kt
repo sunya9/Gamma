@@ -3,6 +3,7 @@ package net.unsweets.gamma.di
 import dagger.Module
 import dagger.Provides
 import net.unsweets.gamma.domain.repository.IAccountRepository
+import net.unsweets.gamma.domain.repository.IPnutCacheRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.usecases.*
@@ -31,8 +32,10 @@ class UseCaseModule {
 
     @Provides
     fun provideGetAuthenticatedUserUseCase(
-        pnutRepository: IPnutRepository
-    ): GetAuthenticatedUserUseCase = GetAuthenticatedUserUseCase(pnutRepository)
+        pnutRepository: IPnutRepository,
+        pnutCacheRepository: IPnutCacheRepository
+    ): GetAuthenticatedUserUseCase =
+        GetAuthenticatedUserUseCase(pnutRepository, pnutCacheRepository)
 
     @Provides
     fun provideGetFilesUseCase(

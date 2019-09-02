@@ -1,15 +1,21 @@
 package net.unsweets.gamma.domain.usecases
 
-import net.unsweets.gamma.domain.model.io.GetAuthenticatedUserOutputData
+import net.unsweets.gamma.domain.model.io.GetAuthenticatedUserInputData
+import net.unsweets.gamma.domain.repository.IPnutCacheRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
 class GetAuthenticatedUserUseCase(
-    val pnutRepository: IPnutRepository
-) : AsyncUseCase<GetAuthenticatedUserOutputData, Unit>() {
-    override suspend fun run(params: Unit): GetAuthenticatedUserOutputData {
+    private val pnutRepository: IPnutRepository,
+    private val pnutCacheRepository: IPnutCacheRepository
+) : AsyncUseCase<Unit, GetAuthenticatedUserInputData>() {
+
+    override suspend fun run(params: GetAuthenticatedUserInputData) {
+        pnutCacheRepository.getToken()?.let {
+            params.liveData.postValue(it)
+        }
         val tokenRes = pnutRepository.getToken()
-        val token = tokenRes.data
-        return GetAuthenticatedUserOutputData(token)
+        pnutCacheRepository.storeToken(tokenRes.data)
+        params.liveData.postValue(tokenRes.data)
     }
 
 }
