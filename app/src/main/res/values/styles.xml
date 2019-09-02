@@ -46,6 +46,13 @@
         <item name="android:activityCloseEnterAnimation">@anim/slide_in_right</item>
     </style>
 
+    <style name="SplashWindowAnimationStyle" parent="android:Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@android:anim/fade_out</item>
+        <item name="android:activityCloseExitAnimation">@android:anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@android:anim/fade_in</item>
+    </style>
+
     <style name="AppTheme" parent="BaseTheme" />
 
     <style name="AppTheme.WithToolbar">
@@ -128,6 +135,7 @@
         <item name="android:windowBackground">@drawable/bg_splash</item>
         <item name="android:statusBarColor">@color/colorGray</item>
         <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowAnimationStyle">@style/SplashWindowAnimationStyle</item>
     </style>
 
     <style name="AppTheme.SplashTheme" parent="BaseSplashTheme" />
