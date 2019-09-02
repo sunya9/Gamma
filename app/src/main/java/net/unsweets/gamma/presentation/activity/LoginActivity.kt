@@ -22,6 +22,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private val errorMessage: String? by lazy {
+        intent.getStringExtra(IntentKey.Error.name)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -31,11 +35,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showSnackBarWhenRaisedError() {
-        val errorMessage = intent.getStringExtra(IntentKey.Error.name)
-        if (errorMessage.isNullOrEmpty()) return
-        Snackbar
-            .make(findViewById<View>(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG)
-            .showAsError()
+        errorMessage?.let {
+            Snackbar
+                .make(findViewById<View>(android.R.id.content), it, Snackbar.LENGTH_LONG)
+                .showAsError()
+        }
     }
 
 

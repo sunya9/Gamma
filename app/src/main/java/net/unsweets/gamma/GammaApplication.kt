@@ -31,7 +31,7 @@ class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
         val config = BundledEmojiCompatConfig(this)
             .setReplaceAll(true)
         EmojiCompat.init(config)
-        if (!setToken()) return backToLoginActivity() // failed
+//        if (!setToken()) return backToLoginActivity() // failed
     }
 
     enum class DarkMode(val value: Int) {
