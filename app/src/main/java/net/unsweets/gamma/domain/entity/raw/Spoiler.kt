@@ -12,7 +12,7 @@ import java.util.*
 data class Spoiler(override val value: SpoilerValue) : Raw<Spoiler.SpoilerValue>, PostRaw<Spoiler.SpoilerValue>,
     Parcelable {
     @IgnoredOnParcel
-    override val type: String = "shawn.spoiler"
+    override val type: String = Spoiler.type
 
     @Parcelize
     data class SpoilerValue(val topic: String, @Json(name = "expired_at") val expiredAt: Date?) : Raw.RawValue,
@@ -20,5 +20,6 @@ data class Spoiler(override val value: SpoilerValue) : Raw<Spoiler.SpoilerValue>
 
     companion object {
         fun getSpoilerRaw(rawList: List<Raw<*>>): Spoiler? = rawList.find { it is Spoiler } as? Spoiler
+        const val type = "shawn.spoiler"
     }
 }

@@ -5,6 +5,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import net.unsweets.gamma.domain.entity.raw.OEmbed
 import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.entity.raw.Raw
 
@@ -13,7 +14,7 @@ import net.unsweets.gamma.domain.entity.raw.Raw
 @Parcelize
 open class PostOEmbed(override val value: OEmbedRawValue) : PostRaw<Raw.RawValue>, Parcelable {
     @IgnoredOnParcel
-    override val type: String = "io.pnut.core.oembed"
+    override val type: String = OEmbed.type
 
     @Parcelize
     @JsonClass(generateAdapter = true)

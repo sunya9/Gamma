@@ -11,9 +11,10 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 open class OEmbed(override val value: OEmbedRawValue) : Raw<Raw.RawValue>, Parcelable {
     @IgnoredOnParcel
-    override val type: String = "io.pnut.core.oembed"
+    override val type: String = OEmbed.type
 
     companion object {
+        const val type = "io.pnut.core.oembed"
         fun isOEmbed(raw: Raw<*>) = raw is OEmbed
     }
 
@@ -51,7 +52,11 @@ open class OEmbed(override val value: OEmbedRawValue) : Raw<Raw.RawValue>, Parce
             @Json(name = "thumbnail_url") val thumbnailUrl: String?,
             @Json(name = "thumbnail_height") val thumbnailHeight: String?,
             @Json(name = "thumbnail_width") val thumbnailWidth: String?
-        ) : OEmbedRawValue("photo", version), Parcelable
+        ) : OEmbedRawValue(type, version), Parcelable {
+            companion object {
+                const val type = "photo"
+            }
+        }
 
         companion object {
             fun isPhoto(raw: Raw<*>) = raw.value is PhotoValue
@@ -72,7 +77,11 @@ open class OEmbed(override val value: OEmbedRawValue) : Raw<Raw.RawValue>, Parce
         @JsonClass(generateAdapter = true)
         data class VideoValue(
             override val version: String
-        ) : OEmbedRawValue("video", version), Parcelable
+        ) : OEmbedRawValue(type, version), Parcelable {
+            companion object {
+                const val type = "video"
+            }
+        }
 
         companion object {
             fun isVideo(raw: Raw<*>) = raw.value is VideoValue

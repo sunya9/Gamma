@@ -9,7 +9,7 @@ import net.unsweets.gamma.util.MicroTimestamp
 data class LongPost(override val value: LongPostValue) : Raw<LongPost.LongPostValue>, PostRaw<LongPost.LongPostValue>,
     Parcelable {
     @IgnoredOnParcel
-    override val type: String = "nl.chimpnut.blog.post"
+    override val type: String = LongPost.type
 
     @Parcelize
     data class LongPostValue(
@@ -20,5 +20,6 @@ data class LongPost(override val value: LongPostValue) : Raw<LongPost.LongPostVa
 
     companion object {
         fun findLongPost(raw: List<Raw<*>>?): LongPost? = raw?.find { it is LongPost } as? LongPost
+        const val type = "nl.chimpnut.blog.post"
     }
 }

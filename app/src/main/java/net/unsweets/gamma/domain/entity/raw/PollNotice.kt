@@ -11,7 +11,7 @@ import net.unsweets.gamma.domain.entity.Poll
 @JsonClass(generateAdapter = true)
 data class PollNotice(override val value: PollValue) : Raw<PollNotice.PollValue>, Parcelable {
     @IgnoredOnParcel
-    override val type: String = "io.pnut.core.poll-notice"
+    override val type: String = PollNotice.type
 
     @Parcelize
     data class PollValue(
@@ -21,4 +21,8 @@ data class PollNotice(override val value: PollValue) : Raw<PollNotice.PollValue>
         @Json(name = "poll_id") val pollId: String,
         val options: List<Poll.PollOption>
     ) : Raw.RawValue, Parcelable
+
+    companion object {
+        const val type = "io.pnut.core.poll-notice"
+    }
 }
