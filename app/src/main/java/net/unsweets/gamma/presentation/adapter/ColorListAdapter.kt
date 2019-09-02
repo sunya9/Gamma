@@ -12,7 +12,8 @@ import net.unsweets.gamma.presentation.util.ThemeColorUtil
 
 class ColorListAdapter(private val listener: Callback, currentColor: ThemeColorUtil.ThemeColor?) :
     RecyclerView.Adapter<ColorListAdapter.ColorListViewHolder>() {
-    private val additionalThemes = ThemeColorUtil.ThemeColor.values()
+    private val additionalThemes =
+        ThemeColorUtil.ThemeColor.values().filterNot { it == ThemeColorUtil.ThemeColor.Default }
     private var chooseColor: ThemeColorUtil.ThemeColor? = null
     private var prevPosition = additionalThemes.indexOf(currentColor)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorListViewHolder {

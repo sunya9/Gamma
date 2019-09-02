@@ -9,6 +9,7 @@ import net.unsweets.gamma.R
 
 object ThemeColorUtil {
     enum class ThemeColor(val themeResource: Int) {
+        Default(R.style.AdditionalStyle_Default),
         Red(R.style.AdditionalStyle_Red),
         Pink(R.style.AdditionalStyle_Pink),
         Purple(R.style.AdditionalStyle_Purple),
@@ -39,12 +40,12 @@ object ThemeColorUtil {
         }
 
         companion object {
-            fun fromString(text: String?): ThemeColor? {
-                if (text == null) return null
+            fun fromString(text: String?): ThemeColor {
+                if (text == null) return Default
                 return try {
                     valueOf(text)
                 } catch (e: Exception) {
-                    null
+                    Default
                 }
             }
         }
@@ -56,8 +57,8 @@ object ThemeColorUtil {
         return pref.getString(context.getString(R.string.pref_dark_theme_key), "0") ?: "0"
     }
 
-    fun getThemeColor(context: Context?): ThemeColor? {
-        if (context == null) return null
+    fun getThemeColor(context: Context?): ThemeColor {
+        if (context == null) return ThemeColor.Default
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
         val themeColorStr =
             pref.getString(context.getString(R.string.pref_change_primary_color_key), null)
@@ -66,8 +67,8 @@ object ThemeColorUtil {
         )
     }
 
-    fun applyTheme(context: Context): ThemeColor? {
-        return getThemeColor(context)?.let {
+    fun applyTheme(context: Context): ThemeColor {
+        return getThemeColor(context).let {
             context.theme.applyStyle(it.themeResource, true)
             it
         }
@@ -76,9 +77,8 @@ object ThemeColorUtil {
 
     fun applyTheme(fragment: DialogFragment) {
         val context = fragment.context ?: return
-        getThemeColor(context)
-            ?.let {
-                fragment.setStyle(DialogFragment.STYLE_NORMAL, it.themeResource)
-            }
+        getThemeColor(context).let {
+            fragment.setStyle(DialogFragment.STYLE_NORMAL, it.themeResource)
+        }
     }
 }
