@@ -7,7 +7,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
-import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import kotlinx.android.synthetic.main.footer_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
@@ -34,8 +33,6 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
         get() = (options.listLiveData.value?.size ?: 0)
 
     var recyclerView: RecyclerView? = null
-
-    private var skeleton: RecyclerViewSkeletonScreen? = null
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
