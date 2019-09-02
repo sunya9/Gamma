@@ -82,7 +82,7 @@ data class User(
     fun getAvatarUrl(avatarSize: AvatarSize? = AvatarSize.Normal) = getAvatarUrl(this, avatarSize)
 
     companion object {
-        fun getAvatarUrl(user: User, avatarSize: AvatarSize? = User.AvatarSize.Normal) = when {
+        fun getAvatarUrl(user: User, avatarSize: AvatarSize? = AvatarSize.Normal) = when {
             avatarSize != null -> "${user.content.avatarImage.link}?h=${avatarSize.size}"
             else -> user.content.avatarImage.link
         }

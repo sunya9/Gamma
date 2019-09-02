@@ -8,12 +8,13 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.roundToInt
 
 class DividerIgnoreLastItem(context: Context?, orientation: Int, private val reverse: Boolean = false) :
     DividerItemDecoration(context, orientation) {
     companion object {
-        val HORIZONTAL = LinearLayout.HORIZONTAL
-        val VERTICAL = LinearLayout.VERTICAL
+        const val HORIZONTAL = LinearLayout.HORIZONTAL
+        const val VERTICAL = LinearLayout.VERTICAL
     }
 
     private var mDivider: Drawable? = null
@@ -59,7 +60,7 @@ class DividerIgnoreLastItem(context: Context?, orientation: Int, private val rev
             // ignore last item
             if (isLastItem(parent, i)) continue
             parent.getDecoratedBoundsWithMargins(child, mBounds)
-            val bottom = mBounds.bottom + Math.round(child.translationY)
+            val bottom = mBounds.bottom + child.translationY.roundToInt()
             val top = bottom - mDivider!!.intrinsicHeight
             mDivider!!.setBounds(left, top, right, bottom)
             mDivider!!.draw(canvas)
@@ -101,7 +102,7 @@ class DividerIgnoreLastItem(context: Context?, orientation: Int, private val rev
             // ignore last item
             if (isLastItem(parent, i)) continue
             parent.layoutManager!!.getDecoratedBoundsWithMargins(child, mBounds)
-            val right = mBounds.right + Math.round(child.translationX)
+            val right = mBounds.right + child.translationX.roundToInt()
             val left = right - mDivider!!.intrinsicWidth
             mDivider!!.setBounds(left, top, right, bottom)
             mDivider!!.draw(canvas)

@@ -9,7 +9,6 @@ import net.unsweets.gamma.presentation.util.ThemeColorUtil
 abstract class BaseActivity : DaggerAppCompatActivity() {
     private lateinit var darkThemeMode: String
     private var themeColorWhenCreated: ThemeColorUtil.ThemeColor? = null
-    protected var isConfigurationChanges: Boolean = false
 
     private enum class StateKey { ConfigurationChanges }
 
@@ -18,8 +17,6 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         darkThemeMode = ThemeColorUtil.currentDarkThemeMode(this)
         themeColorWhenCreated = ThemeColorUtil.applyTheme(this)
         super.onCreate(savedInstanceState)
-        isConfigurationChanges =
-            savedInstanceState?.getBoolean(StateKey.ConfigurationChanges.name, false) ?: false
     }
 
 

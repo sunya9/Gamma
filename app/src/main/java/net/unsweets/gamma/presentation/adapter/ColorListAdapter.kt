@@ -59,10 +59,6 @@ class ColorListAdapter(private val listener: Callback, currentColor: ThemeColorU
 
     class ColorListViewHolder(itemView: View, private val listener: CallbackInternal) :
         RecyclerView.ViewHolder(itemView) {
-        init {
-//            setIsRecyclable(false)
-        }
-
         private val themeColorCheck: ImageView = itemView.themeColorCheck
         fun bindTo(
             themeColor: ThemeColorUtil.ThemeColor,

@@ -56,7 +56,10 @@ class ChangeAccountDialogFragment : DaggerDialogFragment() {
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_change_account_dialog, null, false)
+        val view = LayoutInflater.from(context).inflate(
+            R.layout.fragment_change_account_dialog,
+            view?.findViewById(android.R.id.content)
+        )
         view.accountList.adapter = AccountListAdapter(accounts, accountListListener, false)
 
         return MaterialAlertDialogBuilder(context)

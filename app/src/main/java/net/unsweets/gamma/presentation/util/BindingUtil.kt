@@ -61,15 +61,15 @@ object BindingUtil {
     @BindingAdapter("loading")
     @JvmStatic
     fun MaterialButton.setLoadingIndicator(loading: Boolean) {
-        if (loading) {
+        icon = if (loading) {
             val progress = CircularProgressDrawable(context).apply {
                 val gray = context.getColor(R.color.colorGrayLighter)
                 setColorFilter(gray, PorterDuff.Mode.SRC_IN)
                 start()
             }
-            icon = progress
+            progress
         } else {
-            icon = null
+            null
         }
     }
 

@@ -132,8 +132,6 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
                     anim.setTarget(dialog.window)
                     anim.start()
                 }
-            } else {
-//                composePostFragment.focusToEditText()
             }
         }
 
@@ -166,7 +164,6 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
                     root.visibility = View.INVISIBLE
                     dismiss()
                     return
-                } else {
                 }
                 fragment?.onAnimationEnd(open)
             }

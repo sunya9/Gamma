@@ -21,8 +21,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textAppearance">@style/TextAppearance</item>
-        <!--        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog</item>-->
-        <!--        <item name="materialAlertDialogTheme">@style/MaterialAlertDialog</item>-->
         <item name="android:fontFamily">@font/montserrat</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowSharedElementsUseOverlay">true</item>
@@ -58,16 +56,6 @@
         <!--        <item name="android:statusBarColor">@color/colorGray</item>-->
     </style>
 
-    <style name="AppTheme.Translucent">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:windowEnterTransition">@null</item>
-        <item name="android:windowExitTransition">@null</item>
-        <item name="toolbarStyle">@style/Toolbar.Child</item>
-    </style>
-
     <style name="AppTheme.PhotoView">
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -75,13 +63,6 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@color/colorPhotoViewBackground</item>
-    </style>
-
-    <style name="AppTheme.Translucent.FullScreen">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
-        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
     </style>
 
     <style name="BottomSheetAdditionalStyle">
@@ -92,52 +73,6 @@
         <item name="bottomSheetStyle">@style/Widget.Design.BottomSheet.Modal</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
-
-    <style name="BaseBottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColorPrimary">@color/textColor</item>
-        <item name="android:textColorPrimaryInverse">@color/textColor</item>
-        <item name="android:textColorSecondary">@color/colorGrayLight</item>
-        <item name="android:textColorTertiaryInverse">@android:color/white</item>
-        <item name="colorSurface">@color/colorSurface</item>
-        <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
-        <item name="extendedFloatingActionButtonStyle">@style/ExtendedFloatingActionButtonStyle
-        </item>
-        <item name="toolbarStyle">@style/Toolbar</item>
-        <item name="materialButtonStyle">@style/Button</item>
-        <item name="colorError">@color/colorError</item>
-        <item name="materialCardViewStyle">@style/CardStyle</item>
-        <item name="appBarLayoutStyle">@style/AppBarLayoutStyle</item>
-        <item name="colorControlNormal">@color/toolbarIcon</item>
-        <item name="tabStyle">@style/TabStyle</item>
-        <item name="bottomAppBarStyle">@style/BottomAppBarStyle</item>
-        <item name="android:textAppearance">@style/TextAppearance</item>
-        <item name="materialAlertDialogTheme">@style/MaterialAlertDialog</item>
-        <item name="android:fontFamily">@font/montserrat</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowSharedElementsUseOverlay">true</item>
-        <item name="android:fragmentSharedElementEnterTransition">
-            @transition/image_shared_element_transition
-        </item>
-        <item name="android:fragmentSharedElementReturnTransition">
-            @transition/image_shared_element_transition
-        </item>
-        <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle</item>
-        <item name="textInputStyle">@style/TextInputStyle</item>
-        <!--        <item name="android:backgroundDimEnabled">false</item>-->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <!--widget style-->
-        <item name="checkboxStyle">@style/CheckBoxStyle</item>
-        <item name="radioButtonStyle">@style/RadioButtonStyle</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:colorBackground">@color/colorWindowBackground</item>
-    </style>
-
-    <style name="BottomSheetDialog" parent="BaseBottomSheetDialog" />
 
     <style name="FloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="backgroundTint">?colorPrimary</item>
@@ -157,10 +92,6 @@
     <style name="Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:elevation">4dp</item>
         <item name="android:background">@color/toolbarBg</item>
-    </style>
-
-    <style name="Toolbar.Child">
-        <item name="android:displayOptions">homeAsUp</item>
     </style>
 
     <style name="Toolbar.Up">
@@ -214,21 +145,9 @@
 
     <style name="AppTheme.Share" parent="BaseShareTHeme" />
 
-    <style name="expandTitleTextAppearance" parent="TextAppearance">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">20sp</item>
-    </style>
-
     <style name="BorderlessButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:clipToPadding">false</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
-    </style>
-
-    <style name="BorderlessButton.ComposeBottomIcon">
-        <item name="android:inset">0dp</item>
-        <item name="android:padding">0dp</item>
-        <item name="android:layout_width">48dp</item>
-        <item name="android:layout_marginStart">8dp</item>
     </style>
 
     <style name="CardStyle" parent="Widget.MaterialComponents.CardView">

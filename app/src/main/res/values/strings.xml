@@ -2,7 +2,6 @@
     <string name="app_name">Gamma</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
     <string name="home">Home</string>
     <string name="interactions">Interactions</string>
     <string name="mentions">Mentions</string>
@@ -46,7 +45,6 @@
         <item quantity="one">%d user</item>
         <item quantity="other">%d users</item>
     </plurals>
-    <string name="title_activity_settings">Settings</string>
     <string name="name">Name</string>
     <string name="description">Description</string>
     <string name="pref_header_account">Account</string>
@@ -61,9 +59,6 @@
     <string name="action_reposted_by">Reposted</string>
     <string name="icon_transition">icon_transition</string>
     <string name="fab_transition">fab_transition</string>
-    <string name="title_activity_photo_view">PhotoViewActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="remove_photo">Remove a photo</string>
     <string name="explore">Explore</string>
     <string name="profile_transition">profile_transition</string>
@@ -97,7 +92,6 @@
     <string name="poll">Poll</string>
     <string name="spoiler">Spoiler</string>
     <string name="long_post">Long post</string>
-    <string name="nsfw">NSFW</string>
     <string name="this_post_has_deleted">This post has deleted.</string>
     <string name="deleted_post_user_name">deleted post</string>
     <string name="posted">Posted: %s</string>
@@ -120,7 +114,6 @@
     <string name="closed_poll">Closed poll: %s</string>
     <string name="thread">Thread</string>
     <string name="set_as_nsfw">Set as NSFW</string>
-    <string name="use_this_account_currently">Use this account currently</string>
     <string name="add_an_account">Add an account</string>
     <string name="pref_account_header_title_key">pref_account_header_title_key</string>
     <string name="edit_image">Edit image</string>
@@ -136,9 +129,7 @@
     <string name="discard_changes">Discard changes?</string>
     <string name="discard">Discard</string>
     <string name="choose_a_image">Choose a image</string>
-    <string name="delete_the_image">Delete the image</string>
     <string name="undo">Undo</string>
-    <string name="error_template">error: %s</string>
     <string name="keyword_search">Keyword search</string>
     <string name="clear_text">Clear text</string>
     <string name="more">more</string>

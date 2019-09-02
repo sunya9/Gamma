@@ -45,6 +45,7 @@ import net.unsweets.gamma.util.SingleLiveEvent
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.set
+import kotlin.math.abs
 
 class ProfileFragment : BaseFragment() {
     private enum class BundleKey {
@@ -206,7 +207,7 @@ class ProfileFragment : BaseFragment() {
 
     private fun toolbarSetup(appBarLayout: AppBarLayout, swipeRefreshLayout: SwipeRefreshLayout) {
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBar: AppBarLayout, offset: Int ->
-            val per = Math.abs(offset).toFloat() / appBar.totalScrollRange.toFloat() * 255
+            val per = abs(offset).toFloat() / appBar.totalScrollRange.toFloat() * 255
             val textColor = viewModel.toolbarTextColor.value ?: return@OnOffsetChangedListener
             val bgColor = viewModel.toolbarBgColor.value ?: return@OnOffsetChangedListener
             swipeRefreshLayout.isEnabled = per == 0f

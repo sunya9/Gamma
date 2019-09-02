@@ -47,7 +47,11 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         val file = java.io.File(uri.path)
         val mimeType = URLConnection.guessContentTypeFromName(file.path)
         val content = RequestBody.create(MediaType.parse(mimeType), file)
-        return MultipartBody.Part.createFormData(key.name.toLowerCase(), file.name, content)
+        return MultipartBody.Part.createFormData(
+            key.name.toLowerCase(Locale.ENGLISH),
+            file.name,
+            content
+        )
     }
 
     override fun createFile(content: RequestBody, fileBody: FileBody): PnutResponse<File> {

@@ -5,6 +5,9 @@ import android.graphics.Path
 import android.transition.PathMotion
 import android.util.AttributeSet
 import net.unsweets.gamma.R
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 class TransitionArcMotion(context: Context, attrs: AttributeSet) : PathMotion(context, attrs) {
@@ -24,11 +27,11 @@ class TransitionArcMotion(context: Context, attrs: AttributeSet) : PathMotion(co
         val xDiff = midX - startX
         val yDiff = midY - startY
 
-        val angle = Math.atan2(yDiff.toDouble(), xDiff.toDouble()) * (180 / Math.PI) - 90
+        val angle = atan2(yDiff.toDouble(), xDiff.toDouble()) * (180 / Math.PI) - 90
         val angleRadians = Math.toRadians(angle)
 
-        val pointX = (midX + curveRadius * Math.cos(angleRadians)).toFloat()
-        val pointY = (midY + curveRadius * Math.sin(angleRadians)).toFloat()
+        val pointX = (midX + curveRadius * cos(angleRadians)).toFloat()
+        val pointY = (midY + curveRadius * sin(angleRadians)).toFloat()
 
         arcPath.moveTo(startX, startY)
         arcPath.cubicTo(startX, startY, pointX, pointY, endX, endY)

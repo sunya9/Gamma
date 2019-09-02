@@ -63,7 +63,10 @@ class ChoosePrimaryColorDialogFragment : DialogFragment(), DialogInterface.OnCli
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = LayoutInflater.from(context)
-            .inflate(R.layout.fragment_choose_primary_color_dialog, null)
+            .inflate(
+                R.layout.fragment_choose_primary_color_dialog,
+                view?.findViewById(android.R.id.content)
+            )
         view.colorList.adapter = ColorListAdapter(this, themeColor)
         view.colorList.setHasFixedSize(true)
         return MaterialAlertDialogBuilder(context)

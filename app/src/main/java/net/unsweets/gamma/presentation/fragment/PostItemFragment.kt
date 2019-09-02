@@ -192,7 +192,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt(StateKey.CurrentPosition.name, -1)
-            selectedPost = savedInstanceState.getParcelable<Post>(StateKey.SelectedPost.name)
+            selectedPost = savedInstanceState.getParcelable(StateKey.SelectedPost.name)
         }
 
     }
@@ -227,7 +227,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         return if (reverse) position - -1 else position
     }
 
-    var selectedPost: Post? = null
+    private var selectedPost: Post? = null
 
     private fun showMoreMenu(post: Post) {
         selectedPost = post

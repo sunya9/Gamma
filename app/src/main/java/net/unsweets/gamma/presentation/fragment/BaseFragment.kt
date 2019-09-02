@@ -6,15 +6,7 @@ import dagger.android.support.DaggerFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper
 
 abstract class BaseFragment : DaggerFragment() {
-    protected var isConfigurationChanges: Boolean = false
-
     private enum class StateKey { ConfigurationChanges }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        isConfigurationChanges = savedInstanceState?.getBoolean(StateKey.ConfigurationChanges.name, false) ?: false
-
-    }
 
     protected fun backToPrevFragment() {
         val fm = fragmentManager ?: return

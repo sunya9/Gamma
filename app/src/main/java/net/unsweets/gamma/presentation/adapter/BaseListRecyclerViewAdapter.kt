@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.footer_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Unique
+import java.util.*
 
 class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
     private val options: BaseListRecyclerViewAdapterOptions<T, V>
@@ -120,7 +121,8 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
                         viewHolder.loadingIndicatorProgressBar.visibility = View.GONE
                         viewHolder.noItemsMessageTextView.visibility = View.VISIBLE
                         val context = holder.itemView.context
-                        val itemName = context.getString(options.listener.itemNameRes).toLowerCase()
+                        val itemName = context.getString(options.listener.itemNameRes)
+                            .toLowerCase(Locale.ENGLISH)
                         viewHolder.noItemsMessageTextView.text =
                             context.getString(R.string.no_items_template, itemName)
                     }
