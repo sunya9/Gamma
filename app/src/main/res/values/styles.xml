@@ -266,7 +266,7 @@
     </style>
 
     <style name="TabStyle" parent="Widget.MaterialComponents.TabLayout">
-        <item name="android:background">?android:attr/windowBackground</item>
+        <item name="android:background">@color/toolbarBg</item>
         <item name="tabIndicator">@drawable/shape_tab_indicator</item>
     </style>
 
