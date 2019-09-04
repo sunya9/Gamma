@@ -1,7 +1,9 @@
 package net.unsweets.gamma.util
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import net.unsweets.gamma.BuildConfig
 
 object ErrorIntent {
@@ -21,4 +23,10 @@ object ErrorIntent {
     fun getIntentFilter() = IntentFilter().also {
         it.addAction(action)
     }
+
+    fun broadcast(context: Context, t: Throwable) {
+        val errorIntent = createErrorIntent(t)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(errorIntent)
+    }
+
 }

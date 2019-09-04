@@ -24,6 +24,7 @@ import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.InfiniteScrollListener
 import net.unsweets.gamma.presentation.util.SmoothScroller
 import net.unsweets.gamma.presentation.view.DividerIgnoreLastItem
+import net.unsweets.gamma.util.ErrorIntent
 import net.unsweets.gamma.util.LogUtil
 import net.unsweets.gamma.util.SingleLiveEvent
 
@@ -37,7 +38,12 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
         @Suppress("UNCHECKED_CAST")
         when (it) {
             is ListEvent.ReceiveNewItems<*> -> receiveNewItems(it.items as List<T>, it.insertPosition)
+            is ListEvent.Failure -> failure(it.t)
         }
+    }
+
+    private fun failure(t: Throwable) {
+        ErrorIntent.broadcast(context ?: return, t)
     }
 
     @DrawableRes
@@ -194,7 +200,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
                     listEvent.value = ListEvent.ReceiveNewItems(it.data, insertPosition)
                 }.onFailure {
                     LogUtil.e(it.message ?: "no message")
-                    listEvent.value = ListEvent.Failure(it)
+                    listEvent.postValue(ListEvent.Failure(it))
                     lastPagination = null
                 }
             }
