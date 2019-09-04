@@ -5,4 +5,6 @@ object Constants {
     const val MaxPostTextLength = 256
     const val unknownError = "Unknown error"
     val unknownErrorException = Exception(unknownError)
+    const val apiBaseUrl = "https://api.pnut.io/v0/"
+
 }

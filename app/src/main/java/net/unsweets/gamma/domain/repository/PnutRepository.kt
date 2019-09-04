@@ -16,6 +16,7 @@ import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import net.unsweets.gamma.util.Constants
 import net.unsweets.gamma.util.MicroTimestampAdapter
 import net.unsweets.gamma.util.await
 import net.unsweets.gamma.util.bodyOrThrow
@@ -241,7 +242,6 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         return defaultPnutService.getFiles(getFilesParam.toMap()).await()
     }
 
-    private val apiBaseUrl = "https://api.pnut.io/v0/"
     private val cacheSize: Long = 1024 * 1024 * 10
 
 
@@ -264,7 +264,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
         val cache = Cache(context.cacheDir, cacheSize)
         client.cache(cache)
         return Retrofit.Builder()
-            .baseUrl(apiBaseUrl)
+            .baseUrl(Constants.apiBaseUrl)
             .client(client.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
