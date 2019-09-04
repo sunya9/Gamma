@@ -354,7 +354,7 @@ class ProfileFragment : BaseFragment() {
                 runCatching {
                     getProfileUseCase.run(GetProfileInputData(id))
                 }.onSuccess {
-                    user.value = it.res.data
+                    user.postValue(it.res.data)
                 }
                 fetchingUser.postValue(false)
             }

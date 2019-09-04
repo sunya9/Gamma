@@ -364,14 +364,14 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                     getProfileUseCase.run(GetProfileInputData("me"))
                 }.onSuccess {
                     beforeEditingProfile = it.res.data
-                    user.value = it.res.data
-                    name.value = it.res.data.name
-                    description.value = it.res.data.content.markdownText
-                    timezone.value = it.res.data.timezone
-                    locale.value = it.res.data.locale
-                    loading.value = false
+                    user.postValue(it.res.data)
+                    name.postValue(it.res.data.name)
+                    description.postValue(it.res.data.content.markdownText)
+                    timezone.postValue(it.res.data.timezone)
+                    locale.postValue(it.res.data.locale)
+                    loading.postValue(false)
                 }.onFailure {
-                    loading.value = false
+                    loading.postValue(false)
                 }
             }
         }

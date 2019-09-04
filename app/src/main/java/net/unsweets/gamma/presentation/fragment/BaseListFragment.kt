@@ -191,13 +191,13 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
                     LogUtil.e(insertPosition.toString())
                     when {
                         !pagination.minId.isNullOrEmpty() -> {
-                            olderDirectionMeta.value = it.meta
+                            olderDirectionMeta.postValue(it.meta)
                         }
                         !pagination.maxId.isNullOrEmpty() -> {
-                            newerDirectionMeta.value = it.meta
+                            newerDirectionMeta.postValue(it.meta)
                         }
                     }
-                    listEvent.value = ListEvent.ReceiveNewItems(it.data, insertPosition)
+                    listEvent.postValue(ListEvent.ReceiveNewItems(it.data, insertPosition))
                 }.onFailure {
                     LogUtil.e(it.message ?: "no message")
                     listEvent.postValue(ListEvent.Failure(it))

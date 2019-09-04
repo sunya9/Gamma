@@ -16,7 +16,11 @@ class MainActivityViewModel(private val getAuthenticatedUserUseCase: GetAuthenti
     }
     private fun getUserInfo() {
         viewModelScope.launch {
-            getAuthenticatedUserUseCase.run(GetAuthenticatedUserInputData(token))
+            runCatching {
+                getAuthenticatedUserUseCase.run(GetAuthenticatedUserInputData(token))
+            }.onFailure {
+                sendEvent(MainActivity.Event.Failed(it))
+            }
         }
     }
 

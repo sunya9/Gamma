@@ -220,7 +220,12 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         when (it) {
             is Event.OpenMyProfile -> openMyProfile(it.user)
             is Event.ComposePost -> openComposePostDialog()
+            is Event.Failed -> failed(it.t)
         }
+    }
+
+    private fun failed(t: Throwable) {
+        ErrorIntent.broadcast(this, t)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -399,6 +404,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     sealed class Event {
         object ComposePost : Event()
         data class OpenMyProfile(val user: User) : Event()
+        data class Failed(val t: Throwable) : Event()
     }
 
 }
