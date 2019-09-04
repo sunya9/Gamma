@@ -27,7 +27,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.net.URLConnection
 import java.util.*
 
-class PnutRepository(private val context: Context) : IPnutRepository {
+class PnutRepository(private val context: Context, defaultAccountToken: String? = null) :
+    IPnutRepository {
     override suspend fun searchUsers(getSearchUsersParam: GetUsersParam): PnutResponse<List<User>> {
         return defaultPnutService.searchUsers(getSearchUsersParam.toMap()).await()
     }
@@ -245,7 +246,7 @@ class PnutRepository(private val context: Context) : IPnutRepository {
     private val cacheSize: Long = 1024 * 1024 * 10
 
 
-    private var defaultPnutService = createPnutService()
+    private var defaultPnutService = createPnutService(defaultAccountToken)
 
     // Call this function when change account
     override fun updateDefaultPnutService(token: String) {
