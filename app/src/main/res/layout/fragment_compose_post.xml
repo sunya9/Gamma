@@ -72,6 +72,7 @@
                             android:layout_height="@dimen/size_post_item_avatar"
                             android:layout_marginStart="@dimen/margin_regular"
                             android:layout_marginTop="@dimen/margin_regular"
+                            app:civ_circle_background_color="@android:color/white"
                             android:contentDescription="@string/description_avatar_picture"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"

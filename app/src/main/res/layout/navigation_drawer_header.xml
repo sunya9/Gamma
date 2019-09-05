@@ -65,6 +65,7 @@
             android:layout_marginBottom="16dp"
             android:cropToPadding="false"
             android:elevation="4dp"
+            app:civ_circle_background_color="@android:color/white"
             app:glideSrc="@{viewModel.user.content.avatarImage.link}"
             app:layout_constraintBottom_toTopOf="@+id/navigationDrawerHandleNameTextView"
             app:layout_constraintStart_toStartOf="@+id/navigationDrawerScreenNameTextView"

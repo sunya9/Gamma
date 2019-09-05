@@ -84,7 +84,7 @@
                         android:onClick="@{() -> viewModel.showDialogToChangeAvatar()}"
                         app:civ_border_color="@color/colorAvatarBorder"
                         app:civ_border_width="@dimen/width_avatar_border"
-                        app:civ_circle_background_color="@color/colorGrayDarker"
+                        app:civ_circle_background_color="@android:color/white"
                         app:glideSrc="@{viewModel.avatarUri}"
                         app:layout_constraintBottom_toBottomOf="@id/viewCoverImage"
                         app:layout_constraintStart_toStartOf="parent"

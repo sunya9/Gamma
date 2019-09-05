@@ -184,6 +184,7 @@
                     app:layout_constraintStart_toStartOf="@+id/screenNameTextView"
                     app:layout_constraintTop_toBottomOf="@+id/screenNameTextView"
                     app:layout_constraintVertical_bias="0">
+
                     <TextView
                         android:id="@+id/bodyTextView"
                         android:layout_width="match_parent"
@@ -191,12 +192,14 @@
                         android:gravity="top|start"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                         tools:text="@tools:sample/lorem" />
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/showLongPostButton"
                         style="@style/Button.Outlined"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/show_long_post" />
+
                     <FrameLayout
                         android:id="@+id/thumbnailViewPagerFrameLayout"
                         android:layout_width="match_parent"
@@ -381,6 +384,7 @@
                     android:layout_width="@dimen/size_post_item_avatar"
                     android:layout_height="@dimen/size_post_item_avatar"
                     android:layout_marginStart="@dimen/margin_regular"
+                    app:civ_circle_background_color="@android:color/white"
                     app:layout_constraintDimensionRatio="w,1:1"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="@id/screenNameTextView"
