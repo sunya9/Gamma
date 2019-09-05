@@ -184,6 +184,7 @@
     <string name="no_repost_found_to_delete">No repost found to delete.</string>
     <string name="avatar_over_size">Avatar must be less than 2MiB, with Content-Length specified.</string>
     <string name="denied_app_access">Resource owner denied your app access.</string>
+    <string name="access_token_required">Access token required.</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

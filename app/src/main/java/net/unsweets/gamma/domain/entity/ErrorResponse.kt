@@ -24,7 +24,8 @@ data class ErrorResponse(
             "Post not bookmarked." to R.string.post_not_bookmarked,
             "No repost found to delete." to R.string.no_repost_found_to_delete,
             "Avatar must be less than 2MiB, with Content-Length specified." to R.string.avatar_over_size,
-            "resource owner denied your app access" to R.string.denied_app_access
+            "resource owner denied your app access" to R.string.denied_app_access,
+            "Access token required." to R.string.access_token_required
         )
 
         fun getResource(message: String): Int? {
