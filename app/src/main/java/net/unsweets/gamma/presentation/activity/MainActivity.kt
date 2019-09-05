@@ -155,7 +155,6 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
 
 
     private val showAccountMenuObserver = Observer<Boolean> {
-        val menu = binding.navigationView.menu
         val indicatorView: ImageView? = binding.navigationView.switchAccountIndicatorImageView
         indicatorView?.let { imageView ->
             val res =
@@ -164,18 +163,28 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
             imageView.setImageDrawable(avd)
             avd.start()
         }
-        menu.clear()
         when (it) {
             true -> {
-                binding.navigationView.addHeaderView(accountListView)
+                binding.navigationView.getHeaderView(accountHeaderPosition).visibility =
+                    View.VISIBLE
+                setMenuItemVisibilities(false)
             }
             false -> {
-                binding.navigationView.removeHeaderView(accountListView)
-                menuInflater.inflate(R.menu.navigation_drawer, menu)
-                syncMenu()
+                binding.navigationView.getHeaderView(accountHeaderPosition).visibility = View.GONE
+                setMenuItemVisibilities(true)
             }
         }
     }
+
+    private fun setMenuItemVisibilities(visible: Boolean) {
+        binding.navigationView.menu?.let {
+            for (i in 0 until it.size()) {
+                it.getItem(i).isVisible = visible
+            }
+        }
+
+    }
+
     private val drawerToggle: ActionBarDrawerToggle by lazy {
         object : ActionBarDrawerToggle(
             this, drawerLayout, bottomAppBar,
@@ -295,6 +304,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
             binding.viewModel = viewModel
         }
         navigationView.setNavigationItemSelectedListener(::onOptionsItemSelected)
+        binding.navigationView.addHeaderView(accountListView)
     }
 
     private fun syncMenu() {
@@ -376,7 +386,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
                     R.id.photos,
                     R.id.trending,
                     R.id.global -> showExploreStream(it.itemId)
-                    R.id.file -> goToFiles()
+//                    R.id.file -> goToFiles()
                     R.id.settings -> goToSettings()
                 }
                 closeDrawer()
@@ -407,4 +417,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         data class Failed(val t: Throwable) : Event()
     }
 
+    companion object {
+        private const val accountHeaderPosition = 1
+    }
 }
