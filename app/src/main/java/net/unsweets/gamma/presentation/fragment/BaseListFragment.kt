@@ -19,6 +19,7 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.Pageable
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Unique
+import net.unsweets.gamma.domain.model.PageableItemWrapper
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.InfiniteScrollListener
@@ -37,13 +38,29 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     private val listEventObserver = Observer<ListEvent> {
         @Suppress("UNCHECKED_CAST")
         when (it) {
-            is ListEvent.ReceiveNewItems<*> -> receiveNewItems(it.items as List<T>, it.insertPosition)
+            is ListEvent.ReceiveNewItems<*> -> receiveNewItems(
+                it.response as PnutResponse<List<T>>,
+                it.pager as PageableItemWrapper.Pager<T>,
+                it.insertPosition
+            )
             is ListEvent.Failure -> failure(it.t)
+//            is ListEvent.UpdateNewerItem -> updateNewerItem(it.meta)
+//            is ListEvent.UpdateOlderItem -> updateOlderItem(it.meta)
         }
+    }
+
+    private fun updateOlderItem(meta: PnutResponse.Meta) {
+//        adapter.addItem()
+        viewModel.items.add(PageableItemWrapper.Pager.createFromMeta(meta))
+    }
+
+    private fun updateNewerItem(meta: PnutResponse.Meta) {
+        viewModel.items.add(0, PageableItemWrapper.Pager.createFromMeta(meta))
     }
 
     private fun failure(t: Throwable) {
         ErrorIntent.broadcast(context ?: return, t)
+        adapter.showRetryMessage()
     }
 
     @DrawableRes
@@ -53,17 +70,25 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
         InfiniteScrollListener(this)
     }
 
-    private fun receiveNewItems(items: List<T>, insertPosition: Int?) {
-        val currentItems = viewModel.items.value ?: ArrayList()
+    @Synchronized
+    private fun receiveNewItems(
+        response: PnutResponse<List<T>>,
+        pager: PageableItemWrapper.Pager<T>,
+        insertPosition: Int?
+    ) {
+        val items = response.data
+        val currentItems = viewModel.items
         val insertPos = insertPosition ?: 0
-        val isFirstTime = insertPos == 0 && currentItems.isEmpty()
-        viewModel.items.value = currentItems.also { it.addAll(insertPos, items) }
+        val isFirstTime = insertPos == 0 && currentItems.size == 1
+        val pageableItemWrapperItems = items.map { PageableItemWrapper.Item(it) }
+        viewModel.items.addAll(insertPos, pageableItemWrapperItems)
         // scroll to top when insert in first time
         if (isFirstTime)
             adapter.notifyItemRangeChanged(insertPos, items.size)
         else
             adapter.notifyItemRangeInserted(insertPos, items.size)
-        adapter.updateFooter()
+        adapter.updateSegment(pager, response.meta)
+        LogUtil.e("insertPosition: $insertPos")
         viewModel.loading.postValue(false)
 
         getSwipeRefreshLayout(view ?: return).isRefreshing = false
@@ -80,7 +105,7 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
 
     private val defaultOptions by lazy {
         BaseListRecyclerViewAdapter.BaseListRecyclerViewAdapterOptions(
-            viewModel.items, viewModel.olderDirectionMeta, baseListListener, reverse
+            viewModel.items, baseListListener, reverse
         )
     }
 
@@ -121,7 +146,8 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
-        val dividerItemDecoration = DividerIgnoreLastItem(context, DividerIgnoreLastItem.VERTICAL, reverse)
+        val dividerItemDecoration =
+            DividerIgnoreLastItem(context, DividerIgnoreLastItem.VERTICAL, reverse)
         val divider = AppCompatResources.getDrawable(context!!, dividerDrawable)!!
         dividerItemDecoration.setDrawable(divider)
         recyclerView.addItemDecoration(dividerItemDecoration)
@@ -142,35 +168,40 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     }
 
     sealed class ListEvent {
-        class ReceiveNewItems<T>(val items: List<T>, val insertPosition: Int? = 0) : ListEvent()
-        class Failure(val t: Throwable) : ListEvent()
+        data class ReceiveNewItems<T>(
+            val response: PnutResponse<List<T>>,
+            val pager: PageableItemWrapper.Pager<T>,
+            val insertPosition: Int? = 0
+        ) :
+            ListEvent() where T : Unique, T : Pageable
+
+        data class Failure(val t: Throwable) : ListEvent()
+//        data class UpdateOlderItem(val meta: PnutResponse.Meta) : ListEvent()
+//        data class UpdateNewerItem(val meta: PnutResponse.Meta) : ListEvent()
     }
 
+
     abstract class BaseListViewModel<T> : ViewModel() where T : Pageable, T : Unique {
-        val items = MutableLiveData<ArrayList<T>>().apply { value = ArrayList() }
+        val items = ArrayList<PageableItemWrapper<T>>()
         val loading = MutableLiveData<Boolean>().apply { value = false }
-        val olderDirectionMeta = MutableLiveData<PnutResponse.Meta>()
-        val newerDirectionMeta = MutableLiveData<PnutResponse.Meta>()
         private var lastPagination: PaginationParam? = null
         val listEvent = SingleLiveEvent<ListEvent>()
 
-        init {
-            loadItems()
-        }
-
         fun loadNewItems() {
             if (loading.value == true) return
-            val pagination = items.value?.firstOrNull()?.let {
-                PaginationParam(maxId = it.paginationId)
+            val firstItem = items.firstOrNull()
+            val pagination = firstItem?.let {
+                PaginationParam(maxId = it.getSinceId())
             } ?: PaginationParam()
             loadItems(pagination)
         }
 
         fun loadMoreItems() {
             if (loading.value == true) return
-
-            val pagination = items.value?.lastOrNull()?.let {
-                PaginationParam(minId = it.paginationId)
+            val lastItem = items.lastOrNull()
+            if (lastItem is PageableItemWrapper.Pager && !lastItem.more) return
+            val pagination = lastItem?.let {
+                PaginationParam(minId = it.getBeforeId())
             } ?: PaginationParam()
             LogUtil.e(pagination.toString())
             if (lastPagination == pagination) return
@@ -178,26 +209,37 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
             loadItems(pagination)
         }
 
+        private fun fallbackInsertPosition(): Int {
+            val footerOnly = items.size == 1
+            return if (footerOnly) 0 else items.size - 1
+        }
+
         abstract suspend fun getItems(params: PaginationParam): PnutResponse<List<T>>
         private fun loadItems(pagination: PaginationParam = PaginationParam()) {
             // prevent to send same request multi time
             if (loading.value == true) return
             loading.value = true
+            val requestPager = PageableItemWrapper.Pager<T>(
+                maxId = pagination.maxId,
+                minId = pagination.minId
+            )
+            LogUtil.e("requestPager  $requestPager ")
             viewModelScope.launch {
                 runCatching {
                     getItems(pagination)
                 }.onSuccess {
-                    val insertPosition = if (!pagination.maxId.isNullOrEmpty()) 0 else items.value?.size
+                    val insertPosition =
+                        if (!pagination.maxId.isNullOrEmpty()) 0 else fallbackInsertPosition()
                     LogUtil.e(insertPosition.toString())
                     when {
                         !pagination.minId.isNullOrEmpty() -> {
-                            olderDirectionMeta.postValue(it.meta)
+//                            listEvent.emit(ListEvent.UpdateOlderItem(it.meta))
                         }
                         !pagination.maxId.isNullOrEmpty() -> {
-                            newerDirectionMeta.postValue(it.meta)
+//                            listEvent.emit(ListEvent.UpdateNewerItem(it.meta))
                         }
                     }
-                    listEvent.postValue(ListEvent.ReceiveNewItems(it.data, insertPosition))
+                    listEvent.postValue(ListEvent.ReceiveNewItems(it, requestPager, insertPosition))
                 }.onFailure {
                     LogUtil.e(it.message ?: "no message")
                     listEvent.postValue(ListEvent.Failure(it))
@@ -207,7 +249,8 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
         }
     }
 
-    protected open fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout = view.swipeRefreshLayout
+    protected open fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout =
+        view.swipeRefreshLayout
 
     abstract val baseListListener: BaseListRecyclerViewAdapter.IBaseList<T, V>
 }

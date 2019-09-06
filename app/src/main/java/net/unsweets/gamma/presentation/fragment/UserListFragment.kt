@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.fragment_user_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.model.PageableItemWrapper
 import net.unsweets.gamma.domain.model.UserListType
 import net.unsweets.gamma.domain.model.io.GetUsersInputData
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
@@ -25,6 +26,9 @@ import javax.inject.Inject
 abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<User, UserListFragment.UserViewHolder> {
     override val itemNameRes: Int = R.string.users
+    override fun retryCallback() {
+        viewModel.loadMoreItems()
+    }
     override val baseListListener: BaseListRecyclerViewAdapter.IBaseList<User, UserViewHolder> by lazy {
         this
     }
@@ -41,7 +45,11 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
 
     override fun createViewHolder(mView: View, viewType: Int): UserViewHolder = UserViewHolder(mView)
 
-    override fun onClickItemListener(item: User) {
+    override fun onClickItemListener(
+        viewHolder: UserViewHolder,
+        item: User,
+        itemWrapper: PageableItemWrapper<User>
+    ) {
         val fragment = ProfileFragment.newInstance(item.id, item.content.avatarImage.link, item)
         addFragment(fragment, item.id)
     }

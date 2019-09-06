@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.files_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.File
 import net.unsweets.gamma.domain.entity.PnutResponse
+import net.unsweets.gamma.domain.model.PageableItemWrapper
 import net.unsweets.gamma.domain.model.io.GetFilesInputData
 import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
@@ -20,6 +21,9 @@ import javax.inject.Inject
 
 class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<File, FileListFragment.FileViewHolder> {
+    override fun retryCallback() {
+        viewModel.loadMoreItems()
+    }
     override val itemNameRes: Int = R.string.files
     @Inject
     lateinit var getFilesUseCase: GetFilesUseCase
@@ -30,7 +34,11 @@ class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>
 
     override fun createViewHolder(mView: View, viewType: Int): FileViewHolder = FileViewHolder(mView)
 
-    override fun onClickItemListener(item: File) {
+    override fun onClickItemListener(
+        viewHolder: FileViewHolder,
+        item: File,
+        itemWrapper: PageableItemWrapper<File>
+    ) {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -72,10 +72,11 @@ class DividerIgnoreLastItem(context: Context?, orientation: Int, private val rev
     private fun isLastItem(parent: RecyclerView, childItemPos: Int): Boolean {
         val child = parent.getChildAt(childItemPos)
         val pos = parent.getChildAdapterPosition(child)
-        return when (reverse) {
-            true -> pos == 0
-            false -> (parent.adapter?.itemCount ?: 0) - 1 == pos
-        }
+//        return when (reverse) {
+//            true -> pos == 0
+//            false -> (parent.adapter?.itemCount ?: 0) - 1 == pos
+//        }
+        return (parent.adapter?.itemCount ?: 0) - 1 == pos
     }
 
 

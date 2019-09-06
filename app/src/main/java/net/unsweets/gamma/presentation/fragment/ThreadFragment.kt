@@ -3,7 +3,6 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.list_with_toolbar.view.*
@@ -34,11 +33,11 @@ class ThreadFragment : PostItemFragment() {
             backToPrevFragment()
         }
         view.toolbar.setTitle(R.string.thread)
-        getRecyclerView(view).let {
-            it.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, true).apply {
-                stackFromEnd = true
-            }
-        }
+//        getRecyclerView(view).let {
+//            it.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, true).apply {
+//                stackFromEnd = true
+//            }
+//        }
     }
 
     companion object {

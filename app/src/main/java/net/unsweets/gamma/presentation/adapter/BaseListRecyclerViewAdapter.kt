@@ -3,35 +3,74 @@ package net.unsweets.gamma.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.footer_item.view.*
+import com.google.android.material.button.MaterialButton
+import kotlinx.android.synthetic.main.segment_item.view.*
 import net.unsweets.gamma.R
+import net.unsweets.gamma.domain.entity.Pageable
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Unique
+import net.unsweets.gamma.domain.model.PageableItemWrapper
+import net.unsweets.gamma.util.LogUtil
 import java.util.*
 
-class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
+class BaseListRecyclerViewAdapter<T, V : RecyclerView.ViewHolder>(
     private val options: BaseListRecyclerViewAdapterOptions<T, V>
-) : RecyclerView.Adapter<V>() {
-    data class BaseListRecyclerViewAdapterOptions<T, V>(
-        val listLiveData: LiveData<ArrayList<T>>,
-        val olderDirectionMeta: LiveData<PnutResponse.Meta>,
-        var listener: IBaseList<T, V>,
+) : RecyclerView.Adapter<V>() where T : Unique, T : Pageable {
+    data class BaseListRecyclerViewAdapterOptions<TT, VV>(
+        val itemList: ArrayList<PageableItemWrapper<TT>>,
+        var listener: IBaseList<TT, VV>,
         val reverse: Boolean = false,
         val mainItemId: String = ""
-    )
+    ) where TT : Unique, TT : Pageable
 
     init {
-        setHasStableIds(true)
+        setupHeaderSegment()
+        setupFooterSegment()
     }
+
+    private fun setupFooterSegment() {
+        // footer
+//        val index = if(options.reverse) 0 else options.itemList.size
+        val index = options.itemList.size
+        val lastItem = options.itemList.lastOrNull()
+        val minId = (lastItem as? PageableItemWrapper.Item)?.item?.paginationId
+        options.itemList.add(
+            index,
+            PageableItemWrapper.Pager(
+                minId = minId,
+                maxId = null,
+                more = true,
+                state = PageableItemWrapper.Pager.State.None
+            )
+        )
+    }
+
+    private fun setupHeaderSegment() {
+        // only has cache
+        if (options.itemList.isEmpty()) return
+        val firstItem = options.itemList.firstOrNull()
+        // return if cannot get pagination id of first item
+        val maxId = (firstItem as? PageableItemWrapper.Item)?.item?.paginationId ?: return
+        options.itemList.add(
+            0,
+            PageableItemWrapper.Pager(
+                more = true,
+                maxId = maxId,
+                minId = null,
+                state = PageableItemWrapper.Pager.State.None
+            )
+        )
+    }
+
     // empty view; loading indicator;
-    override fun getItemCount(): Int = bodyItemCount + 1
+    override fun getItemCount(): Int = bodyItemCount
 
     private val bodyItemCount: Int
-        get() = (options.listLiveData.value?.size ?: 0)
+        get() = options.itemList.size
 
     var recyclerView: RecyclerView? = null
 
@@ -40,26 +79,28 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
         this.recyclerView = null
     }
 
-    override fun getItemId(position: Int): Long {
-        return options.listLiveData.value?.getOrNull(position)?.uniqueKey?.toLong() ?: 0L
-    }
-
-    private enum class ViewType { Body, Footer }
+    private enum class ViewType { Body, Segment }
 
     override fun getItemViewType(position: Int): Int {
         return when (options.reverse) {
             true -> {
-                val isFirstItem = position == 0
+//                val isFirstItem = position == 0
                 return when {
-                    isFirstItem -> ViewType.Footer
-                    else -> ViewType.Body
+//                    isFirstItem -> ViewType.Segment
+                    else -> when (options.itemList[position]) {
+                        is PageableItemWrapper.Pager -> ViewType.Segment
+                        else -> ViewType.Body
+                    }
                 }.ordinal
             }
             false -> {
-                val isLastItem = itemCount == position + 1
+//                val isLastItem = itemCount == position + 1
                 when {
-                    isLastItem -> ViewType.Footer
-                    else -> ViewType.Body
+//                    isLastItem -> ViewType.Segment
+                    else -> when (options.itemList[position]) {
+                        is PageableItemWrapper.Pager -> ViewType.Segment
+                        else -> ViewType.Body
+                    }
                 }.ordinal
             }
 
@@ -76,55 +117,126 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
                     .inflate(options.listener.getItemLayout(), parent, false)
                 options.listener.createViewHolder(view, viewType)
             }
-            ViewType.Footer -> {
+            ViewType.Segment -> {
                 val view = inflater
-                    .inflate(R.layout.footer_item, parent, false)
-                FooterViewHolder(view) as V
+                    .inflate(R.layout.segment_item, parent, false)
+                val viewHolder = SegmentViewHolder(view)
+                viewHolder.retryButton.setOnClickListener { options.listener.retryCallback() }
+                viewHolder as V
+            }
+        }
+    }
+
+    interface IBaseList<T, V> where T : Unique, T : Pageable {
+        fun createViewHolder(mView: View, viewType: Int = 0): V
+        fun onClickItemListener(viewHolder: V, item: T, itemWrapper: PageableItemWrapper<T>)
+        fun onBindViewHolder(item: T, viewHolder: V, position: Int, isMainItem: Boolean)
+        fun getItemLayout(): Int
+        val itemNameRes: Int
+        fun retryCallback()
+    }
+
+    fun updateSegment(info: PageableItemWrapper.Pager<T>, receivedMeta: PnutResponse.Meta) {
+        val position = options.itemList.indexOfFirst {
+            LogUtil.e("${it.getBeforeId()}, ${info.minId}, ${it.getSinceId()}, ${info.maxId}")
+            it is PageableItemWrapper.Pager && (it.getBeforeId() == info.minId || it.getSinceId() == info.maxId)
+        }
+        LogUtil.e("position $position")
+        LogUtil.e("updateSegment $info ${options.itemList.last()}")
+//        LogUtil.e("position $position itemSize: ${options.itemList.size}")
+        if (position < 0) return
+        val updatedInfo = info.copy(
+            maxId = receivedMeta.max_id,
+            minId = receivedMeta.min_id,
+            more = receivedMeta.more ?: false,
+            state = PageableItemWrapper.Pager.State.None
+        )
+        when {
+            isFooterSegment(position) -> {
+                LogUtil.e("isFooterSegment")
+                options.itemList[position] = updatedInfo
+                notifyItemChanged(position)
+            }
+            updatedInfo.more -> {
+                LogUtil.e("more is true")
+                options.itemList[position] = updatedInfo
+                notifyItemChanged(position)
+            }
+            else -> {
+                notifyItemRemoved(position)
             }
         }
 
     }
 
-    interface IBaseList<T, V> {
-        fun createViewHolder(mView: View, viewType: Int = 0): V
-        fun onClickItemListener(item: T)
-        fun onBindViewHolder(item: T, viewHolder: V, position: Int, isMainItem: Boolean)
-        fun getItemLayout(): Int
-        val itemNameRes: Int
+    private fun isFooterSegment(position: Int): Boolean {
+        return bodyItemCount - 1 == position
     }
 
     override fun onBindViewHolder(holder: V, position: Int) {
-        val offset = if (options.reverse) -1 else 0
+//        val offset = if (options.reverse) -1 else 0
+        //        LogUtil.e("options.itemList[itemPosition] ${options.itemList[itemPosition]}")
         when (ViewType.values()[getItemViewType(position)]) {
             ViewType.Body -> {
-                val itemPosition = position + offset
-                val item = options.listLiveData.value?.get(itemPosition) ?: return
-                holder.itemView.setOnClickListener { options.listener.onClickItemListener(item) }
-                options.listener.onBindViewHolder(item, holder, itemPosition, options.mainItemId == item.uniqueKey)
+                val itemWrapper =
+                    options.itemList[position] as? PageableItemWrapper.Item ?: return
+                val item = itemWrapper.item
+                holder.itemView.setOnClickListener {
+                    options.listener.onClickItemListener(
+                        holder,
+                        item,
+                        itemWrapper
+                    )
+                }
+                options.listener.onBindViewHolder(
+                    item,
+                    holder,
+                    position,
+                    options.mainItemId == item.uniqueKey
+                )
             }
-            ViewType.Footer -> {
-                val viewHolder = holder as? FooterViewHolder ?: return
-                val meta = options.olderDirectionMeta.value
+            ViewType.Segment -> {
+                val pager =
+                    options.itemList[position] as? PageableItemWrapper.Pager ?: return
+                val viewHolder = holder as? SegmentViewHolder ?: return
                 when {
-                    meta == null || meta.more == true -> {
-                        // remain items
+                    pager.state is PageableItemWrapper.Pager.State.Error -> {
+                        viewHolder.retryButton.visibility = View.VISIBLE
+                        viewHolder.noItemsMessageTextView.visibility = View.GONE
+                        viewHolder.loadingIndicatorProgressBar.visibility = View.GONE
+                        viewHolder.endOfListImageView.visibility = View.GONE
+                    }
+                    pager.state is PageableItemWrapper.Pager.State.Loading -> {
+                        viewHolder.retryButton.visibility = View.GONE
                         viewHolder.noItemsMessageTextView.visibility = View.GONE
                         viewHolder.loadingIndicatorProgressBar.visibility = View.VISIBLE
+                        viewHolder.endOfListImageView.visibility = View.GONE
                     }
-                    meta.more == false -> {
-                        // loaded all items
+                    pager.more -> {
+                        // remain items
+                        viewHolder.retryButton.visibility = View.GONE
                         viewHolder.noItemsMessageTextView.visibility = View.GONE
-                        viewHolder.loadingIndicatorProgressBar.visibility = View.GONE
+                        viewHolder.loadingIndicatorProgressBar.visibility = View.VISIBLE
+                        viewHolder.endOfListImageView.visibility = View.GONE
                     }
-                    else -> {
+                    !pager.more && position == 0 -> {
                         // empty
+                        viewHolder.retryButton.visibility = View.GONE
                         viewHolder.loadingIndicatorProgressBar.visibility = View.GONE
                         viewHolder.noItemsMessageTextView.visibility = View.VISIBLE
+                        viewHolder.endOfListImageView.visibility = View.GONE
                         val context = holder.itemView.context
                         val itemName = context.getString(options.listener.itemNameRes)
                             .toLowerCase(Locale.ENGLISH)
                         viewHolder.noItemsMessageTextView.text =
                             context.getString(R.string.no_items_template, itemName)
+                    }
+                    else -> {
+                        // loaded all items
+                        viewHolder.retryButton.visibility = View.GONE
+                        viewHolder.noItemsMessageTextView.visibility = View.GONE
+                        viewHolder.loadingIndicatorProgressBar.visibility = View.GONE
+                        viewHolder.endOfListImageView.visibility = View.VISIBLE
                     }
                 }
             }
@@ -132,31 +244,32 @@ class BaseListRecyclerViewAdapter<T : Unique, V : RecyclerView.ViewHolder>(
 
     }
 
-    fun updateFooter() {
-        when (options.reverse) {
-            true -> notifyItemChanged(0)
-            false -> notifyItemChanged(options.listLiveData.value?.size ?: 0)
-        }
-
+    fun updateItem(item: PageableItemWrapper<T>) {
+        val index = options.itemList.indexOf(item)
+        if (index < 0) return
+        options.itemList[index] = item
+        notifyItemChanged(index)
     }
 
-    fun updateItem(item: T) {
-        val index = options.listLiveData.value?.indexOf(item) ?: -1
+    fun removeItem(item: PageableItemWrapper<T>) {
+        val index = options.itemList.indexOf(item)
         if (index < 0) return
-        options.listLiveData.value?.set(index, item)
+        options.itemList.removeAt(index)
         notifyItemRemoved(index)
     }
 
-    fun removeItem(item: T) {
-        val index = options.listLiveData.value?.indexOf(item) ?: -1
-        if (index < 0) return
-        options.listLiveData.value?.removeAt(index)
-        notifyItemRemoved(index)
+    fun showRetryMessage() {
+        notifyItemChanged(bodyItemCount)
     }
 
-    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    fun addItem() {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    class SegmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val loadingIndicatorProgressBar: ProgressBar = itemView.loadingIndicatorProgressBar
         val noItemsMessageTextView: TextView = itemView.noItemsMessageTextView
-
+        val retryButton: MaterialButton = itemView.retryButton
+        val endOfListImageView: ImageView = itemView.endOfListImageView
     }
 }

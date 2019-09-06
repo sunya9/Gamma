@@ -18,6 +18,7 @@ import net.unsweets.gamma.domain.entity.Interaction.Action
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.model.PageableItemWrapper
 import net.unsweets.gamma.domain.model.io.GetInteractionInputData
 import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
@@ -28,8 +29,12 @@ import net.unsweets.gamma.presentation.util.DateUtil
 import net.unsweets.gamma.util.LogUtil
 import javax.inject.Inject
 
-class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.InteractionViewHolder>(),
+class InteractionFragment :
+    BaseListFragment<Interaction, InteractionFragment.InteractionViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<Interaction, InteractionFragment.InteractionViewHolder> {
+    override fun retryCallback() {
+        viewModel.loadMoreItems()
+    }
 
     override val itemNameRes: Int = R.string.interactions
 
@@ -46,9 +51,14 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
         super.onCreate(savedInstanceState)
     }
 
-    override fun createViewHolder(mView: View, viewType: Int): InteractionViewHolder = InteractionViewHolder(mView)
+    override fun createViewHolder(mView: View, viewType: Int): InteractionViewHolder =
+        InteractionViewHolder(mView)
 
-    override fun onClickItemListener(item: Interaction) {
+    override fun onClickItemListener(
+        viewHolder: InteractionViewHolder,
+        item: Interaction,
+        itemWrapper: PageableItemWrapper<Interaction>
+    ) {
     }
 
     override fun onBindViewHolder(
@@ -65,7 +75,8 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
             Action.Repost -> item as Interaction.Repost
         }
         viewHolder.iconView.setImageResource(item.action.iconRes)
-        viewHolder.timeTextView.text = DateUtil.getShortDateStr(viewHolder.itemView.context, item.eventDate)
+        viewHolder.timeTextView.text =
+            DateUtil.getShortDateStr(viewHolder.itemView.context, item.eventDate)
         viewHolder.messageTextView.text = item.getMessage(viewHolder.itemView.context)
         viewHolder.bodyTextView.visibility = when (concreteItem) {
             is Interaction.Repost,
@@ -147,10 +158,12 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
 
         private fun addSpacerDecoration() {
             val context = itemView.context
-            val drawable = ContextCompat.getDrawable(context, R.drawable.spacer_width_half) ?: return
-            val reactionSpacerDecoration = DividerItemDecoration(context, RecyclerView.HORIZONTAL).also {
-                it.setDrawable(drawable)
-            }
+            val drawable =
+                ContextCompat.getDrawable(context, R.drawable.spacer_width_half) ?: return
+            val reactionSpacerDecoration =
+                DividerItemDecoration(context, RecyclerView.HORIZONTAL).also {
+                    it.setDrawable(drawable)
+                }
             reactionUsersRecyclerView.addItemDecoration(reactionSpacerDecoration)
         }
     }
@@ -164,7 +177,8 @@ class InteractionFragment : BaseListFragment<Interaction, InteractionFragment.In
         }
 
 
-        class Factory(private val getInteractionUseCase: GetInteractionUseCase) : ViewModelProvider.Factory {
+        class Factory(private val getInteractionUseCase: GetInteractionUseCase) :
+            ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
                 return InteractionViewModel(getInteractionUseCase) as T
