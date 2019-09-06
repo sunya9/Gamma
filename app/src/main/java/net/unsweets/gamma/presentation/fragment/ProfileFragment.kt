@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -243,14 +244,28 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
+    private enum class TransitionName { Avatar, Cover }
+
     private fun showCover(url: String) {
-        val newIntent = PhotoViewActivity.photoViewInstance(context, url)
-        startActivity(newIntent)
+        exitTransition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.image_shared_element_transition)
+        PhotoViewActivity.startActivity(
+            activity,
+            url,
+            binding.coverImageView,
+            TransitionName.Cover.name
+        )
     }
 
     private fun showAvatar(url: String) {
-        val newIntent = PhotoViewActivity.photoViewInstance(context, url)
-        startActivity(newIntent)
+        exitTransition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.image_shared_element_transition)
+        PhotoViewActivity.startActivity(
+            activity,
+            url,
+            binding.circleImageView,
+            TransitionName.Avatar.name
+        )
     }
 
     private enum class DialogKey { EditProfile }

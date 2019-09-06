@@ -1,8 +1,14 @@
 package net.unsweets.gamma.presentation.activity
 
+import android.app.Activity
+import android.app.ActivityOptions
+import android.app.SharedElementCallback
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
+import android.view.View
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -14,7 +20,24 @@ import net.unsweets.gamma.presentation.fragment.PhotoViewItemFragment
 class PhotoViewActivity : BaseActivity() {
     private enum class IntentKey { Photos, Index }
     companion object {
-        fun photoViewInstance(context: Context?, item: String) = photoViewInstance(context, listOf(item))
+        private const val singleTransitionName = "singleTransitionName"
+        fun photoViewInstance(context: Context?, item: String) =
+            photoViewInstance(context, listOf(item))
+
+        fun startActivity(
+            activity: Activity?,
+            item: String,
+            imageView: ImageView,
+            transitionName: String? = null
+        ) {
+            val intent = photoViewInstance(activity, listOf(item))
+            val options = ActivityOptions.makeSceneTransitionAnimation(
+                activity,
+                Pair.create(imageView, singleTransitionName)
+            )
+            activity?.startActivity(intent, options.toBundle())
+        }
+
         fun photoViewInstance(context: Context?, items: List<String>, index: Int = -1) =
             Intent(context, PhotoViewActivity::class.java).apply {
                 putStringArrayListExtra(IntentKey.Photos.name, ArrayList(items))
@@ -29,23 +52,39 @@ class PhotoViewActivity : BaseActivity() {
     private val index by lazy {
         intent.getIntExtra(IntentKey.Index.name, 0)
     }
+    private val adapter by lazy {
+        MediaViewPager(supportFragmentManager, photos)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_photo_view)
+        postponeEnterTransition()
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        val adapter = MediaViewPager(supportFragmentManager, photos)
         mediaViewPager.adapter = adapter
         mediaViewPager.currentItem = index
         mediaviewPagerIndicator.setupWithViewPager(mediaViewPager)
 
         haulerView.setOnDragDismissedListener {
-            finish()
+            finishAfterTransition()
         }
-    }
 
+        setEnterSharedElementCallback(object : SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: MutableList<String>?,
+                sharedElements: MutableMap<String, View>?
+            ) {
+                if (names == null || sharedElements == null) return
+                val currentItem = mediaViewPager.currentItem
+                val view = adapter.getItem(currentItem).view ?: return
+                val photoView = view.findViewById<ImageView>(R.id.photoView)
+                photoView.transitionName = singleTransitionName
+                sharedElements[names[0]] = photoView
+            }
+        })
+    }
 
     class MediaViewPager(fm: FragmentManager, items: List<String>) :
         FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
