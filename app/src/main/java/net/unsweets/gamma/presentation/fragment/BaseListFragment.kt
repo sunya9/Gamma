@@ -125,6 +125,9 @@ abstract class BaseListFragment<T, V : RecyclerView.ViewHolder> : BaseFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.listEvent.observe(this, listEventObserver)
+        if (savedInstanceState == null) {
+            adapter.init()
+        }
     }
 
     override fun onCreateView(

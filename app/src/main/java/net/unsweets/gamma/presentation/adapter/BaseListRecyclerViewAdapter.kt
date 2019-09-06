@@ -27,7 +27,7 @@ class BaseListRecyclerViewAdapter<T, V : RecyclerView.ViewHolder>(
         val mainItemId: String = ""
     ) where TT : Unique, TT : Pageable
 
-    init {
+    fun init() {
         setupHeaderSegment()
         setupFooterSegment()
     }
