@@ -245,7 +245,12 @@ class BaseListRecyclerViewAdapter<T, V : RecyclerView.ViewHolder>(
     }
 
     fun updateItem(item: PageableItemWrapper<T>) {
-        val index = options.itemList.indexOf(item)
+        LogUtil.e(item.toString())
+        val index = options.itemList.indexOfFirst {
+            LogUtil.e("${it} ${it.uniqueKey}")
+            it.uniqueKey == item.uniqueKey
+        }
+        LogUtil.e("index $index")
         if (index < 0) return
         options.itemList[index] = item
         notifyItemChanged(index)

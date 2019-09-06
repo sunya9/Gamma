@@ -71,12 +71,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
 
     override fun onStarReceive(post: Post) {
-        val viewHolder = getRecyclerView(
-            view ?: return
-        ).findViewHolderForItemId(post.id.toLong()) as? PostViewHolder ?: return
-
-        updatePost(PageableItemWrapper.Item(post))
-        updateStarView(viewHolder, post)
+        adapter.updateItem(PageableItemWrapper.Item(post))
     }
 
     private fun updatePost(post: PageableItemWrapper<Post>) {
@@ -84,11 +79,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
 
     override fun onRepostReceive(post: Post) {
-        val viewHolder = getRecyclerView(
-            view ?: return
-        ).findViewHolderForItemId(post.id.toLong()) as? PostViewHolder ?: return
-        updatePost(PageableItemWrapper.Item(post))
-        updateRepostView(viewHolder, post)
+        adapter.updateItem(PageableItemWrapper.Item(post))
     }
 
     override fun onDeletePostReceive(post: Post) {

@@ -3,15 +3,14 @@ package net.unsweets.gamma.domain.model
 import net.unsweets.gamma.domain.entity.Pageable
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Unique
-import kotlin.random.Random
 
 
 sealed class PageableItemWrapper<D> where D : Pageable, D : Unique {
-    val uniqueKey: String
+    val uniqueKey: String?
         get() = when (this) {
-            is Item -> item.paginationId
-            else -> Random(System.currentTimeMillis()).nextLong().toString()
-        } ?: "0"
+            is Item -> item.uniqueKey
+            else -> null
+        }
 
 
     data class Item<D>(val item: D) : PageableItemWrapper<D>() where D : Pageable, D : Unique
