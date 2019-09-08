@@ -31,7 +31,7 @@ data class File(
 //    val derivativeFiles: List<DerivativeFiles>,
     val user: User?,
     @Json(name = "pagination_id") override val paginationId: String?
-) : Parcelable, Pageable, Unique {
+) : UniquePageable, Parcelable {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
 

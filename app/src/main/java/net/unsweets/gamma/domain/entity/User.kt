@@ -9,6 +9,7 @@ import net.unsweets.gamma.domain.entity.entities.Entities
 import net.unsweets.gamma.domain.entity.entities.HaveEntities
 import net.unsweets.gamma.domain.entity.image.Avatar
 import net.unsweets.gamma.domain.entity.image.Cover
+
 import java.util.*
 
 @Parcelize
@@ -31,7 +32,7 @@ data class User(
     @Json(name = "you_muted") val youMuted: Boolean,
     val verified: VerifiedDomain?,
     @Json(name = "pagination_id") override val paginationId: String? = null
-) : Parcelable, Pageable, Unique {
+) : UniquePageable, Parcelable {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
 
