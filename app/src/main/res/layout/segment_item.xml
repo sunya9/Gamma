@@ -2,16 +2,27 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/height_segment_item">
+
+    <ImageView
+        android:id="@+id/endOfListImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/end_of_list"
+        android:src="@mipmap/ic_launcher_foreground"
+        android:tint="@color/colorGrayLight"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/loadingIndicatorProgressBar"
         style="@android:style/Widget.Material.ProgressBar.Small"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/margin_regular"
         android:layout_marginBottom="@dimen/margin_regular"
-        android:layout_gravity="center"
         android:indeterminate="true"
         android:visibility="gone"
         tools:visibility="visible" />
@@ -19,29 +30,34 @@
     <TextView
         android:id="@+id/noItemsMessageTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:text="@string/no_items_template"
-        android:layout_marginTop="@dimen/margin_regular"
-        android:layout_marginBottom="@dimen/margin_regular"
         android:textAlignment="center"
         android:visibility="gone"
         tools:text="No items."
         tools:visibility="visible" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/segmentImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:contentDescription="@string/load_more"
+        android:focusable="true"
+        android:scaleType="center"
+        android:src="@drawable/ic_more_vert_black_24dp"
+        android:tint="@color/colorGrayLight"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/retryButton"
-        android:layout_width="match_parent"
-        android:text="@string/retry"
         style="@style/TextButton.Square"
-        android:layout_height="match_parent" />
-
-    <ImageView
         android:layout_width="match_parent"
-        android:src="@mipmap/ic_launcher_foreground"
-        android:tint="@color/colorGrayLight"
-        android:layout_height="48dp"
-        android:layout_marginTop="@dimen/margin_regular"
-        android:layout_marginBottom="@dimen/margin_regular"
-        android:id="@+id/endOfListImageView"
-        android:contentDescription="@string/end_of_list" />
+        android:layout_height="match_parent"
+        android:text="@string/retry"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </FrameLayout>

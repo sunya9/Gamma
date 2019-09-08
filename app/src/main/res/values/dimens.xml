@@ -42,4 +42,5 @@
     <dimen name="size_post_item_avatar_mini">36dp</dimen>
     <dimen name="size_color_preview">20dp</dimen>
     <dimen name="secondary_alpha">0.8</dimen>
+    <dimen name="height_segment_item">48dp</dimen>
 </resources>
