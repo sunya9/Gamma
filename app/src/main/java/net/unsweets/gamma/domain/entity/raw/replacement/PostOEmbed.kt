@@ -10,7 +10,6 @@ import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.entity.raw.Raw
 
 @Suppress("UNCHECKED_CAST")
-@JsonClass(generateAdapter = true)
 @Parcelize
 open class PostOEmbed(override val value: OEmbedRawValue) : PostRaw<Raw.RawValue>, Parcelable {
     @IgnoredOnParcel
@@ -22,6 +21,7 @@ open class PostOEmbed(override val value: OEmbedRawValue) : PostRaw<Raw.RawValue
         @Json(name = "+io.pnut.core.file") val replacementFileValue: FileValue
     ) : Raw.RawValue, Parcelable {
         @Parcelize
+        @JsonClass(generateAdapter = true)
         data class FileValue(
             @Json(name = "file_id") val fileId: String,
             @Json(name = "file_token") val fileToken: String,

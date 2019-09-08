@@ -2,12 +2,14 @@ package net.unsweets.gamma.domain.entity
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.domain.entity.entities.Entities
 import net.unsweets.gamma.domain.entity.entities.HaveEntities
 import java.util.*
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Message(
     @Json(name = "created_at") val createdAt: Date,
     val id: String,
@@ -20,6 +22,7 @@ data class Message(
     val content: MessageContent?
 ) : Parcelable {
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class MessageContent(
         override val entities: Entities?,
         override val html: String?,

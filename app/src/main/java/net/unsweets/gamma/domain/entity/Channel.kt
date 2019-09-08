@@ -2,9 +2,11 @@ package net.unsweets.gamma.domain.entity
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Channel(
     val id: String,
     @Json(name = "is_active") val isActive: Boolean,
@@ -19,32 +21,38 @@ data class Channel(
     @Json(name = "has_unread") val hasUnread: Boolean
 ) : Parcelable {
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class ChannelCount(
         val messages: Int,
         val subscribers: Int
     ) : Parcelable
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class Acl(
         val full: Full,
         val write: Write,
         val read: Read
     ) : Parcelable {
         @Parcelize
+        @JsonClass(generateAdapter = true)
         data class Full(
             override val immutable: Boolean,
             override val you: Boolean,
-            @Json(name = "user_ids") override val userIds: List<String>): IAuthority, Parcelable
+            @Json(name = "user_ids") override val userIds: List<String>
+        ) : IAuthority, Parcelable
 
         @Parcelize
+        @JsonClass(generateAdapter = true)
         data class Write(
             override val immutable: Boolean,
             override val you: Boolean,
             @Json(name = "user_ids") override val userIds: List<String>,
-            @Json(name ="any_user") val anyUser: Boolean
+            @Json(name = "any_user") val anyUser: Boolean
         ) : IAuthority, Parcelable
 
         @Parcelize
+        @JsonClass(generateAdapter = true)
         data class Read(
             override val immutable: Boolean,
             override val you: Boolean,
@@ -56,12 +64,10 @@ data class Channel(
         private interface IAuthority {
             val immutable: Boolean
             val you: Boolean
-            @Json(name = "user_ids") val userIds: List<String>
+            @Json(name = "user_ids")
+            val userIds: List<String>
         }
     }
-
-
-
 
 
 }

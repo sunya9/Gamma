@@ -7,7 +7,6 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Suppress("UNCHECKED_CAST")
-@JsonClass(generateAdapter = true)
 @Parcelize
 open class OEmbed(override val value: OEmbedRawValue) : Raw<Raw.RawValue>, Parcelable {
     @IgnoredOnParcel
@@ -19,7 +18,6 @@ open class OEmbed(override val value: OEmbedRawValue) : Raw<Raw.RawValue>, Parce
     }
 
     @Parcelize
-    @JsonClass(generateAdapter = true)
     open class OEmbedRawValue(
         open val type: String,
         open val version: String
@@ -85,7 +83,8 @@ open class OEmbed(override val value: OEmbedRawValue) : Raw<Raw.RawValue>, Parce
 
         companion object {
             fun isVideo(raw: Raw<*>) = raw.value is VideoValue
-            fun getVideos(rawList: List<Raw<VideoValue>>) = rawList.filter { raw -> isOEmbed(raw) && isVideo(raw) }
+            fun getVideos(rawList: List<Raw<VideoValue>>) =
+                rawList.filter { raw -> isOEmbed(raw) && isVideo(raw) }
         }
     }
 

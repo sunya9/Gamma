@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.R
@@ -14,13 +15,16 @@ sealed class Interaction(
     override val paginationId: String,
     open val eventDate: Date,
     open val action: Action
-) : Parcelable, Pageable, Unique {
+) : UniquePageable, Parcelable {
     interface HasUsersFieldInteraction {
         val users: List<User>?
     }
+
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { paginationId }
+
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class Repost(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -30,7 +34,9 @@ sealed class Interaction(
         override val users: List<User>,
         val objects: List<Post>
     ) : Interaction(paginationId, eventDate, action), HasUsersFieldInteraction
+
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class Bookmark(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -42,6 +48,7 @@ sealed class Interaction(
     ) : Interaction(paginationId, eventDate, action), HasUsersFieldInteraction
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class Reply(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -53,6 +60,7 @@ sealed class Interaction(
     ) : Interaction(paginationId, eventDate, action), HasUsersFieldInteraction
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class Follow(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -64,6 +72,7 @@ sealed class Interaction(
     ) : Interaction(paginationId, eventDate, action), HasUsersFieldInteraction
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class PollResponse(
         @Json(name = "pagination_id")
         override val paginationId: String,
@@ -73,6 +82,7 @@ sealed class Interaction(
         val objects: List<InteractionPoll>
     ) : Interaction(paginationId, eventDate, action) {
         @Parcelize
+        @JsonClass(generateAdapter = true)
         data class InteractionPoll(
             val prompt: String,
             @Json(name = "poll_token") val pollToken: String,
@@ -81,6 +91,7 @@ sealed class Interaction(
             val options: List<Option>
         ) : Parcelable {
             @Parcelize
+            @JsonClass(generateAdapter = true)
             data class Option(
                 val text: String,
                 val position: Int

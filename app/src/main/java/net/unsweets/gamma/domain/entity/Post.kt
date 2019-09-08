@@ -2,6 +2,7 @@ package net.unsweets.gamma.domain.entity
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.domain.entity.entities.Entities
@@ -11,6 +12,7 @@ import net.unsweets.gamma.domain.entity.raw.Spoiler
 import java.util.*
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Post(
     @Json(name = "created_at") var createdAt: Date,
     var id: String,
@@ -31,7 +33,7 @@ data class Post(
     @Json(name = "raw") var raw: List<Raw<*>>?,
     @Json(name = "bookmarked_by") val bookmarkedBy: List<User>?,
     @Json(name = "reposted_by") val repostedBy: List<User>?
-) : Parcelable, Pageable, Unique {
+) : UniquePageable, Parcelable {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
 

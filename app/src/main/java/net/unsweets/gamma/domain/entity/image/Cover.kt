@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-class Cover(
+data class Cover(
     @Json(name = "is_default") override val isDefault: Boolean,
     override val height: Int,
     override val link: String,

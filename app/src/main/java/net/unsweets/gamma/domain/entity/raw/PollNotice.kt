@@ -14,6 +14,7 @@ data class PollNotice(override val value: PollValue) : Raw<PollNotice.PollValue>
     override val type: String = PollNotice.type
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class PollValue(
         val prompt: String,
         @Json(name = "poll_token") val pollToken: String,

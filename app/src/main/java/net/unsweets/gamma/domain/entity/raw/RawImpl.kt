@@ -7,7 +7,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class RawImpl : Raw<Raw.RawValue>, Parcelable {
     @IgnoredOnParcel
-    override val type: String = ""
+    override val type = RawImpl.type
     @IgnoredOnParcel
     override val value: Raw.RawValue = object : Raw.RawValue {}
+
+    companion object {
+        const val type = ""
+    }
 }

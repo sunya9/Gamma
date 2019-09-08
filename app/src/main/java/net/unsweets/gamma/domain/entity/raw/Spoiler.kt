@@ -15,6 +15,7 @@ data class Spoiler(override val value: SpoilerValue) : Raw<Spoiler.SpoilerValue>
     override val type: String = Spoiler.type
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class SpoilerValue(val topic: String, @Json(name = "expired_at") val expiredAt: Date?) : Raw.RawValue,
         Parcelable
 

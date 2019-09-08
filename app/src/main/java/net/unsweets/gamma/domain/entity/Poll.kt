@@ -2,10 +2,12 @@ package net.unsweets.gamma.domain.entity
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Poll(
     @Json(name ="closed_at") val closedAt: Date,
     @Json(name = "created_at") val createdAt: Date,
@@ -20,6 +22,7 @@ data class Poll(
     val user: User?
 ) : Parcelable {
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class PollOption(
         val text: String,
         val position: Int,
