@@ -2,22 +2,16 @@ package net.unsweets.gamma.domain.repository
 
 import android.content.Context
 import android.net.Uri
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.data.PnutService
 import net.unsweets.gamma.domain.entity.*
-import net.unsweets.gamma.domain.entity.raw.*
-import net.unsweets.gamma.domain.entity.raw.replacement.PostOEmbed
 import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
 import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.util.Constants
-import net.unsweets.gamma.util.MicroTimestampAdapter
+import net.unsweets.gamma.util.MoshiSingleton
 import net.unsweets.gamma.util.await
 import net.unsweets.gamma.util.bodyOrThrow
 import okhttp3.*
@@ -267,7 +261,7 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
         return Retrofit.Builder()
             .baseUrl(Constants.apiBaseUrl)
             .client(client.build())
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(MoshiConverterFactory.create(MoshiSingleton.moshi))
             .build()
             .create(PnutService::class.java)
     }
@@ -278,43 +272,4 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
                 it.request().newBuilder().addHeader("Authorization", "Bearer $token").build()
             it.proceed(request)
         }
-
-    private val moshi: Moshi
-        get() = Moshi.Builder()
-            .add(Date::class.java, Rfc3339DateJsonAdapter().nullSafe())
-            .add(
-                PolymorphicJsonAdapterFactory.of(Interaction::class.java, "action")
-                    .withSubtype(Interaction.Repost::class.java, "repost")
-                    .withSubtype(Interaction.PollResponse::class.java, "poll_response")
-                    .withSubtype(Interaction.Reply::class.java, "reply")
-                    .withSubtype(Interaction.Follow::class.java, "follow")
-                    .withSubtype(Interaction.Bookmark::class.java, "bookmark")
-            )
-            .add(
-                PolymorphicJsonAdapterFactory.of(Raw::class.java, "type")
-                    .withSubtype(OEmbed::class.java, OEmbed.type)
-                    .withSubtype(Spoiler::class.java, Spoiler.type)
-                    .withSubtype(LongPost::class.java, LongPost.type)
-                    .withSubtype(PollNotice::class.java, PollNotice.type)
-                    .withSubtype(ChannelInvite::class.java, ChannelInvite.type)
-                    .withDefaultValue(RawImpl())
-            )
-            .add(MicroTimestampAdapter())
-            // for create post
-            .add(
-                PolymorphicJsonAdapterFactory.of(PostRaw::class.java, "type")
-                    .withSubtype(PostOEmbed::class.java, OEmbed.type)
-                    .withSubtype(Spoiler::class.java, Spoiler.type)
-                    .withSubtype(LongPost::class.java, LongPost.type)
-                    .withSubtype(ChannelInvite::class.java, ChannelInvite.type)
-            )
-            .add(
-                PolymorphicJsonAdapterFactory.of(OEmbed.OEmbedRawValue::class.java, "type")
-                    .withSubtype(OEmbed.Photo.PhotoValue::class.java, OEmbed.Photo.PhotoValue.type)
-                    .withSubtype(OEmbed.Video.VideoValue::class.java, OEmbed.Video.VideoValue.type)
-                    .withSubtype(OEmbed.OEmbedRawValue::class.java, "")
-                    .withDefaultValue(OEmbed.OEmbedValueImpl)
-            )
-            .add(KotlinJsonAdapterFactory())
-            .build()
 }
