@@ -4,7 +4,7 @@ import net.unsweets.gamma.domain.model.params.single.GeneralPostParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.model.params.single.SearchPostParam
 
-open class GetPostsParam(existParams: Map<String, String>) : BaseComposeParam(existParams) {
+open class GetPostsParam(existParams: Map<String, String>? = null) : BaseComposeParam(existParams) {
     init {
         add(GeneralPostParam(false))
     }
