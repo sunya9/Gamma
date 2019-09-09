@@ -180,6 +180,27 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
 
+
+                                <TextView
+                                    android:id="@+id/verifiedDomainTextView"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/margin_regular"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:textColor="?attr/colorPrimary"
+                                    android:text="@{viewModel.user.verified.domain}"
+                                    android:onClick="@{() -> viewModel.openVerifiedDomain()}"
+                                    android:visibility="@{safeUnbox(viewModel.verifiedDomainVisibility)}"
+                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                    android:textAlignment="center"
+                                    android:singleLine="true"
+                                    android:ellipsize="end"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                                    tools:text="https://example.com/" />
+
                                 <TextView
                                     android:id="@+id/profileDescriptionTextView"
                                     android:layout_width="0dp"
@@ -191,7 +212,8 @@
                                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                                    app:layout_goneMarginTop="@dimen/margin_regular"
+                                    app:layout_constraintTop_toBottomOf="@+id/verifiedDomainTextView"
                                     tools:text="@tools:sample/lorem" />
 
                                 <TextView

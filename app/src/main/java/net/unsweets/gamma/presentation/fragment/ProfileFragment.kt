@@ -241,7 +241,12 @@ class ProfileFragment : BaseFragment() {
             is Event.EditProfile -> showEditProfileDialog()
             is Event.ShowAvatar -> it.url?.let { url -> showAvatar(url) }
             is Event.ShowCover -> it.url?.let { url -> showCover(url) }
+            is Event.OpenVerifiedDomain -> openVerifiedDomain(it.url)
         }
+    }
+
+    private fun openVerifiedDomain(url: String) {
+        context?.let { Util.openCustomTabUrl(it, url) }
     }
 
     private enum class TransitionName { Avatar, Cover }
@@ -357,10 +362,16 @@ class ProfileFragment : BaseFragment() {
             }
         }
         val actionButtonRippleColor = Util.getPrimaryColorDark(app)
+        val verifiedDomainVisibility = Transformations.map(user) {
+            if (it.verified != null) View.VISIBLE else View.GONE
+        }
 
         init {
             if (user.value == null) getUser()
         }
+
+        fun openVerifiedDomain() =
+            user.value?.verified?.let { event.emit(Event.OpenVerifiedDomain(it.link)) }
 
         fun getUser() {
             val id = userId ?: user.value?.id ?: return
@@ -432,6 +443,7 @@ class ProfileFragment : BaseFragment() {
         data class FollowingList(val user: User) : Event()
         data class ShowAvatar(val url: String?) : Event()
         data class ShowCover(val url: String?) : Event()
+        data class OpenVerifiedDomain(val url: String) : Event()
     }
 
     companion object {
