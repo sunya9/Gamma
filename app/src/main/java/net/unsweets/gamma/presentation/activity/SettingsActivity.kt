@@ -29,6 +29,7 @@ import net.unsweets.gamma.presentation.fragment.ChoosePrimaryColorDialogFragment
 import net.unsweets.gamma.presentation.util.ColorSummaryProvider
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
 import net.unsweets.gamma.presentation.view.ThemeColorPreference
+import net.unsweets.gamma.util.Constants
 import javax.inject.Inject
 
 
@@ -105,7 +106,7 @@ class SettingsActivity : BaseActivity(),
             findPreference<Preference>((getString(R.string.pref_version_key)))?.let {
                 it.summary = BuildConfig.VERSION_NAME
                 it.intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}")
+                    data = Uri.parse(Constants.PlayStoreUrl)
                 }
             }
         }
