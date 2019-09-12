@@ -13,6 +13,7 @@ data class GeneralPostParam(
         map["include_post_raw"] = includePostRaw.toInt().toString()
         map["include_bookmarked_by"] = includeBookmarkedBy.toInt().toString()
         map["include_reposted_by"] = includeRepostedBy.toInt().toString()
+        map["include_html"] = 0.toString()
     }
 
 }
