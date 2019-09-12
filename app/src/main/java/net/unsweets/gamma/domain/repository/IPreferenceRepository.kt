@@ -13,4 +13,5 @@ interface IPreferenceRepository {
     val darkModeStr: String
     val avatarSwipe: Boolean
     val loadingSize: Int
+    val thresholdOfAutoPager: Int
 }

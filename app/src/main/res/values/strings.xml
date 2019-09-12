@@ -202,6 +202,10 @@
     <string name="pref_loading_size">Loading size</string>
     <string name="pref_loading_size_default_value">20</string>
     <string name="pref_loading_size_desc">The count of items to be loaded.</string>
+    <string name="pref_auto_pager">Threshold of auto pager</string>
+    <string name="pref_auto_pager_key">auto_pager</string>
+    <string name="pref_auto_pager_desc">It will auto load when the count from last item to of
+        viewing item below the configured number. Disable when set to 0.</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

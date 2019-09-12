@@ -64,4 +64,10 @@ class PreferenceRepository(val context: Context) : IPreferenceRepository {
 
     override val loadingSize: Int
         get() = sharedPreferences.getInt(context.getString(R.string.pref_loading_size_key), 20)
+
+    override val thresholdOfAutoPager: Int
+        get() = sharedPreferences.getInt(
+            context.getString(R.string.pref_auto_pager_key),
+            context.resources.getInteger(R.integer.auto_pager_default_value)
+        )
 }

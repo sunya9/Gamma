@@ -14,5 +14,15 @@
             app:showSeekBarValue="true"
             app:summary="@string/pref_loading_size_desc"
             app:seekBarIncrement="@integer/pref_loading_size_step" />
+        <net.unsweets.gamma.presentation.view.SeekBarPreferenceMod
+            app:title="@string/pref_auto_pager"
+            app:key="@string/pref_auto_pager_key"
+            app:defaultValue="@integer/auto_pager_default_value"
+            app:min="0"
+            android:max="100"
+            app:adjustable="true"
+            app:showSeekBarValue="true"
+            app:summary="@string/pref_auto_pager_desc"
+            app:seekBarIncrement="@integer/pref_auto_pager_step" />
     </PreferenceCategory>
 </PreferenceScreen>

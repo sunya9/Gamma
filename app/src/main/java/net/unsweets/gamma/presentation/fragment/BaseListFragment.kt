@@ -64,7 +64,7 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
     open val dividerDrawable: Int = R.drawable.divider_inset
 
     private val infiniteScrollListener by lazy {
-        InfiniteScrollListener(this)
+        InfiniteScrollListener(preferenceRepository.thresholdOfAutoPager, this)
     }
 
 

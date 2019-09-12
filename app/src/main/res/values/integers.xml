@@ -2,4 +2,7 @@
 <resources>
     <integer name="compose_duration">@android:integer/config_mediumAnimTime</integer>
     <integer name="pref_loading_size_step">10</integer>
+    <integer name="pref_pref_auto_pager_step">10</integer>
+    <integer name="pref_auto_pager_step">10</integer>
+    <integer name="auto_pager_default_value">20</integer>
 </resources>
