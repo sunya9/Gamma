@@ -37,23 +37,6 @@
                     app:title="@{viewModel.user.name}"
                     app:titleEnabled="false">
 
-                    <ImageView
-                        android:id="@+id/coverImageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="340dp"
-                        android:clickable="true"
-                        android:transitionName="cover_image_transition"
-                        android:focusable="true"
-                        android:foreground="@drawable/fg_profile_cover_shadow"
-                        android:onClick="@{() -> viewModel.showCover()}"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/bg_default_profile_cover"
-                        app:glideSrc="@{viewModel.user.content.coverImage.link}"
-                        app:layout_collapseMode="parallax"
-                        app:layout_collapseParallaxMultiplier="1"
-                        tools:ignore="ContentDescription"
-                        tools:src="@tools:sample/backgrounds/scenic" />
-
                     <androidx.appcompat.widget.Toolbar
                         android:id="@+id/toolbar"
                         android:layout_width="match_parent"
@@ -76,6 +59,24 @@
                         android:background="@android:color/transparent"
                         android:clipToPadding="false"
                         app:layout_collapseMode="none">
+
+                        <ImageView
+                            android:id="@+id/coverImageView"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:clickable="true"
+                            android:transitionName="cover_image_transition"
+                            android:focusable="true"
+                            android:foreground="@drawable/fg_profile_cover_shadow"
+                            android:onClick="@{() -> viewModel.showCover()}"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/bg_default_profile_cover"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:ignore="ContentDescription"
+                            tools:src="@tools:sample/backgrounds/scenic" />
 
                         <Space
                             android:id="@+id/negativePosition"
@@ -128,15 +129,6 @@
                             app:layout_constraintTop_toBottomOf="@+id/circleImageView"
                             tools:text="HandleName" />
 
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_marginTop="316dp"
-                            android:background="@android:color/transparent"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/userMainActionButton"

@@ -98,6 +98,8 @@ data class User(
             else -> "https://api.pnut.io/v0/users/$id/avatar"
         }
 
+        fun getCoverUrl(id: String) = "https://api.pnut.io/v0/users/$id/cover"
+
         fun getCanonicalUrl(username: String) = "https://pnut.io/@$username"
     }
 }

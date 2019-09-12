@@ -26,8 +26,10 @@ import androidx.transition.ChangeBounds
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentProfileBinding
@@ -137,6 +139,11 @@ class ProfileFragment : BaseFragment() {
                 sharedElements[names[0]] = binding.circleImageView
             }
         })
+
+        val coverUrl = User.getCoverUrl(userId)
+        GlideApp.with(this).load(coverUrl)
+            .apply(RequestOptions.bitmapTransform(BlurTransformation(20)))
+            .into(binding.coverImageView)
 
         return binding.root
     }
@@ -336,6 +343,7 @@ class ProfileFragment : BaseFragment() {
                 0
             }
         }
+
         val toolbarTextColor = MutableLiveData<Int>().apply { value = Color.WHITE }
         val toolbarBgColor = MutableLiveData<Int>().apply { value = Color.TRANSPARENT }
         val loading = MutableLiveData<Boolean>().apply { value = false }
