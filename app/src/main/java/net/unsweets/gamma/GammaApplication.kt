@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
-import androidx.preference.PreferenceManager
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import dagger.android.AndroidInjector
@@ -38,23 +37,11 @@ class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
         val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
         Fabric.with(this, Crashlytics.Builder().core(core).build())
 //        if (!setToken()) return backToLoginActivity() // failed
-    }
 
-    enum class DarkMode(val value: Int) {
-        FollowSystem(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM),
-        Off(AppCompatDelegate.MODE_NIGHT_NO),
-        On(AppCompatDelegate.MODE_NIGHT_YES),
-        Auto(AppCompatDelegate.MODE_NIGHT_AUTO)
     }
 
     fun updateBaseTheme() {
-        val pm = PreferenceManager.getDefaultSharedPreferences(this)
-        val darkMode = try {
-            val strInt = pm.getString(getString(R.string.pref_dark_theme_key), "0") ?: "0"
-            DarkMode.values()[strInt.toInt()]
-        } catch (e: Exception) {
-            DarkMode.FollowSystem
-        }
+        val darkMode = module.providePreferenceRepository().darkMode
         AppCompatDelegate.setDefaultNightMode(darkMode.value)
     }
 

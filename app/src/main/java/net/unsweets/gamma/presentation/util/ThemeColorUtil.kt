@@ -1,13 +1,21 @@
 package net.unsweets.gamma.presentation.util
 
 import android.content.Context
-import android.preference.PreferenceManager
 import android.util.TypedValue
 import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.DialogFragment
 import net.unsweets.gamma.R
+import net.unsweets.gamma.domain.repository.PreferenceRepository
 
 object ThemeColorUtil {
+    enum class DarkMode(val value: Int) {
+        FollowSystem(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM),
+        Off(AppCompatDelegate.MODE_NIGHT_NO),
+        On(AppCompatDelegate.MODE_NIGHT_YES),
+        Auto(AppCompatDelegate.MODE_NIGHT_AUTO)
+    }
+
     enum class ThemeColor(val themeResource: Int) {
         Default(R.style.AdditionalStyle_Default),
         Red(R.style.AdditionalStyle_Red),
@@ -51,20 +59,18 @@ object ThemeColorUtil {
         }
     }
 
+    // TODO: Fix me
     fun currentDarkThemeMode(context: Context?): String {
         if (context == null) return "0"
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        return pref.getString(context.getString(R.string.pref_dark_theme_key), "0") ?: "0"
+        val preference = PreferenceRepository(context)
+        return preference.darkModeStr
     }
 
+    // TODO: Fix me
     fun getThemeColor(context: Context?): ThemeColor {
         if (context == null) return ThemeColor.Default
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val themeColorStr =
-            pref.getString(context.getString(R.string.pref_change_primary_color_key), null)
-        return ThemeColor.fromString(
-            themeColorStr
-        )
+        val preference = PreferenceRepository(context)
+        return preference.themeColor
     }
 
     fun applyTheme(context: Context): ThemeColor {
