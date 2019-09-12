@@ -200,7 +200,6 @@
     <string name="pref_loading">Loading</string>
     <string name="pref_loading_size_key">loading_size</string>
     <string name="pref_loading_size">Loading size</string>
-    <string name="pref_loading_size_default_value">20</string>
     <string name="pref_loading_size_desc">The count of items to be loaded.</string>
     <string name="pref_auto_pager">Threshold of auto pager</string>
     <string name="pref_auto_pager_key">auto_pager</string>

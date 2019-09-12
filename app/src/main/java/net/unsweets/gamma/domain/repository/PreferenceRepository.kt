@@ -17,6 +17,8 @@ class PreferenceRepository(val context: Context) : IPreferenceRepository {
         load()
     }
 
+    val res = context.resources
+
     override fun reload() = load()
 
     override fun load() {
@@ -63,11 +65,14 @@ class PreferenceRepository(val context: Context) : IPreferenceRepository {
         get() = sharedPreferences.getBoolean(context.getString(R.string.avatar_swipe_key), true)
 
     override val loadingSize: Int
-        get() = sharedPreferences.getInt(context.getString(R.string.pref_loading_size_key), 20)
+        get() = sharedPreferences.getInt(
+            context.getString(R.string.pref_loading_size_key),
+            res.getInteger(R.integer.pref_loading_size_default_value)
+        )
 
     override val thresholdOfAutoPager: Int
         get() = sharedPreferences.getInt(
             context.getString(R.string.pref_auto_pager_key),
-            context.resources.getInteger(R.integer.auto_pager_default_value)
+            res.getInteger(R.integer.auto_pager_default_value)
         )
 }
