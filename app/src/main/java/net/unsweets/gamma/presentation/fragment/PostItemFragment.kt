@@ -49,7 +49,6 @@ import net.unsweets.gamma.domain.model.io.GetCachedPostListInputData
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
-import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.usecases.CachePostUseCase
 import net.unsweets.gamma.domain.usecases.GetCachedPostListUseCase
 import net.unsweets.gamma.domain.usecases.GetPostUseCase
@@ -77,9 +76,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewModel.loadSegmentItems(itemWrapper)
         }
     }
-
-    @Inject
-    lateinit var preferenceRepository: IPreferenceRepository
 
     override fun onPostReceive(post: Post) {
 
