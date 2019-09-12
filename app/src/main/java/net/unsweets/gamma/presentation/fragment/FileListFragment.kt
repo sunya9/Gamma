@@ -21,7 +21,10 @@ import javax.inject.Inject
 
 class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<File, FileListFragment.FileViewHolder> {
-    override fun retryCallback() {
+    override fun onClickSegmentListener(
+        viewHolder: BaseListRecyclerViewAdapter.SegmentViewHolder,
+        itemWrapper: PageableItemWrapper.Pager<File>
+    ) {
         viewModel.loadMoreItems()
     }
     override val itemNameRes: Int = R.string.files
@@ -62,10 +65,16 @@ class FileListFragment : BaseListFragment<File, FileListFragment.FileViewHolder>
     }
 
     class FilesViewModel(private val getFilesUseCase: GetFilesUseCase) : BaseListViewModel<File>() {
-        override suspend fun getItems(params: PaginationParam): PnutResponse<List<File>> {
-            val getPostParam = GetFilesParam().also { it.add(params) }
+        override suspend fun getItems(requestPager: PageableItemWrapper.Pager<File>?): PnutResponse<List<File>> {
+            val getPostParam =
+                GetFilesParam().apply { requestPager?.let { add(PaginationParam.createFromPager(it)) } }
+//                .also { it.add(params) }
 
             return getFilesUseCase.run(GetFilesInputData(getPostParam)).res
+        }
+
+        override fun storeItems() {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         class Factory(private val getFilesUseCase: GetFilesUseCase) : ViewModelProvider.Factory {

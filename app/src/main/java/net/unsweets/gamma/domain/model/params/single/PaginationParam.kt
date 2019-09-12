@@ -1,16 +1,25 @@
 package net.unsweets.gamma.domain.model.params.single
 
-import com.squareup.moshi.Json
+import net.unsweets.gamma.domain.entity.UniquePageable
+import net.unsweets.gamma.domain.model.PageableItemWrapper
 
 data class PaginationParam(
-    @Json(name = "min_id") val minId: String? = null,
-    @Json(name = "max_id") val maxId: String? = null,
+    val beforeId: String? = null,
+    val sinceId: String? = null,
     val count: Int? = null
 
-): BaseParam {
+) : BaseParam {
     override fun toMap(): Map<String, String> = hashMapOf<String, String>().also { map ->
-        minId?.let { map["before_id"] = it }
-        maxId?.let { map["since_id"] = it }
+        beforeId?.let { map["before_id"] = it }
+        sinceId?.let { map["since_id"] = it }
         count?.let { map["count"] = it.toString() }
+    }
+
+    companion object {
+        fun createFromPager(
+            pager: PageableItemWrapper.Pager<out UniquePageable>
+        ): PaginationParam {
+            return PaginationParam(pager.getBeforeId(), pager.getSinceId())
+        }
     }
 }

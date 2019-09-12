@@ -17,7 +17,8 @@ class UseCaseModule {
     ): VerifyTokenUseCase = VerifyTokenUseCase(accountRepository, pnutRepository)
 
     @Provides
-    fun provideGetPostUseCase(pnutRepository: IPnutRepository): GetPostUseCase = GetPostUseCase(pnutRepository)
+    fun provideGetPostUseCase(pnutRepository: IPnutRepository): GetPostUseCase =
+        GetPostUseCase(pnutRepository)
 
     @Provides
     fun provideGetInteractionUseCase(pnutRepository: IPnutRepository): GetInteractionUseCase =
@@ -28,7 +29,8 @@ class UseCaseModule {
         pnutRepository: IPnutRepository,
         accountRepository: IAccountRepository,
         preferenceRepository: IPreferenceRepository
-    ): SetupTokenUseCase = SetupTokenUseCase(pnutRepository, accountRepository, preferenceRepository)
+    ): SetupTokenUseCase =
+        SetupTokenUseCase(pnutRepository, accountRepository, preferenceRepository)
 
     @Provides
     fun provideGetAuthenticatedUserUseCase(
@@ -114,4 +116,34 @@ class UseCaseModule {
     fun provideUpdateUserImageUseCase(
         pnutRepository: IPnutRepository
     ): UpdateUserImageUseCase = UpdateUserImageUseCase(pnutRepository)
+
+    @Provides
+    fun provideGetCachedPostListUseCase(
+        pnutCacheRepository: IPnutCacheRepository
+    ): GetCachedPostListUseCase = GetCachedPostListUseCase(pnutCacheRepository)
+
+    @Provides
+    fun provideGetCachedUserListUseCase(
+        pnutCacheRepository: IPnutCacheRepository
+    ): GetCachedUserListUseCase = GetCachedUserListUseCase(pnutCacheRepository)
+
+    @Provides
+    fun provideGetCachedInteractionListUseCase(
+        pnutCacheRepository: IPnutCacheRepository
+    ): GetCachedInteractionListUseCase = GetCachedInteractionListUseCase(pnutCacheRepository)
+
+    @Provides
+    fun provideCachePostUseCase(
+        pnutCacheRepository: IPnutCacheRepository
+    ): CachePostUseCase = CachePostUseCase(pnutCacheRepository)
+
+    @Provides
+    fun provideCacheUserUseCase(
+        pnutCacheRepository: IPnutCacheRepository
+    ): CacheUserUseCase = CacheUserUseCase(pnutCacheRepository)
+
+    @Provides
+    fun provideCacheInteractionUseCase(
+        pnutCacheRepository: IPnutCacheRepository
+    ): CacheInteractionUseCase = CacheInteractionUseCase(pnutCacheRepository)
 }

@@ -20,9 +20,10 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -33,6 +34,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_post_item.view.*
+import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.broadcast.PostReceiver
 import net.unsweets.gamma.domain.entity.PnutResponse
@@ -42,9 +44,13 @@ import net.unsweets.gamma.domain.entity.raw.LongPost
 import net.unsweets.gamma.domain.entity.raw.OEmbed
 import net.unsweets.gamma.domain.model.PageableItemWrapper
 import net.unsweets.gamma.domain.model.StreamType
+import net.unsweets.gamma.domain.model.io.CachePostInputData
+import net.unsweets.gamma.domain.model.io.GetCachedPostListInputData
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import net.unsweets.gamma.domain.usecases.CachePostUseCase
+import net.unsweets.gamma.domain.usecases.GetCachedPostListUseCase
 import net.unsweets.gamma.domain.usecases.GetPostUseCase
 import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
@@ -61,9 +67,14 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     BaseListRecyclerViewAdapter.IBaseList<Post, PostItemFragment.PostViewHolder>,
     ThumbnailViewPagerAdapter.Listener, DeletePostDialogFragment.Callback,
     SimpleBottomSheetMenuFragment.Callback, PostReceiver.Callback {
-    override fun retryCallback() {
-        LogUtil.e("retryCallback")
-        viewModel.loadMoreItems()
+    override fun onClickSegmentListener(
+        viewHolder: BaseListRecyclerViewAdapter.SegmentViewHolder,
+        itemWrapper: PageableItemWrapper.Pager<Post>
+    ) {
+        LogUtil.e("onClickSegmentListener")
+        lifecycleScope.launch {
+            viewModel.loadSegmentItems(itemWrapper)
+        }
     }
 
     override fun onPostReceive(post: Post) {
@@ -183,17 +194,24 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     private val slideToLeftOut by lazy {
         TransitionInflater.from(context).inflateTransition(R.transition.slide_to_left_out)
     }
-    private val postsObserver = Observer<List<Post>> {
-
-    }
 
     @Inject
     lateinit var getPostUseCase: GetPostUseCase
+    @Inject
+    lateinit var getCachedPostUseCase: GetCachedPostListUseCase
+    @Inject
+    lateinit var cachePostUseCase: CachePostUseCase
+
     abstract val streamType: StreamType
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(
             this,
-            PostItemViewModel.Factory(streamType, getPostUseCase)
+            PostItemViewModel.Factory(
+                streamType,
+                getPostUseCase,
+                getCachedPostUseCase,
+                cachePostUseCase
+            )
         )[PostItemViewModel::class.java]
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
@@ -665,23 +683,50 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     class PostItemViewModel(
         private val streamType: StreamType,
-        private val getPostUseCase: GetPostUseCase
+        private val getPostUseCase: GetPostUseCase,
+        private val getCachedPostUseCase: GetCachedPostListUseCase,
+        private val cachePostUseCase: CachePostUseCase
     ) :
         BaseListFragment.BaseListViewModel<Post>() {
-        override suspend fun getItems(params: PaginationParam): PnutResponse<List<Post>> {
-            val getPostParam = GetPostsParam(params.toMap()).also { it.add(params) }
+        override suspend fun getItems(requestPager: PageableItemWrapper.Pager<Post>?): PnutResponse<List<Post>> {
+            val getPostParam = GetPostsParam().apply {
+                requestPager?.let { add(PaginationParam.createFromPager(requestPager)) }
+            }
             return getPostUseCase.run(GetPostInputData(streamType, getPostParam)).res
         }
 
+        override fun loadInitialData() {
+            viewModelScope.launch {
+                val res = getCachedPostUseCase.run(GetCachedPostListInputData(streamType))
+                items.addAll(res.posts.data)
+                super.loadInitialData()
+            }
+        }
+
+        override fun storeItems() {
+            viewModelScope.launch {
+                runCatching {
+                    cachePostUseCase.run((CachePostInputData(items, streamType)))
+                }
+            }
+        }
 
         class Factory(
             private val streamType: StreamType,
-            private val getPostUseCase: GetPostUseCase
+            private val getPostUseCase: GetPostUseCase,
+            private val getCachedPostUseCase: GetCachedPostListUseCase,
+            private val cachePostUseCase: CachePostUseCase
+
         ) :
             ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return PostItemViewModel(streamType, getPostUseCase) as T
+                return PostItemViewModel(
+                    streamType,
+                    getPostUseCase,
+                    getCachedPostUseCase,
+                    cachePostUseCase
+                ) as T
             }
         }
     }

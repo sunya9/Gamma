@@ -5,18 +5,24 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_user_item.view.*
+import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.model.PageableItemWrapper
 import net.unsweets.gamma.domain.model.UserListType
+import net.unsweets.gamma.domain.model.io.CacheUserInputData
+import net.unsweets.gamma.domain.model.io.GetCachedUserListInputData
 import net.unsweets.gamma.domain.model.io.GetUsersInputData
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.model.params.single.SearchUserParam
+import net.unsweets.gamma.domain.usecases.CacheUserUseCase
+import net.unsweets.gamma.domain.usecases.GetCachedUserListUseCase
 import net.unsweets.gamma.domain.usecases.GetUsersUseCase
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.util.EntityOnTouchListener
@@ -26,24 +32,41 @@ import javax.inject.Inject
 abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserViewHolder>(),
     BaseListRecyclerViewAdapter.IBaseList<User, UserListFragment.UserViewHolder> {
     override val itemNameRes: Int = R.string.users
-    override fun retryCallback() {
+    override fun onClickSegmentListener(
+        viewHolder: BaseListRecyclerViewAdapter.SegmentViewHolder,
+        itemWrapper: PageableItemWrapper.Pager<User>
+    ) {
         viewModel.loadMoreItems()
     }
+
     override val baseListListener: BaseListRecyclerViewAdapter.IBaseList<User, UserViewHolder> by lazy {
         this
     }
     override val viewModel: BaseListViewModel<User> by lazy {
-        ViewModelProvider(this, UserListViewModel.Factory(userListType, getUsersUseCase))[UserListViewModel::class.java]
+        ViewModelProvider(
+            this,
+            UserListViewModel.Factory(
+                userListType,
+                getUsersUseCase,
+                cachedUserListUseCase,
+                cacheUserUseCase
+            )
+        )[UserListViewModel::class.java]
     }
 
 
     @Inject
     lateinit var getUsersUseCase: GetUsersUseCase
     abstract val userListType: UserListType
+    @Inject
+    lateinit var cachedUserListUseCase: GetCachedUserListUseCase
+    @Inject
+    lateinit var cacheUserUseCase: CacheUserUseCase
 
     private val entityListener: View.OnTouchListener = EntityOnTouchListener()
 
-    override fun createViewHolder(mView: View, viewType: Int): UserViewHolder = UserViewHolder(mView)
+    override fun createViewHolder(mView: View, viewType: Int): UserViewHolder =
+        UserViewHolder(mView)
 
     override fun onClickItemListener(
         viewHolder: UserViewHolder,
@@ -54,7 +77,12 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
         addFragment(fragment, item.id)
     }
 
-    override fun onBindViewHolder(item: User, viewHolder: UserViewHolder, position: Int, isMainItem: Boolean) {
+    override fun onBindViewHolder(
+        item: User,
+        viewHolder: UserViewHolder,
+        position: Int,
+        isMainItem: Boolean
+    ) {
         GlideApp.with(this).load(item.content.avatarImage.link).into(viewHolder.avatarView)
         viewHolder.screenNameTextView.text = item.username
         viewHolder.handleNameTextView.text = item.name
@@ -79,22 +107,50 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
 
     class UserListViewModel(
         private val userListType: UserListType,
-        private val getUsersUseCase: GetUsersUseCase
+        private val getUsersUseCase: GetUsersUseCase,
+        private val cachedUserListUseCase: GetCachedUserListUseCase,
+        private val cacheUserUseCase: CacheUserUseCase
     ) : BaseListViewModel<User>() {
-        override suspend fun getItems(params: PaginationParam): PnutResponse<List<User>> {
-            val getUsersParam = GetUsersParam(params.toMap()).apply { add(params) }
+        override suspend fun getItems(requestPager: PageableItemWrapper.Pager<User>?): PnutResponse<List<User>> {
+            val getUsersParam = GetUsersParam().apply {
+                requestPager?.let { add(PaginationParam.createFromPager(it)) }
+            }
             if (userListType is UserListType.Search) getUsersParam.add(SearchUserParam(userListType.keyword))
             val getUsersInputData = GetUsersInputData(userListType, getUsersParam)
             return getUsersUseCase.run(getUsersInputData).res
         }
 
+        override fun loadInitialData() {
+            viewModelScope.launch {
+                val res = cachedUserListUseCase.run(GetCachedUserListInputData((userListType)))
+                items.addAll(res.users.data)
+                super.loadInitialData()
+            }
+        }
+
+        override fun storeItems() {
+            viewModelScope.launch {
+                runCatching {
+                    cacheUserUseCase.run(CacheUserInputData(items, userListType))
+                }
+            }
+        }
+
         class Factory(
             private val userListType: UserListType,
-            private val getUsersUseCase: GetUsersUseCase
+            private val getUsersUseCase: GetUsersUseCase,
+            private val cachedUserListUseCase: GetCachedUserListUseCase,
+            private val cacheUserUseCase: CacheUserUseCase
+
         ) : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return UserListViewModel(userListType, getUsersUseCase) as T
+                return UserListViewModel(
+                    userListType,
+                    getUsersUseCase,
+                    cachedUserListUseCase,
+                    cacheUserUseCase
+                ) as T
             }
         }
 
