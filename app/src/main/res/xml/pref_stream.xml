@@ -4,7 +4,7 @@
     android:key="@string/pref_stream_key"
     android:title="@string/pref_stream_title">
     <PreferenceCategory android:title="@string/pref_loading">
-        <SeekBarPreference
+        <net.unsweets.gamma.presentation.view.SeekBarPreferenceMod
             app:title="@string/pref_loading_size"
             app:key="@string/pref_loading_size_key"
             app:defaultValue="@string/pref_loading_size_default_value"
