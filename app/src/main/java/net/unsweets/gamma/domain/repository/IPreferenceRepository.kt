@@ -14,4 +14,5 @@ interface IPreferenceRepository {
     val avatarSwipe: Boolean
     val loadingSize: Int
     val thresholdOfAutoPager: Int
+    val unifiedStream: Boolean
 }

@@ -117,7 +117,12 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
         return defaultPnutService.getMutedUsers(getUsersParam.toMap()).await()
     }
 
-    override suspend fun getHomeStream(getPostsParam: GetPostsParam): PnutResponse<List<Post>> {
+    override suspend fun getUnifiedStream(getPostsParam: GetPostsParam): PnutResponse<List<Post>> {
+        return defaultPnutService.getUnifiedStream(getPostsParam.toMap()).await()
+
+    }
+
+    override suspend fun getPersonalStream(getPostsParam: GetPostsParam): PnutResponse<List<Post>> {
         return defaultPnutService.getPersonalStream(getPostsParam.toMap()).await()
     }
 

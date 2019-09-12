@@ -75,4 +75,10 @@ class PreferenceRepository(val context: Context) : IPreferenceRepository {
             context.getString(R.string.pref_auto_pager_key),
             res.getInteger(R.integer.auto_pager_default_value)
         )
+
+    override val unifiedStream: Boolean
+        get() = sharedPreferences.getBoolean(
+            context.getString(R.string.pref_use_unified_stream_key),
+            res.getBoolean(R.bool.pref_use_unified_stream_default_value)
+        )
 }

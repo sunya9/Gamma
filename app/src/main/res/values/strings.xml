@@ -205,6 +205,12 @@
     <string name="pref_auto_pager_key">auto_pager</string>
     <string name="pref_auto_pager_desc">It will auto load when the count from last item to of
         viewing item below the configured number. Disable when set to 0.</string>
+    <string name="each_stream">Each stream and other lists</string>
+    <string name="pref_use_unified_stream_key">use_unified_stream</string>
+    <string name="pref_use_unified_stream_summary_on">Include mentions in personal stream.</string>
+    <string name="pref_use_unified_stream_summary_off">Not include mentions in personal stream
+        .</string>
+    <string name="pref_use_unified_stream_title">Use unified stream</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

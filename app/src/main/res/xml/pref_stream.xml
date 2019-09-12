@@ -3,6 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="@string/pref_stream_key"
     android:title="@string/pref_stream_title">
+    <PreferenceCategory android:title="@string/each_stream">
+        <SwitchPreference
+            app:key="@string/pref_use_unified_stream_key"
+            app:defaultValue="@bool/pref_use_unified_stream_default_value"
+            app:title="@string/pref_use_unified_stream_title"
+            app:summaryOn="@string/pref_use_unified_stream_summary_on"
+            app:summaryOff="@string/pref_use_unified_stream_summary_off" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_loading">
         <net.unsweets.gamma.presentation.view.SeekBarPreferenceMod
             app:title="@string/pref_loading_size"

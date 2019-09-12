@@ -25,7 +25,7 @@ interface PnutService {
     fun getPersonalStream(@QueryMap params: Map<String, String>): Call<PnutResponse<List<Post>>>
 
     @GET("posts/streams/unified")
-    fun getUnifiedStream(): Call<PnutResponse<List<Post>>>
+    fun getUnifiedStream(@QueryMap params: Map<String, String>): Call<PnutResponse<List<Post>>>
 
     @GET("posts/search")
     fun searchPosts(@QueryMap queries: Map<String, String>): Call<PnutResponse<List<Post>>>

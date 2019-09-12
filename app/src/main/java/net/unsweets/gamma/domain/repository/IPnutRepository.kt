@@ -11,7 +11,9 @@ import okhttp3.RequestBody
 
 interface IPnutRepository {
     // posts
-    suspend fun getHomeStream(getPostsParam: GetPostsParam): PnutResponse<List<Post>>
+    suspend fun getUnifiedStream(getPostsParam: GetPostsParam): PnutResponse<List<Post>>
+
+    suspend fun getPersonalStream(getPostsParam: GetPostsParam): PnutResponse<List<Post>>
     suspend fun getMentionStream(getPostsParam: GetPostsParam): PnutResponse<List<Post>>
     suspend fun getStars(userId: String, getPostsParam: GetPostsParam): PnutResponse<List<Post>>
     suspend fun getUserPosts(userId: String, getPostsParam: GetPostsParam): PnutResponse<List<Post>>

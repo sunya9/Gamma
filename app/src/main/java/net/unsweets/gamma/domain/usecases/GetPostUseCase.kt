@@ -23,7 +23,12 @@ class GetPostUseCase(
                 it.add(PaginationParam(count = preferenceRepository.loadingSize))
             }
         val res = when (streamType) {
-            is StreamType.Home -> pnutRepository.getHomeStream(param)
+            is StreamType.Home -> {
+                when (preferenceRepository.unifiedStream) {
+                    true -> pnutRepository.getUnifiedStream(param)
+                    else -> pnutRepository.getPersonalStream(param)
+                }
+            }
             is StreamType.Mentions -> pnutRepository.getMentionStream(param)
             is StreamType.Stars -> pnutRepository.getStars(streamType.userId, param)
             is StreamType.Tag -> pnutRepository.getTagStream(streamType.tag, param)
