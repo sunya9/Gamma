@@ -210,6 +210,17 @@ class SettingsActivity : BaseActivity(),
         }
     }
 
+    class StreamPreferenceFragment : BasePreferenceFragment() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(
+                R.xml.pref_stream,
+                getString(R.string.pref_stream_key)
+            )
+        }
+
+        override val rootKey: Int = R.string.pref_stream_key
+    }
+
     class AccountPreferenceFragment : BasePreferenceFragment() {
         override val rootKey: Int = R.string.pref_account_key
         @Inject

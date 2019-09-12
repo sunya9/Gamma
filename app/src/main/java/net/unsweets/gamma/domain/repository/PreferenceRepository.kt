@@ -62,4 +62,6 @@ class PreferenceRepository(val context: Context) : IPreferenceRepository {
     override val avatarSwipe: Boolean
         get() = sharedPreferences.getBoolean(context.getString(R.string.avatar_swipe_key), true)
 
+    override val loadingSize: Int
+        get() = sharedPreferences.getInt(context.getString(R.string.pref_loading_size_key), 20)
 }

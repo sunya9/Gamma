@@ -12,4 +12,5 @@ interface IPreferenceRepository {
     val darkMode: ThemeColorUtil.DarkMode
     val darkModeStr: String
     val avatarSwipe: Boolean
+    val loadingSize: Int
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:key="@string/pref_stream_key"
+    android:title="@string/pref_stream_title">
+    <PreferenceCategory android:title="@string/pref_loading">
+        <SeekBarPreference
+            app:title="@string/pref_loading_size"
+            app:key="@string/pref_loading_size_key"
+            app:defaultValue="@string/pref_loading_size_default_value"
+            app:min="10"
+            android:max="200"
+            app:adjustable="true"
+            app:showSeekBarValue="true"
+            app:summary="@string/pref_loading_size_desc"
+            app:seekBarIncrement="@integer/pref_loading_size_step" />
+    </PreferenceCategory>
+</PreferenceScreen>

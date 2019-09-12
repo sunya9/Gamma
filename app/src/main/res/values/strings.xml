@@ -195,6 +195,13 @@
     <string name="avatar_swipe">Avatar swipe</string>
     <string name="avatar_swipe_desc">Control the post by swiping the post\'s avatar.</string>
     <string name="avatar_swipe_key">avatar_swipe</string>
+    <string name="pref_stream_key">pref_stream</string>
+    <string name="pref_stream_title">Stream</string>
+    <string name="pref_loading">Loading</string>
+    <string name="pref_loading_size_key">loading_size</string>
+    <string name="pref_loading_size">Loading size</string>
+    <string name="pref_loading_size_default_value">20</string>
+    <string name="pref_loading_size_desc">The count of items to be loaded.</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

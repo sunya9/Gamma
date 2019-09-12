@@ -92,4 +92,7 @@ abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract fun conrtirbuteBehaviorAppearancePreferenceFragment(): SettingsActivity.BehaviorAppearancePreferenceFragment
+
+    @ContributesAndroidInjector
+    abstract fun conrtirbuteStreamPreferenceFragment(): SettingsActivity.StreamPreferenceFragment
 }

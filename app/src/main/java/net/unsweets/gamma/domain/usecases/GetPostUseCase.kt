@@ -3,15 +3,25 @@ package net.unsweets.gamma.domain.usecases
 import net.unsweets.gamma.domain.model.StreamType
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.io.GetPostOutputData
+import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.GeneralPostParam
+import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.model.params.single.SearchPostParam
 import net.unsweets.gamma.domain.repository.IPnutRepository
+import net.unsweets.gamma.domain.repository.IPreferenceRepository
 
-class GetPostUseCase(private val pnutRepository: IPnutRepository) :
+class GetPostUseCase(
+    private val pnutRepository: IPnutRepository,
+    private val preferenceRepository: IPreferenceRepository
+) :
     AsyncUseCase<GetPostOutputData, GetPostInputData>() {
     override suspend fun run(params: GetPostInputData): GetPostOutputData {
         val streamType = params.streamType
-        val param = params.params
+        val baseParam = params.params
+        val param =
+            GetPostsParam(baseParam.toMap()).also {
+                it.add(PaginationParam(count = preferenceRepository.loadingSize))
+            }
         val res = when (streamType) {
             is StreamType.Home -> pnutRepository.getHomeStream(param)
             is StreamType.Mentions -> pnutRepository.getMentionStream(param)

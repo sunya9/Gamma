@@ -17,8 +17,11 @@ class UseCaseModule {
     ): VerifyTokenUseCase = VerifyTokenUseCase(accountRepository, pnutRepository)
 
     @Provides
-    fun provideGetPostUseCase(pnutRepository: IPnutRepository): GetPostUseCase =
-        GetPostUseCase(pnutRepository)
+    fun provideGetPostUseCase(
+        pnutRepository: IPnutRepository,
+        preferenceRepository: IPreferenceRepository
+    ): GetPostUseCase =
+        GetPostUseCase(pnutRepository, preferenceRepository)
 
     @Provides
     fun provideGetInteractionUseCase(pnutRepository: IPnutRepository): GetInteractionUseCase =
