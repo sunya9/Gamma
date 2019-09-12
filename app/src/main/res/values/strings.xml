@@ -188,6 +188,13 @@
     <string name="retry">Retry</string>
     <string name="end_of_list">End of list</string>
     <string name="load_more">Load more</string>
+    <string name="appearances">Appearances</string>
+    <string name="behavior">Behavior</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="avatar_swipe">Avatar swipe</string>
+    <string name="avatar_swipe_desc">Control the post by swiping the post\'s avatar.</string>
+    <string name="avatar_swipe_key">avatar_swipe</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

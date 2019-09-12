@@ -49,6 +49,7 @@ import net.unsweets.gamma.domain.model.io.GetCachedPostListInputData
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.usecases.CachePostUseCase
 import net.unsweets.gamma.domain.usecases.GetCachedPostListUseCase
 import net.unsweets.gamma.domain.usecases.GetPostUseCase
@@ -76,6 +77,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewModel.loadSegmentItems(itemWrapper)
         }
     }
+
+    @Inject
+    lateinit var preferenceRepository: IPreferenceRepository
 
     override fun onPostReceive(post: Post) {
 
@@ -224,7 +228,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     override val baseListListener by lazy { this }
 
     override fun createViewHolder(mView: View, viewType: Int): PostViewHolder =
-        PostViewHolder(mView, itemTouchHelper)
+        PostViewHolder(mView, itemTouchHelper, preferenceRepository.avatarSwipe)
 
     override fun onClickItemListener(
         viewHolder: PostViewHolder,
@@ -613,12 +617,13 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     @SuppressLint("ClickableViewAccessibility")
     class PostViewHolder(
         mView: View,
-        itemTouchHelper: ItemTouchHelper
+        itemTouchHelper: ItemTouchHelper,
+        avatarSwipe: Boolean
     ) : RecyclerView.ViewHolder(mView) {
         val rootCardView: CardView = itemView.rootCardView
         val avatarView: CircleImageView = itemView.avatarImageView.also {
             it.setOnTouchListener { view, motionEvent ->
-                if (view.isEnabled && motionEvent.actionMasked == MotionEvent.ACTION_MOVE) {
+                if (view.isEnabled && motionEvent.actionMasked == MotionEvent.ACTION_MOVE && avatarSwipe) {
                     itemTouchHelper.startSwipe(this)
                 }
                 false
