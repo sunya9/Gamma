@@ -51,8 +51,10 @@
             app:summary="@string/pref_cache_size_desc"
             app:seekBarIncrement="@integer/pref_cache_size_step" />
         <Preference
-            app:title="@string/pref_clear_cache_title"
-            app:summary="@string/pref_clear_cache_summary"
-            app:key="@string/pref_clear_cache_key" />
+            app:title="@string/pref_clear_stream_cache_title"
+            app:key="@string/pref_clear_stream_cache_key" />
+        <Preference
+            app:title="@string/pref_clear_glide_cache_title"
+            app:key="@string/pref_clear_glide_cache_key" />
     </PreferenceCategory>
 </PreferenceScreen>

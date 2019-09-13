@@ -32,8 +32,10 @@ import net.unsweets.gamma.domain.usecases.LogoutUseCase
 import net.unsweets.gamma.presentation.fragment.BasicDialogFragment
 import net.unsweets.gamma.presentation.fragment.ChoosePrimaryColorDialogFragment
 import net.unsweets.gamma.presentation.util.ColorSummaryProvider
+import net.unsweets.gamma.presentation.util.GlideApp
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
 import net.unsweets.gamma.presentation.view.ThemeColorPreference
+import net.unsweets.gamma.service.ClearGlideCacheService
 import net.unsweets.gamma.service.ClearStreamCacheService
 import net.unsweets.gamma.util.Constants
 import javax.inject.Inject
@@ -218,9 +220,15 @@ class SettingsActivity : BaseActivity(),
     }
 
     class StreamPreferenceFragment : BasePreferenceFragment(),
-        ClearStreamCacheService.Receiver.Listener {
-        override fun onReceive() {
-            clearCacheButton?.isEnabled = false
+        ClearStreamCacheService.Receiver.Listener, ClearGlideCacheService.Receiver.Listener {
+        override fun onClearGlideCache() {
+            clearGlideCacheButton?.isEnabled = false
+            val contentView = activity?.findViewById<View>(android.R.id.content) ?: return
+            Snackbar.make(contentView, R.string.cache_cleared, Snackbar.LENGTH_SHORT).show()
+        }
+
+        override fun onClearStreamCache() {
+            clearStreamCacheButton?.isEnabled = false
             val contentView = activity?.findViewById<View>(android.R.id.content) ?: return
             Snackbar.make(contentView, R.string.cache_cleared, Snackbar.LENGTH_SHORT).show()
         }
@@ -236,23 +244,44 @@ class SettingsActivity : BaseActivity(),
             ClearStreamCacheService.Receiver(this)
         }
 
-        private val clearCacheButton by lazy {
-            findPreference(R.string.pref_clear_cache_key)
+        private val clearGlideCacheReceiver by lazy {
+            ClearGlideCacheService.Receiver(this)
         }
+
+        private val clearStreamCacheButton by lazy {
+            findPreference(R.string.pref_clear_stream_cache_key)
+        }
+
+        private val clearGlideCacheButton by lazy {
+            findPreference(R.string.pref_clear_glide_cache_key)
+        }
+
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            clearCacheButton?.setOnPreferenceClickListener {
+            clearStreamCacheButton?.setOnPreferenceClickListener {
                 val fragment = BasicDialogFragment.Builder()
-                    .setTitle(R.string.pref_clear_cache_title)
+                    .setTitle(R.string.pref_clear_stream_cache_title)
                     .setMessage(R.string.this_operation_cannot_be_undone)
                     .setPositive(R.string.ok)
                     .setNegative(R.string.cancel)
-                    .build(RequestCode.ClearCache.ordinal)
-                fragment.show(childFragmentManager, DialogKey.ClearCache.name)
+                    .build(RequestCode.ClearStreamCache.ordinal)
+                fragment.show(childFragmentManager, DialogKey.ClearStreamCache.name)
                 false
             }
-            clearCacheButton?.isEnabled =
+            clearGlideCacheButton?.setOnPreferenceClickListener {
+                val fragment = BasicDialogFragment.Builder()
+                    .setTitle(R.string.pref_clear_glide_cache_title)
+                    .setMessage(R.string.this_operation_cannot_be_undone)
+                    .setPositive(R.string.ok)
+                    .setNegative(R.string.cancel)
+                    .build(RequestCode.ClearGlideCache.ordinal)
+                fragment.show(childFragmentManager, DialogKey.ClearGlideCache.name)
+                false
+            }
+            clearGlideCacheButton?.isEnabled =
+                context?.let { GlideApp.getPhotoCacheDir(it)?.exists() } ?: true
+            clearStreamCacheButton?.isEnabled =
                 context?.let { PnutCacheRepository.getUserCacheDir(it)?.exists() } ?: true
         }
 
@@ -262,21 +291,30 @@ class SettingsActivity : BaseActivity(),
                 clearStreamCacheReceiver,
                 ClearStreamCacheService.intentFilter
             )
+            activity?.registerReceiver(
+                clearGlideCacheReceiver,
+                ClearGlideCacheService.intentFilter
+            )
         }
 
         override fun onStop() {
             super.onStop()
             activity?.unregisterReceiver(clearStreamCacheReceiver)
+            activity?.unregisterReceiver(clearGlideCacheReceiver)
         }
 
-        private enum class RequestCode { ClearCache }
-        private enum class DialogKey { ClearCache }
+        private enum class RequestCode { ClearStreamCache, ClearGlideCache }
+        private enum class DialogKey { ClearStreamCache, ClearGlideCache }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
             when (requestCode) {
-                RequestCode.ClearCache.ordinal -> {
+                RequestCode.ClearStreamCache.ordinal -> {
                     if (resultCode != Activity.RESULT_OK) return
                     ClearStreamCacheService.startService(context)
+                }
+                RequestCode.ClearGlideCache.ordinal -> {
+                    if (resultCode != Activity.RESULT_OK) return
+                    ClearGlideCacheService.startService(context)
                 }
                 else -> super.onActivityResult(requestCode, resultCode, data)
             }

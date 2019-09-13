@@ -221,10 +221,11 @@
     <string name="pref_cache_size_key">cache_size</string>
     <string name="pref_cache_size_title">Cache size</string>
     <string name="pref_cache_size_desc">Specify cache size(count of each list item). It will store all items when set 0.</string>
-    <string name="pref_clear_cache_title">Clear cache</string>
-    <string name="pref_clear_cache_summary">Remove list cache.</string>
-    <string name="pref_clear_cache_key">clear_cache</string>
+    <string name="pref_clear_stream_cache_title">Clear cache</string>
+    <string name="pref_clear_stream_cache_key">clear_cache</string>
     <string name="cache_cleared">Cache cleared.</string>
+    <string name="pref_clear_glide_cache_key">clear_glide_cache</string>
+    <string name="pref_clear_glide_cache_title">Clear image cache</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>
