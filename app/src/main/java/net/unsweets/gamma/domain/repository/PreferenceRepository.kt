@@ -93,4 +93,15 @@ class PreferenceRepository(val context: Context) : IPreferenceRepository {
         } catch (e: Exception) {
             ShapeOfAvatar.Circle
         }
+
+    override val cache: Boolean
+        get() = sharedPreferences.getBoolean(
+            context.getString(R.string.pref_cache_key),
+            res.getBoolean(R.bool.pref_cache_default_value)
+        )
+    override val cacheSize: Int
+        get() = sharedPreferences.getInt(
+            context.getString(R.string.pref_cache_size_key),
+            res.getInteger(R.integer.pref_cache_size_default_value)
+        )
 }

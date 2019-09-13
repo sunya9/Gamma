@@ -11,11 +11,12 @@ import net.unsweets.gamma.util.LogUtil
 import net.unsweets.gamma.util.MoshiSingleton
 import java.io.File
 import java.io.FileInputStream
+import kotlin.math.max
 
 
 class PnutCacheRepository(currentUserId: String?, context: Context) : IPnutCacheRepository {
     private val baseCacheDir =
-        File(File(context.cacheDir, "userCache"), currentUserId.orEmpty()).apply {
+        File(getUserCacheDir(context), currentUserId.orEmpty()).apply {
             mkdirs()
         }
 
@@ -103,15 +104,21 @@ class PnutCacheRepository(currentUserId: String?, context: Context) : IPnutCache
     private fun <T : UniquePageable> storeList(
         cachePath: CachePath,
         list: List<PageableItemWrapper<T>>,
+        cacheSize: Int,
         lambda: (list: List<PageableItemWrapper<T>>) -> String
     ) {
         val file = cachePath.getFile()
         LogUtil.e("file: $cachePath $file")
+        val resizedList = if (cacheSize > 0) {
+            list.subList(0, max(list.size, cacheSize))
+        } else {
+            list
+        }
         try {
 //            val adapter = cachePath.getCachedListJsonAdapter<T>
 //            val cachedList = CachedList(list)
 //            val json = adapter.toJson(cachedList)
-            val json = lambda(list)
+            val json = lambda(resizedList)
 //            LogUtil.e("storeed json: $json")
             file.writer().use {
 
@@ -123,28 +130,24 @@ class PnutCacheRepository(currentUserId: String?, context: Context) : IPnutCache
 
     }
 
-    private fun <T : UniquePageable> trimPager(items: List<PageableItemWrapper<T>>): List<PageableItemWrapper<T>> {
-//        val from = if(items.getOrNull(0) is PageableItemWrapper.Pager) 1 else 0
-//        val to = if(items.getOrNull(items.lastIndex) is PageableItemWrapper.Pager) items.lastIndex else items.lastIndex + 1
-//        LogUtil.e("trimPager res: $from, $to")
-//        return items.subList(from, to)
-        return items
-    }
-
     override suspend fun storePosts(
         posts: List<PageableItemWrapper<Post>>,
-        streamType: StreamType
+        streamType: StreamType,
+        cacheSize: Int
     ) {
-        return storeList(CachePath.Stream(streamType), trimPager(posts)) {
+        return storeList(CachePath.Stream(streamType), posts, cacheSize) {
             val cachedList = PageableItemWrapperConverter.CachedPostList.createFromCachedList(it)
             MoshiSingleton.moshi.adapter(PageableItemWrapperConverter.CachedPostList::class.java)
                 .toJson(cachedList)
         }
     }
 
-    override suspend fun storeInteractions(interactions: List<PageableItemWrapper<Interaction>>) {
+    override suspend fun storeInteractions(
+        interactions: List<PageableItemWrapper<Interaction>>,
+        cacheSize: Int
+    ) {
 
-        return storeList(CachePath.Interaction, trimPager(interactions)) {
+        return storeList(CachePath.Interaction, interactions, cacheSize) {
             val cachedList =
                 PageableItemWrapperConverter.CachedInteractionList.createFromCachedList(it)
             MoshiSingleton.moshi.adapter(PageableItemWrapperConverter.CachedInteractionList::class.java)
@@ -154,9 +157,10 @@ class PnutCacheRepository(currentUserId: String?, context: Context) : IPnutCache
 
     override suspend fun storeUsers(
         users: List<PageableItemWrapper<User>>,
-        userListType: UserListType
+        userListType: UserListType,
+        cacheSize: Int
     ) {
-        storeList(CachePath.User(userListType), trimPager(users)) {
+        storeList(CachePath.User(userListType), users, cacheSize) {
             val cachedList = PageableItemWrapperConverter.CachedUserList.createFromCachedList(it)
             MoshiSingleton.moshi.adapter(PageableItemWrapperConverter.CachedUserList::class.java)
                 .toJson(cachedList)
@@ -186,6 +190,13 @@ class PnutCacheRepository(currentUserId: String?, context: Context) : IPnutCache
         )
         return getList(CachePath.User(userListType)) {
             res.fromJson(it)?.toCachedList()
+        }
+    }
+
+    companion object {
+        private const val userCacheDirName = "userCache"
+        fun getUserCacheDir(context: Context): File? {
+            return File(context.cacheDir, userCacheDirName)
         }
     }
 }

@@ -706,11 +706,11 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             return getPostUseCase.run(GetPostInputData(streamType, getPostParam)).res
         }
 
-        override fun loadInitialData() {
+        override fun loadCache() {
             viewModelScope.launch {
                 val res = getCachedPostUseCase.run(GetCachedPostListInputData(streamType))
                 items.addAll(res.posts.data)
-                super.loadInitialData()
+                super.loadCache()
             }
         }
 

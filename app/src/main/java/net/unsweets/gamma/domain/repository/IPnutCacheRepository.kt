@@ -13,10 +13,21 @@ interface IPnutCacheRepository {
     suspend fun getToken(): Token?
     suspend fun storeToken(token: Token)
     suspend fun getPosts(streamType: StreamType): CachedList<Post>
-    suspend fun storePosts(posts: List<PageableItemWrapper<Post>>, streamType: StreamType)
+    suspend fun storePosts(
+        posts: List<PageableItemWrapper<Post>>,
+        streamType: StreamType,
+        cacheSize: Int
+    )
     suspend fun getInteractions(): CachedList<Interaction>
-    suspend fun storeInteractions(interactions: List<PageableItemWrapper<Interaction>>)
+    suspend fun storeInteractions(
+        interactions: List<PageableItemWrapper<Interaction>>,
+        cacheSize: Int
+    )
     suspend fun getUsers(userListType: UserListType): CachedList<User>
-    suspend fun storeUsers(users: List<PageableItemWrapper<User>>, userListType: UserListType)
+    suspend fun storeUsers(
+        users: List<PageableItemWrapper<User>>,
+        userListType: UserListType,
+        cacheSize: Int
+    )
 
 }

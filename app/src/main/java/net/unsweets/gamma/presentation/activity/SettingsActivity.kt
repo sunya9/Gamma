@@ -1,5 +1,6 @@
 package net.unsweets.gamma.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -9,12 +10,14 @@ import android.os.Handler
 import android.preference.ListPreference
 import android.preference.PreferenceManager
 import android.view.MenuItem
+import android.view.View
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.preference.DropDownPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
@@ -23,12 +26,15 @@ import kotlinx.android.synthetic.main.activity_settings.*
 import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.GammaApplication
 import net.unsweets.gamma.R
+import net.unsweets.gamma.domain.repository.PnutCacheRepository
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.domain.usecases.LogoutUseCase
+import net.unsweets.gamma.presentation.fragment.BasicDialogFragment
 import net.unsweets.gamma.presentation.fragment.ChoosePrimaryColorDialogFragment
 import net.unsweets.gamma.presentation.util.ColorSummaryProvider
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
 import net.unsweets.gamma.presentation.view.ThemeColorPreference
+import net.unsweets.gamma.service.ClearStreamCacheService
 import net.unsweets.gamma.util.Constants
 import javax.inject.Inject
 
@@ -211,12 +217,70 @@ class SettingsActivity : BaseActivity(),
         }
     }
 
-    class StreamPreferenceFragment : BasePreferenceFragment() {
+    class StreamPreferenceFragment : BasePreferenceFragment(),
+        ClearStreamCacheService.Receiver.Listener {
+        override fun onReceive() {
+            clearCacheButton?.isEnabled = false
+            val contentView = activity?.findViewById<View>(android.R.id.content) ?: return
+            Snackbar.make(contentView, R.string.cache_cleared, Snackbar.LENGTH_SHORT).show()
+        }
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(
                 R.xml.pref_stream,
                 getString(R.string.pref_stream_key)
             )
+        }
+
+        private val clearStreamCacheReceiver by lazy {
+            ClearStreamCacheService.Receiver(this)
+        }
+
+        private val clearCacheButton by lazy {
+            findPreference(R.string.pref_clear_cache_key)
+        }
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            clearCacheButton?.setOnPreferenceClickListener {
+                val fragment = BasicDialogFragment.Builder()
+                    .setTitle(R.string.pref_clear_cache_title)
+                    .setMessage(R.string.this_operation_cannot_be_undone)
+                    .setPositive(R.string.ok)
+                    .setNegative(R.string.cancel)
+                    .build(RequestCode.ClearCache.ordinal)
+                fragment.show(childFragmentManager, DialogKey.ClearCache.name)
+                false
+            }
+            clearCacheButton?.isEnabled =
+                context?.let { PnutCacheRepository.getUserCacheDir(it)?.exists() } ?: true
+        }
+
+        override fun onResume() {
+            super.onResume()
+            activity?.registerReceiver(
+                clearStreamCacheReceiver,
+                ClearStreamCacheService.intentFilter
+            )
+        }
+
+        override fun onStop() {
+            super.onStop()
+            activity?.unregisterReceiver(clearStreamCacheReceiver)
+        }
+
+        private enum class RequestCode { ClearCache }
+        private enum class DialogKey { ClearCache }
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            when (requestCode) {
+                RequestCode.ClearCache.ordinal -> {
+                    if (resultCode != Activity.RESULT_OK) return
+                    ClearStreamCacheService.startService(context)
+                }
+                else -> super.onActivityResult(requestCode, resultCode, data)
+            }
+
         }
 
         override val rootKey: Int = R.string.pref_stream_key

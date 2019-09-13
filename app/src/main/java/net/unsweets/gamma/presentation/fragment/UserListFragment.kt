@@ -124,11 +124,11 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
             return getUsersUseCase.run(getUsersInputData).res
         }
 
-        override fun loadInitialData() {
+        override fun loadCache() {
             viewModelScope.launch {
                 val res = cachedUserListUseCase.run(GetCachedUserListInputData((userListType)))
                 items.addAll(res.users.data)
-                super.loadInitialData()
+                super.loadCache()
             }
         }
 

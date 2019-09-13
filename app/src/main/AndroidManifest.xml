@@ -25,9 +25,14 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".service.ClearCacheService"
             android:exported="false" />
+        <service
+            android:name=".service.ClearStreamCacheService"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.fileprovider"

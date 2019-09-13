@@ -6,4 +6,6 @@
     <integer name="pref_auto_pager_step">10</integer>
     <integer name="auto_pager_default_value">20</integer>
     <integer name="pref_loading_size_default_value">20</integer>
+    <integer name="pref_cache_size_step">10</integer>
+    <integer name="pref_cache_size_default_value">100</integer>
 </resources>

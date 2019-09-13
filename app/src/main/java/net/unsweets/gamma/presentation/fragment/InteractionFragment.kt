@@ -202,11 +202,11 @@ class InteractionFragment :
             }
         }
 
-        override fun loadInitialData() {
+        override fun loadCache() {
             viewModelScope.launch {
                 val res = getCachedInteractionListUseCase.run(Unit)
                 items.addAll(res.interactions.data)
-                super.loadInitialData()
+                super.loadCache()
             }
         }
 

@@ -137,16 +137,19 @@ class UseCaseModule {
 
     @Provides
     fun provideCachePostUseCase(
-        pnutCacheRepository: IPnutCacheRepository
-    ): CachePostUseCase = CachePostUseCase(pnutCacheRepository)
+        pnutCacheRepository: IPnutCacheRepository,
+        preferenceRepository: IPreferenceRepository
+    ): CachePostUseCase = CachePostUseCase(pnutCacheRepository, preferenceRepository)
 
     @Provides
     fun provideCacheUserUseCase(
-        pnutCacheRepository: IPnutCacheRepository
-    ): CacheUserUseCase = CacheUserUseCase(pnutCacheRepository)
+        pnutCacheRepository: IPnutCacheRepository,
+        preferenceRepository: IPreferenceRepository
+    ): CacheUserUseCase = CacheUserUseCase(pnutCacheRepository, preferenceRepository)
 
     @Provides
     fun provideCacheInteractionUseCase(
-        pnutCacheRepository: IPnutCacheRepository
-    ): CacheInteractionUseCase = CacheInteractionUseCase(pnutCacheRepository)
+        pnutCacheRepository: IPnutCacheRepository,
+        preferenceRepository: IPreferenceRepository
+    ): CacheInteractionUseCase = CacheInteractionUseCase(pnutCacheRepository, preferenceRepository)
 }

@@ -78,7 +78,7 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
         adapter.insertItems(requestPager, response, insertIndex)
         viewModel.loading.postValue(false)
         getSwipeRefreshLayout(view ?: return).isRefreshing = false
-        viewModel.storeItems()
+        if (preferenceRepository.cache) viewModel.storeItems()
     }
 
     override fun onStart() {
@@ -113,7 +113,8 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
         super.onCreate(savedInstanceState)
         viewModel.listEvent.observe(this, listEventObserver)
         if (savedInstanceState == null) {
-            viewModel.loadInitialData()
+            if (preferenceRepository.cache) viewModel.loadCache()
+            else viewModel.listEvent.postValue(ListEvent.Initialized)
         }
     }
 
@@ -215,7 +216,7 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
             }
         }
 
-        open fun loadInitialData() {
+        open fun loadCache() {
             listEvent.postValue(ListEvent.Initialized)
         }
 
