@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="compose"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_compose"
+        android:shortcutShortLabel="@string/compose_post">
+        <intent
+            android:action="net.unsweets.gamma.action.compose"
+            android:targetPackage="net.unsweets.gamma"
+            android:targetClass="net.unsweets.gamma.presentation.activity.ShareActivity" />
+    </shortcut>
+</shortcuts>

@@ -20,7 +20,7 @@ class ShareActivity : DaggerAppCompatActivity(), ComposePostDialogFragment.Callb
     }
 
     private val text by lazy {
-        intent.getStringExtra(Intent.EXTRA_TEXT)
+        intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
     }
     private val intentExtraDataList by lazy {
         when {
