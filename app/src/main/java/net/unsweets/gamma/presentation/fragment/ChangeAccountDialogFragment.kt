@@ -10,6 +10,7 @@ import dagger.android.support.DaggerDialogFragment
 import kotlinx.android.synthetic.main.account_list.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.model.Account
+import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.usecases.GetAccountListUseCase
 import net.unsweets.gamma.presentation.adapter.AccountListAdapter
 import net.unsweets.gamma.util.ErrorCollections
@@ -30,6 +31,9 @@ class ChangeAccountDialogFragment : DaggerDialogFragment() {
 
     @Inject
     lateinit var getAccountListUseCase: GetAccountListUseCase
+
+    @Inject
+    lateinit var preferenceRepository: IPreferenceRepository
     private val accounts
         get() = getAccountListUseCase.run(Unit).accounts.filterNot { it.id == currentUserId }
 
@@ -60,7 +64,12 @@ class ChangeAccountDialogFragment : DaggerDialogFragment() {
             R.layout.fragment_change_account_dialog,
             view?.findViewById(android.R.id.content)
         )
-        view.accountList.adapter = AccountListAdapter(accounts, accountListListener, false)
+        view.accountList.adapter = AccountListAdapter(
+            accounts,
+            accountListListener,
+            false,
+            preferenceRepository.shapeOfAvatar
+        )
 
         return MaterialAlertDialogBuilder(context)
             .setTitle(R.string.accounts)

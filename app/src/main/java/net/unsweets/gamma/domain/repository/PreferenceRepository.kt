@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import net.unsweets.gamma.R
+import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
 
 class PreferenceRepository(val context: Context) : IPreferenceRepository {
@@ -81,4 +82,15 @@ class PreferenceRepository(val context: Context) : IPreferenceRepository {
             context.getString(R.string.pref_use_unified_stream_key),
             res.getBoolean(R.bool.pref_use_unified_stream_default_value)
         )
+
+    override val shapeOfAvatar: ShapeOfAvatar
+        get() = try {
+            val strInt = sharedPreferences.getString(
+                context.getString(R.string.pref_shape_of_avatar_key),
+                context.getString(R.string.pref_shape_of_avatar_key_default_value)
+            ) ?: "0"
+            ShapeOfAvatar.values()[strInt.toInt()]
+        } catch (e: Exception) {
+            ShapeOfAvatar.Circle
+        }
 }

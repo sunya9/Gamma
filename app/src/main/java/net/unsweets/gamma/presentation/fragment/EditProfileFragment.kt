@@ -25,6 +25,7 @@ import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.model.io.GetProfileInputData
 import net.unsweets.gamma.domain.model.io.UpdateProfileInputData
 import net.unsweets.gamma.domain.model.io.UpdateUserImageInputData
+import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.usecases.GetProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateUserImageUseCase
@@ -37,11 +38,14 @@ import net.unsweets.gamma.util.SingleLiveEvent
 import net.unsweets.gamma.util.showAsError
 import javax.inject.Inject
 
-class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemListDialogFragment.Listener,
+class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
+    GalleryItemListDialogFragment.Listener,
     DialogFragment(), HasAndroidInjector {
 
     @Inject
     internal lateinit var androidInjector: DispatchingAndroidInjector<Any>
+    @Inject
+    lateinit var preferenceRepository: IPreferenceRepository
 
     override fun androidInjector(): AndroidInjector<Any> {
         return androidInjector
@@ -51,7 +55,6 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
         super.onAttach(context)
         AndroidSupportInjection.inject(this)
     }
-
 
 
     override fun onMenuShow(menu: Menu, tag: String?) {
@@ -173,7 +176,12 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
     private val viewModel by lazy {
         ViewModelProvider(
             this,
-            EditProfileViewModel.Factory(userId, getProfileUseCase, updateProfileUseCase, updateUserImageUseCase)
+            EditProfileViewModel.Factory(
+                userId,
+                getProfileUseCase,
+                updateProfileUseCase,
+                updateUserImageUseCase
+            )
         )[EditProfileViewModel::class.java]
     }
 
@@ -197,9 +205,11 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+        binding.viewCurrentAvatarImage.setBackgroundResource(preferenceRepository.shapeOfAvatar.drawableRes)
         return binding.root
     }
 
@@ -343,20 +353,22 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
         var beforeEditingProfile: User? = null
         val newAvatarUri = MutableLiveData<ImageState>().apply { value = ImageState.Keep }
         val newCoverUri = MutableLiveData<ImageState>().apply { value = ImageState.Keep }
-        val coverUri: LiveData<String?> = ComputedLiveData.of(user, newCoverUri) { user, newCoverUri ->
-            when (newCoverUri) {
-                is ImageState.NewImage -> newCoverUri.uri.path
-                is ImageState.Keep -> user?.content?.coverImage?.link
-                else -> null
+        val coverUri: LiveData<String?> =
+            ComputedLiveData.of(user, newCoverUri) { user, newCoverUri ->
+                when (newCoverUri) {
+                    is ImageState.NewImage -> newCoverUri.uri.path
+                    is ImageState.Keep -> user?.content?.coverImage?.link
+                    else -> null
+                }
             }
-        }
-        val avatarUri: LiveData<String?> = ComputedLiveData.of(user, newAvatarUri) { user, newAvatarUri ->
-            when (newAvatarUri) {
-                is ImageState.NewImage -> newAvatarUri.uri.path
-                is ImageState.Keep -> user?.content?.avatarImage?.link
-                else -> null
+        val avatarUri: LiveData<String?> =
+            ComputedLiveData.of(user, newAvatarUri) { user, newAvatarUri ->
+                when (newAvatarUri) {
+                    is ImageState.NewImage -> newAvatarUri.uri.path
+                    is ImageState.Keep -> user?.content?.avatarImage?.link
+                    else -> null
+                }
             }
-        }
 
         init {
             viewModelScope.launch {
@@ -426,12 +438,14 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback, GalleryItemL
                 val avatarRes = avatarTask.await()
                 val coverRes = coverTask.await()
                 val profileRes = profileTask.await()
-                val eventVal = if (avatarRes.isFailure || coverRes.isFailure || profileRes.isFailure) {
-                    val t = avatarRes.exceptionOrNull() ?: coverRes.exceptionOrNull() ?: profileRes.exceptionOrNull()
-                    t?.let { Event.Failed(it) }
-                } else {
-                    profileRes.getOrNull()?.let { Event.Saved(it.user) }
-                }
+                val eventVal =
+                    if (avatarRes.isFailure || coverRes.isFailure || profileRes.isFailure) {
+                        val t = avatarRes.exceptionOrNull() ?: coverRes.exceptionOrNull()
+                        ?: profileRes.exceptionOrNull()
+                        t?.let { Event.Failed(it) }
+                    } else {
+                        profileRes.getOrNull()?.let { Event.Saved(it.user) }
+                    }
                 eventVal?.let { event.emit(it) }
                 loading.postValue(false)
             }

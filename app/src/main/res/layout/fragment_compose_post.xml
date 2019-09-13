@@ -66,13 +66,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <de.hdodenhof.circleimageview.CircleImageView
+                        <net.unsweets.gamma.presentation.view.ClippedImageView
                             android:id="@+id/replyAvatarImageView"
                             android:layout_width="@dimen/size_post_item_avatar"
                             android:layout_height="@dimen/size_post_item_avatar"
                             android:layout_marginStart="@dimen/margin_regular"
                             android:layout_marginTop="@dimen/margin_regular"
-                            app:civ_circle_background_color="@android:color/white"
                             android:contentDescription="@string/description_avatar_picture"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -131,7 +130,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <net.unsweets.gamma.presentation.view.ClippedImageView
                         android:id="@+id/myAccountAvatarImageView"
                         android:layout_width="@dimen/size_post_item_avatar_mini"
                         android:layout_height="@dimen/size_post_item_avatar_mini"

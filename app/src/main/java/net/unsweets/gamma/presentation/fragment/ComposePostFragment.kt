@@ -239,6 +239,9 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_compose_post, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+        val bgRes = preferenceRepository.shapeOfAvatar.drawableRes
+        binding.myAccountAvatarImageView.setBackgroundResource(bgRes)
+        binding.replyAvatarImageView.setBackgroundResource(bgRes)
         return binding.root
     }
 

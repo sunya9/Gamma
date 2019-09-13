@@ -379,16 +379,17 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/starStateView" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <net.unsweets.gamma.presentation.view.ClippedImageView
                     android:id="@+id/avatarImageView"
                     android:layout_width="@dimen/size_post_item_avatar"
                     android:layout_height="@dimen/size_post_item_avatar"
                     android:layout_marginStart="@dimen/margin_regular"
-                    app:civ_circle_background_color="@android:color/white"
                     app:layout_constraintDimensionRatio="w,1:1"
+                    android:background="@drawable/bg_avatar_circle"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="@id/screenNameTextView"
-                    tools:src="@tools:sample/avatars" />
+                    tools:src="@tools:sample/avatars"
+                    tools:ignore="ContentDescription" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
 

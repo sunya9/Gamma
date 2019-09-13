@@ -149,7 +149,8 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     private val accountListView by lazy {
         val view = layoutInflater.inflate(R.layout.account_list, binding.navigationView, false)
         view.accountList.also { accountList ->
-            accountList.adapter = AccountListAdapter(accounts, this)
+            accountList.adapter =
+                AccountListAdapter(accounts, this, true, preferenceRepository.shapeOfAvatar)
         }
     }
 
@@ -177,7 +178,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
     }
 
     private fun setMenuItemVisibilities(visible: Boolean) {
-        binding.navigationView.menu?.let {
+        binding.navigationView.menu.let {
             for (i in 0 until it.size()) {
                 it.getItem(i).isVisible = visible
             }
@@ -302,6 +303,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         DataBindingUtil.getBinding<NavigationDrawerHeaderBinding>(header)?.let { binding ->
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
+            binding.navigationDrawerAvatarImageView.setBackgroundResource(preferenceRepository.shapeOfAvatar.drawableRes)
         }
         navigationView.setNavigationItemSelectedListener(::onOptionsItemSelected)
         binding.navigationView.addHeaderView(accountListView)

@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <net.unsweets.gamma.presentation.view.ClippedImageView
             android:id="@+id/avatarImageView"
             android:layout_width="@dimen/size_post_item_avatar"
             android:layout_height="@dimen/size_post_item_avatar"
@@ -27,7 +27,8 @@
             android:layout_marginTop="@dimen/margin_quoter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/screenNameTextView"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@tools:sample/avatars"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/screenNameTextView"

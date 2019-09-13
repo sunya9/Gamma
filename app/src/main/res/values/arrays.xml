@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="shape_of_avatar">
+        <item>Circle</item>
+        <item>Rounded</item>
+        <item>Square</item>
+    </string-array>
+    <string-array name="shape_of_avatar_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>

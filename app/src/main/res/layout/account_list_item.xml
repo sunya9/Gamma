@@ -36,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@id/accountListItemNameTextView"
         tools:text="@tools:sample/lorem[0]" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <net.unsweets.gamma.presentation.view.ClippedImageView
         android:id="@+id/accountListItemAvatarImageView"
         android:layout_width="@dimen/size_avatar_mini"
         android:layout_height="@dimen/size_avatar_mini"

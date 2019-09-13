@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".presentation.activity.LoginActivity">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <net.unsweets.gamma.presentation.view.ClippedImageView
+        android:background="@drawable/bg_circle_clipped"
         android:id="@+id/appIconImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

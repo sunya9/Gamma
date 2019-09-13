@@ -2,12 +2,12 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
-import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_user_item.view.*
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
@@ -21,6 +21,7 @@ import net.unsweets.gamma.domain.model.io.GetUsersInputData
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.model.params.single.SearchUserParam
+import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import net.unsweets.gamma.domain.usecases.CacheUserUseCase
 import net.unsweets.gamma.domain.usecases.GetCachedUserListUseCase
 import net.unsweets.gamma.domain.usecases.GetUsersUseCase
@@ -66,7 +67,7 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
     private val entityListener: View.OnTouchListener = EntityOnTouchListener()
 
     override fun createViewHolder(mView: View, viewType: Int): UserViewHolder =
-        UserViewHolder(mView)
+        UserViewHolder(mView, preferenceRepository.shapeOfAvatar)
 
     override fun onClickItemListener(
         viewHolder: UserViewHolder,
@@ -97,8 +98,11 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
 
     override fun getItemLayout(): Int = R.layout.fragment_user_item
 
-    class UserViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
-        val avatarView: CircleImageView = itemView.avatarImageView
+    class UserViewHolder(mView: View, shapeOfAvatar: ShapeOfAvatar) :
+        RecyclerView.ViewHolder(mView) {
+        val avatarView: ImageView = itemView.avatarImageView.also {
+            it.setBackgroundResource(shapeOfAvatar.drawableRes)
+        }
         val screenNameTextView: TextView = itemView.screenNameTextView
         val handleNameTextView: TextView = itemView.handleNameTextView
         val bodyTextView: TextView = itemView.bodyTextView

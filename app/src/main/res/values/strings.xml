@@ -211,6 +211,9 @@
     <string name="pref_use_unified_stream_summary_off">Not include mentions in personal stream
         .</string>
     <string name="pref_use_unified_stream_title">Use unified stream</string>
+    <string name="pref_shape_of_avatar_title">Shape of avatar</string>
+    <string name="pref_shape_of_avatar_key">shape_of_avatar</string>
+    <string name="pref_shape_of_avatar_key_default_value">0</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

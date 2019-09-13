@@ -1,6 +1,7 @@
 package net.unsweets.gamma.domain.repository
 
 import android.content.SharedPreferences
+import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
 
 interface IPreferenceRepository {
@@ -15,4 +16,6 @@ interface IPreferenceRepository {
     val loadingSize: Int
     val thresholdOfAutoPager: Int
     val unifiedStream: Boolean
+    val shapeOfAvatar: ShapeOfAvatar
+
 }

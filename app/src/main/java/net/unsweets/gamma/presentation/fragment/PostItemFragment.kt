@@ -32,7 +32,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_post_item.view.*
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
@@ -49,6 +48,7 @@ import net.unsweets.gamma.domain.model.io.GetCachedPostListInputData
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import net.unsweets.gamma.domain.usecases.CachePostUseCase
 import net.unsweets.gamma.domain.usecases.GetCachedPostListUseCase
 import net.unsweets.gamma.domain.usecases.GetPostUseCase
@@ -224,7 +224,12 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     override val baseListListener by lazy { this }
 
     override fun createViewHolder(mView: View, viewType: Int): PostViewHolder =
-        PostViewHolder(mView, itemTouchHelper, preferenceRepository.avatarSwipe)
+        PostViewHolder(
+            mView,
+            itemTouchHelper,
+            preferenceRepository.avatarSwipe,
+            preferenceRepository.shapeOfAvatar
+        )
 
     override fun onClickItemListener(
         viewHolder: PostViewHolder,
@@ -318,7 +323,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 ?: getString(R.string.this_post_has_deleted)
 
         val url = item.mainPost.user?.getAvatarUrl(User.AvatarSize.Large).orEmpty()
-        GlideApp.with(this).load(url).into(viewHolder.avatarView)
+        GlideApp.with(this).load(url)
+            .into(viewHolder.avatarView)
+        viewHolder.avatarView.clipToOutline = true
         val iconTransition = getString(R.string.icon_transition)
         val iconTransitionName =
             "$iconTransition + ${viewHolder.adapterPosition} ${streamType::class.java.simpleName}"
@@ -403,7 +410,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewHolder.reactionUsersRecyclerView.also {
             it.adapter = if (isMainItem) ReactionUsersAdapter(
                 item.mainPost.reactionUsers,
-                reactionUsersAdapterListener
+                reactionUsersAdapterListener,
+                preferenceRepository.shapeOfAvatar
             ) else null
         }
         viewHolder.clientNameTextView.text = item.mainPost.source?.name
@@ -614,16 +622,18 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     class PostViewHolder(
         mView: View,
         itemTouchHelper: ItemTouchHelper,
-        avatarSwipe: Boolean
+        avatarSwipe: Boolean,
+        shapeOfAvatar: ShapeOfAvatar
     ) : RecyclerView.ViewHolder(mView) {
         val rootCardView: CardView = itemView.rootCardView
-        val avatarView: CircleImageView = itemView.avatarImageView.also {
+        val avatarView: ImageView = itemView.avatarImageView.also {
             it.setOnTouchListener { view, motionEvent ->
                 if (view.isEnabled && motionEvent.actionMasked == MotionEvent.ACTION_MOVE && avatarSwipe) {
                     itemTouchHelper.startSwipe(this)
                 }
                 false
             }
+            it.setBackgroundResource(shapeOfAvatar.drawableRes)
         }
         val screenNameTextView: TextView = itemView.screenNameTextView
         val bodyTextView: TextView = itemView.bodyTextView

@@ -110,7 +110,11 @@ class InteractionFragment :
         }
         viewHolder.reactionUsersRecyclerView.adapter = when (concreteItem) {
             is Interaction.HasUsersFieldInteraction -> {
-                ReactionUsersAdapter(concreteItem.users.orEmpty(), reactionUsersAdapterListener)
+                ReactionUsersAdapter(
+                    concreteItem.users.orEmpty(),
+                    reactionUsersAdapterListener,
+                    preferenceRepository.shapeOfAvatar
+                )
             }
             else -> null
         }

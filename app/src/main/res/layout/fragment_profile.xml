@@ -282,7 +282,7 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.google.android.material.card.MaterialCardView>
 
-                        <de.hdodenhof.circleimageview.CircleImageView
+                        <net.unsweets.gamma.presentation.view.ClippedImageView
                             android:id="@+id/circleImageView"
                             android:layout_width="@dimen/size_profile_avatar"
                             android:layout_height="@dimen/size_profile_avatar"
@@ -291,10 +291,7 @@
                             android:focusable="true"
                             android:foreground="@drawable/fg_profile_avatar"
                             android:onClick="@{() -> viewModel.showAvatar()}"
-                            app:civ_border_color="@color/colorAvatarBorder"
-                            app:civ_border_width="@dimen/width_avatar_border"
                             android:transitionName="avatar_image_transition"
-                            app:civ_circle_background_color="@android:color/white"
                             app:glideSrc="@{viewModel.iconUrl}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

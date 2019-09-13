@@ -72,7 +72,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:src="@tools:sample/backgrounds/scenic" />
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <net.unsweets.gamma.presentation.view.ClippedImageView
                         android:id="@+id/viewCurrentAvatarImage"
                         android:layout_width="@dimen/size_edit_avatar"
                         android:layout_height="@dimen/size_edit_avatar"
@@ -82,9 +82,6 @@
                         android:focusable="true"
                         android:foreground="@drawable/fg_btn_edit_avatar"
                         android:onClick="@{() -> viewModel.showDialogToChangeAvatar()}"
-                        app:civ_border_color="@color/colorAvatarBorder"
-                        app:civ_border_width="@dimen/width_avatar_border"
-                        app:civ_circle_background_color="@android:color/white"
                         app:glideSrc="@{viewModel.avatarUri}"
                         app:layout_constraintBottom_toBottomOf="@id/viewCoverImage"
                         app:layout_constraintStart_toStartOf="parent"

@@ -43,4 +43,5 @@
     <dimen name="size_color_preview">20dp</dimen>
     <dimen name="secondary_alpha">0.8</dimen>
     <dimen name="height_segment_item">48dp</dimen>
+    <dimen name="size_avatar_rounded">10dp</dimen>
 </resources>
