@@ -19,4 +19,5 @@ interface IPreferenceRepository {
     val shapeOfAvatar: ShapeOfAvatar
     val cache: Boolean
     val cacheSize: Int
+    val includeDirectedPosts: Boolean
 }

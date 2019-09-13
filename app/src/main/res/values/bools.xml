@@ -2,4 +2,5 @@
 <resources>
     <bool name="pref_use_unified_stream_default_value">true</bool>
     <bool name="pref_cache_default_value">false</bool>
+    <bool name="pref_include_directed_posts_default_value">true</bool>
 </resources>

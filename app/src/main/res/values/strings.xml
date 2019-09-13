@@ -226,6 +226,9 @@
     <string name="cache_cleared">Cache cleared.</string>
     <string name="pref_clear_glide_cache_key">clear_glide_cache</string>
     <string name="pref_clear_glide_cache_title">Clear image cache</string>
+    <string name="pref_include_directed_posts_key">include_directed_posts</string>
+    <string name="pref_include_directed_posts_title">Include directed posts</string>
+    <string name="pref_include_directed_posts_summary">Works only in personal(unified) stream.</string>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

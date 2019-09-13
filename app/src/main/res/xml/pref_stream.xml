@@ -10,6 +10,11 @@
             app:title="@string/pref_use_unified_stream_title"
             app:summaryOn="@string/pref_use_unified_stream_summary_on"
             app:summaryOff="@string/pref_use_unified_stream_summary_off" />
+        <SwitchPreference
+            app:key="@string/pref_include_directed_posts_key"
+            app:defaultValue="@bool/pref_include_directed_posts_default_value"
+            app:title="@string/pref_include_directed_posts_title"
+            app:summary="@string/pref_include_directed_posts_summary" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_loading">
         <net.unsweets.gamma.presentation.view.SeekBarPreferenceMod

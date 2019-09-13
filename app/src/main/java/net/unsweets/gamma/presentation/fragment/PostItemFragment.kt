@@ -47,6 +47,7 @@ import net.unsweets.gamma.domain.model.io.CachePostInputData
 import net.unsweets.gamma.domain.model.io.GetCachedPostListInputData
 import net.unsweets.gamma.domain.model.io.GetPostInputData
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
+import net.unsweets.gamma.domain.model.params.single.GeneralPostParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import net.unsweets.gamma.domain.usecases.CachePostUseCase
@@ -203,6 +204,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     lateinit var cachePostUseCase: CachePostUseCase
 
     abstract val streamType: StreamType
+    open val generalPostParam: GeneralPostParam = GeneralPostParam(false)
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(
             this,
@@ -210,7 +212,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 streamType,
                 getPostUseCase,
                 getCachedPostUseCase,
-                cachePostUseCase
+                cachePostUseCase,
+                generalPostParam
             )
         )[PostItemViewModel::class.java]
         super.onCreate(savedInstanceState)
@@ -696,12 +699,14 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         private val streamType: StreamType,
         private val getPostUseCase: GetPostUseCase,
         private val getCachedPostUseCase: GetCachedPostListUseCase,
-        private val cachePostUseCase: CachePostUseCase
+        private val cachePostUseCase: CachePostUseCase,
+        private val generalPostParam: GeneralPostParam
     ) :
         BaseListFragment.BaseListViewModel<Post>() {
         override suspend fun getItems(requestPager: PageableItemWrapper.Pager<Post>?): PnutResponse<List<Post>> {
             val getPostParam = GetPostsParam().apply {
                 requestPager?.let { add(PaginationParam.createFromPager(requestPager)) }
+                add(generalPostParam)
             }
             return getPostUseCase.run(GetPostInputData(streamType, getPostParam)).res
         }
@@ -726,8 +731,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             private val streamType: StreamType,
             private val getPostUseCase: GetPostUseCase,
             private val getCachedPostUseCase: GetCachedPostListUseCase,
-            private val cachePostUseCase: CachePostUseCase
-
+            private val cachePostUseCase: CachePostUseCase,
+            private val generalPostParam: GeneralPostParam
         ) :
             ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -736,7 +741,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                     streamType,
                     getPostUseCase,
                     getCachedPostUseCase,
-                    cachePostUseCase
+                    cachePostUseCase,
+                    generalPostParam
                 ) as T
             }
         }
@@ -748,6 +754,12 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     class HomeStream : PostItemFragment() {
         override val streamType = StreamType.Home
+        override val generalPostParam: GeneralPostParam by lazy {
+            GeneralPostParam(
+                includeDeleted = false,
+                includeDirectedPosts = preferenceRepository.includeDirectedPosts
+            )
+        }
     }
 
     class MentionsStream : PostItemFragment() {
