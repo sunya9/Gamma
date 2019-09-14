@@ -15,7 +15,7 @@ import javax.inject.Singleton
 class AppModule(private val application: Application) {
     private val accountRepository = AccountRepository(application)
     private val pnutRepository =
-        PnutRepository(application, accountRepository.getDefaultAccount()?.id)
+        PnutRepository(application, accountRepository.getDefaultAccount()?.token)
     private val preferenceRepository = PreferenceRepository(application)
 
     @Provides
