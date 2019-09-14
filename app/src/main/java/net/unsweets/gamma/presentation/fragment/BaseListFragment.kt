@@ -30,7 +30,7 @@ import net.unsweets.gamma.util.SingleLiveEvent
 
 abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder> : BaseFragment(),
     SwipeRefreshLayout.OnRefreshListener,
-    InfiniteScrollListener.Callback {
+    InfiniteScrollListener.Callback, HomeFragment.Scrollable {
     open val reverse = false
 
     private val listEventObserver = Observer<ListEvent> {
@@ -106,7 +106,7 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
 
     abstract val viewModel: BaseListViewModel<T>
 
-    fun scrollToTop() {
+    override fun scrollToTop() {
         val recyclerView = getRecyclerView(view ?: return)
         context?.let { recyclerView.layoutManager?.startSmoothScroll(SmoothScroller(it)) }
     }

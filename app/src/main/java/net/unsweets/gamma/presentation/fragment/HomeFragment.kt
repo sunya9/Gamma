@@ -3,7 +3,6 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,17 +17,33 @@ import net.unsweets.gamma.presentation.util.Util
 
 
 class HomeFragment : Fragment(), Util.DrawerContentFragment {
-    private val items: List<Item> = listOf(
-        Item(PostItemFragment.getHomeStreamInstance(), R.string.home),
-        Item(PostItemFragment.getMentionStreamInstance(), R.string.mentions),
-        Item(InteractionFragment.newInstance(), R.string.interactions),
-        Item(PostItemFragment.getStarInstance(), R.string.stars)
-    )
+
+    interface Scrollable {
+        fun scrollToTop()
+    }
+
+    private val tabListener = object : TabLayout.OnTabSelectedListener {
+        override fun onTabUnselected(tab: TabLayout.Tab?) {
+        }
+
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+        }
+
+        override fun onTabReselected(tab: TabLayout.Tab?) {
+            if (tab == null) return
+            val fragmentTag = "android:switcher:${viewPager.id}:${adapter.getItemId(tab.position)}"
+            val fragment =
+                childFragmentManager.findFragmentByTag(fragmentTag) as? Scrollable ?: return
+            fragment.scrollToTop()
+        }
+    }
+
+    val adapter by lazy {
+        StreamViewPagerAdapter(childFragmentManager, context)
+    }
+
 
     override val menuItemId = R.id.home
-    private val slideToLeftOut by lazy {
-        TransitionInflater.from(context).inflateTransition(R.transition.slide_to_left_out)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,28 +54,22 @@ class HomeFragment : Fragment(), Util.DrawerContentFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = StreamViewPagerAdapter(childFragmentManager, context, items)
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                val position = tab?.position ?: return
-                items[position].fragment.scrollToTop()
-            }
-        })
+        tabLayout.addOnTabSelectedListener(tabListener)
     }
 
 
     data class Item(val fragment: BaseListFragment<*, *>, @StringRes val title: Int)
 
-    class StreamViewPagerAdapter(fm: FragmentManager, val context: Context?, private val items: List<Item>) :
+    class StreamViewPagerAdapter(fm: FragmentManager, val context: Context?) :
         FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        private val items: List<Item> = listOf(
+            Item(PostItemFragment.getHomeStreamInstance(), R.string.home),
+            Item(PostItemFragment.getMentionStreamInstance(), R.string.mentions),
+            Item(InteractionFragment.newInstance(), R.string.interactions),
+            Item(PostItemFragment.getStarInstance(), R.string.stars)
+        )
         override fun getItem(position: Int): Fragment {
             return items[position].fragment
         }
