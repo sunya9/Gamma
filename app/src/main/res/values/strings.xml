@@ -151,7 +151,7 @@
     <string name="long_post_title_hint">Title(Optional)</string>
     <string name="long_post_body_hint">Body</string>
     <string name="remove">Remove</string>
-    <string name="add_long_post">Add longpost</string>
+    <string name="add_long_post">Add long post</string>
     <string name="show_long_post">Show long post</string>
     <string name="long_post_no_title">(No title)</string>
     <string name="topic">Topic</string>
@@ -208,8 +208,7 @@
     <string name="each_stream">Each stream and other lists</string>
     <string name="pref_use_unified_stream_key">use_unified_stream</string>
     <string name="pref_use_unified_stream_summary_on">Include mentions in personal stream.</string>
-    <string name="pref_use_unified_stream_summary_off">Not include mentions in personal stream
-        .</string>
+    <string name="pref_use_unified_stream_summary_off">Not include mentions in personal stream.</string>
     <string name="pref_use_unified_stream_title">Use unified stream</string>
     <string name="pref_shape_of_avatar_title">Shape of avatar</string>
     <string name="pref_shape_of_avatar_key">shape_of_avatar</string>
