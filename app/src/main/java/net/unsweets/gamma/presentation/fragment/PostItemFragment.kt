@@ -28,6 +28,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
@@ -88,7 +89,20 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         get() = wifiManager?.isWifiEnabled == true
 
     override fun onPostReceive(post: Post) {
+        viewModel.isAutoScrollTemporarily = true
+        viewModel.loadNewItems()
+    }
 
+    override fun onReceiveNewItemsAfter() {
+        super.onReceiveNewItemsAfter()
+        if (!viewModel.isAutoScrollTemporarily) return
+        view?.let { getRecyclerView(it) }?.let { recyclerView ->
+            val isTop =
+                context?.let { (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0 }
+            if (isTop == true) scrollToTop()
+        }
+
+        viewModel.isAutoScrollTemporarily = false
     }
 
     override fun onStarReceive(post: Post) {
@@ -715,6 +729,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         private val generalPostParam: GeneralPostParam
     ) :
         BaseListFragment.BaseListViewModel<Post>() {
+        var isAutoScrollTemporarily = false
+
         override suspend fun getItems(requestPager: PageableItemWrapper.Pager<Post>?): PnutResponse<List<Post>> {
             val getPostParam = GetPostsParam().apply {
                 requestPager?.let { add(PaginationParam.createFromPager(requestPager)) }

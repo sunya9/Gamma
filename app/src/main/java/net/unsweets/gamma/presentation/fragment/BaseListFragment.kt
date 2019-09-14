@@ -67,6 +67,7 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
         InfiniteScrollListener(preferenceRepository.thresholdOfAutoPager, this)
     }
 
+    open fun onReceiveNewItemsAfter() {}
 
     @Synchronized
     private fun receiveNewItems(
@@ -79,6 +80,7 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
         viewModel.loading.postValue(false)
         getSwipeRefreshLayout(view ?: return).isRefreshing = false
         if (preferenceRepository.cache) viewModel.storeItems()
+        onReceiveNewItemsAfter()
     }
 
     override fun onStart() {
