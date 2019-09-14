@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
@@ -77,6 +78,14 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewModel.loadSegmentItems(itemWrapper)
         }
     }
+
+    private val wifiManager by lazy {
+        val ctx = activity?.applicationContext ?: return@lazy null
+        ctx.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    }
+
+    private val isWifiEnabled
+        get() = wifiManager?.isWifiEnabled == true
 
     override fun onPostReceive(post: Post) {
 
@@ -386,6 +395,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             }.attach()
             viewHolder.thumbnailTabLayout.visibility =
                 if (photos.size == 1) View.GONE else View.VISIBLE
+            if (isWifiEnabled) photos.forEach {
+                GlideApp.with(context).load(it.value.url).preload()
+            }
         } else {
             viewHolder.thumbnailViewPagerFrameLayout.visibility = View.GONE
             viewHolder.thumbnailViewPager.adapter = null
