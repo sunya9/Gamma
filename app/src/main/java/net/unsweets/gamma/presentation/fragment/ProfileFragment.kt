@@ -373,7 +373,7 @@ class ProfileFragment : BaseFragment() {
         }
         val actionButtonRippleColor = Util.getPrimaryColorDark(app)
         val verifiedDomainVisibility = Transformations.map(user) {
-            if (it.verified != null) View.VISIBLE else View.GONE
+            if (it?.verified != null) View.VISIBLE else View.GONE
         }
 
         init {
