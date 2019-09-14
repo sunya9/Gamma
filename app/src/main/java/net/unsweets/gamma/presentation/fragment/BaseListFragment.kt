@@ -114,9 +114,14 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.listEvent.observe(this, listEventObserver)
-        if (savedInstanceState == null) {
-            if (preferenceRepository.cache) viewModel.loadCache()
-            else viewModel.listEvent.postValue(ListEvent.Initialized)
+        val load = if (savedInstanceState == null && preferenceRepository.cache) {
+            viewModel.loadCache()
+            true
+        } else {
+            false
+        }
+        if (!load) {
+            viewModel.listEvent.postValue(ListEvent.Initialized)
         }
     }
 
