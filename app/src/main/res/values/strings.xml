@@ -228,6 +228,35 @@
     <string name="pref_include_directed_posts_key">include_directed_posts</string>
     <string name="pref_include_directed_posts_title">Include directed posts</string>
     <string name="pref_include_directed_posts_summary">Works only in personal(unified) stream.</string>
+    <string name="choice_template">Choice %d</string>
+    <string name="add_choice">Add a choice</string>
+    <string name="poll_prompt">Prompt(Optional)</string>
+    <string name="duration_template">%1$s day %2$s hour %3$s min</string>
+    <string name="duration">Duration</string>
+    <string name="max_options">Max options</string>
+    <string name="anonymous">Anonymous</string>
+    <string name="yes">Yes</string>
+    <string name="poll_options">Poll options</string>
+    <string name="no">No</string>
+    <string name="add_poll">Add poll</string>
+    <string name="day">Day</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
+    <plurals name="poll_day_template">
+        <item quantity="zero" />
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d\ days</item>
+    </plurals>
+    <plurals name="poll_hour_template">
+        <item quantity="zero" />
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d\ hours</item>
+    </plurals>
+    <plurals name="poll_minute_template">
+        <item quantity="zero" />
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d\ minutes</item>
+    </plurals>
     <string-array name="dark_mode">
         <item>Follow system</item>
         <item>Always off</item>

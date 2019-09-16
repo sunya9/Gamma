@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="net.unsweets.gamma.presentation.fragment.ComposePollOptionFragment.ComposePollOptionViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/margin_half"
+            tools:context=".presentation.fragment.ComposePollOptionFragment">
+
+            <TextView
+                android:id="@+id/composePollOptionDurationLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_regular"
+                android:layout_marginEnd="@dimen/margin_regular"
+                android:text="@string/duration"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <NumberPicker
+                android:id="@+id/composePollOptionDayNumberPicker"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_regular"
+                android:layout_marginTop="@dimen/margin_half"
+                android:layout_marginEnd="@dimen/margin_half"
+                app:layout_constraintEnd_toStartOf="@id/composePollOptionHourNumberPicker"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/composePollOptionDurationLabelTextView" />
+
+            <TextView
+                android:id="@+id/composePollOptionDayLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/day"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="@id/composePollOptionDayNumberPicker"
+                app:layout_constraintStart_toStartOf="@id/composePollOptionDayNumberPicker"
+                app:layout_constraintTop_toBottomOf="@id/composePollOptionDayNumberPicker" />
+
+            <NumberPicker
+                android:id="@+id/composePollOptionHourNumberPicker"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_half"
+                android:layout_marginEnd="@dimen/margin_half"
+                app:layout_constraintEnd_toStartOf="@id/composePollOptionMinNumberPicker"
+                app:layout_constraintStart_toEndOf="@id/composePollOptionDayNumberPicker"
+                app:layout_constraintTop_toTopOf="@id/composePollOptionDayNumberPicker" />
+
+            <TextView
+                android:id="@+id/composePollOptionHourLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/hour"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="@id/composePollOptionHourNumberPicker"
+                app:layout_constraintStart_toStartOf="@id/composePollOptionHourNumberPicker"
+                app:layout_constraintTop_toBottomOf="@id/composePollOptionHourNumberPicker" />
+
+            <NumberPicker
+                android:id="@+id/composePollOptionMinNumberPicker"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_half"
+                android:layout_marginEnd="@dimen/margin_regular"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/composePollOptionHourNumberPicker"
+                app:layout_constraintTop_toTopOf="@id/composePollOptionDayNumberPicker" />
+
+            <TextView
+                android:id="@+id/composePollOptionMinLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/minute"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="@id/composePollOptionMinNumberPicker"
+                app:layout_constraintStart_toStartOf="@id/composePollOptionMinNumberPicker"
+                app:layout_constraintTop_toBottomOf="@id/composePollOptionMinNumberPicker" />
+
+            <TextView
+                android:id="@+id/composePollOptionMaxOptionsTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_regular"
+                android:layout_marginEnd="@dimen/margin_half"
+                android:text="@string/max_options"
+                app:layout_constraintBottom_toBottomOf="@id/composePollOptionMaxOptionsNumberPicker"
+                app:layout_constraintEnd_toStartOf="@id/composePollOptionMaxOptionsNumberPicker"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/composePollOptionMaxOptionsNumberPicker" />
+
+            <NumberPicker
+                android:id="@+id/composePollOptionMaxOptionsNumberPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_half"
+                android:layout_marginTop="@dimen/margin_regular"
+                android:layout_marginEnd="@dimen/margin_regular"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/composePollOptionDayLabel" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_regular"
+                android:layout_marginTop="@dimen/margin_regular"
+                android:layout_marginEnd="@dimen/margin_regular"
+                android:checked="@={viewModel.isAnonymous}"
+                android:text="@string/anonymous"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/composePollOptionMaxOptionsNumberPicker" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>

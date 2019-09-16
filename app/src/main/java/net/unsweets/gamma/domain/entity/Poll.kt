@@ -26,7 +26,7 @@ data class Poll(
     @JsonClass(generateAdapter = true)
     data class PollOption(
         val text: String,
-        val position: Int? = null,
+        val position: Int,
         @Json(name = "is_your_response") val isYourResponse: Boolean? = null,
         val respondents: Int? = null,
         @Json(name = "respondent_ids") val respondentIds: List<String>? = null

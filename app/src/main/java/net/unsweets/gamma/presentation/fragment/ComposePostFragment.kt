@@ -48,9 +48,16 @@ import net.unsweets.gamma.util.observeOnce
 import java.util.*
 import javax.inject.Inject
 
-class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listener, AnimationCallback,
+class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listener,
+    AnimationCallback,
     BackPressedHookable, ComposeLongPostFragment.Callback, SpoilerDialogFragment.Callback,
-    ChangeAccountDialogFragment.Callback {
+    ChangeAccountDialogFragment.Callback, ComposePollFragment.Callback {
+
+    override fun onDiscardPoll() {
+        viewModel.enablePoll.value = false
+        updatePollMenuItem()
+    }
+
     override fun changeAccount(account: Account) {
         viewModel.currentUserIdLiveData.value = account.id
     }
@@ -97,8 +104,28 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         Storage
     }
 
-
     private enum class RequestCode { EditPhoto, Discard }
+
+    private val enablePollObserver = Observer<Boolean> {
+        updatePollMenuItem()
+        togglePollView(it == true)
+    }
+
+    private val pollFragment: ComposePollFragment?
+        get() = childFragmentManager.findFragmentById(R.id.pollLayout) as? ComposePollFragment
+
+    private fun togglePollView(it: Boolean) {
+        val ft = childFragmentManager.beginTransaction()
+        if (it) {
+            ft
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.pollLayout, ComposePollFragment.newInstance())
+        } else {
+            pollFragment?.let { ft.remove(it) }
+        }
+        ft.commit()
+
+    }
 
     private var listener: Callback? = null
     private val thumbnailAdapterListener = object : ThumbnailAdapter.Callback {
@@ -150,6 +177,13 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         updateSendMenuItem()
         updateNsfwMenuItem()
         updateSpoilerMenuItem()
+        updatePollMenuItem()
+    }
+
+    private fun updatePollMenuItem() {
+        val pollMenuItem = findMenuItemWithinLeftMenu(R.id.menuPoll) ?: return
+        pollMenuItem.isChecked = viewModel.enablePoll.value == true
+        Util.setTintForCheckableMenuItem(context!!, pollMenuItem)
     }
 
     private fun updateSpoilerMenuItem() {
@@ -185,7 +219,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private fun showAccountList() {
-        val fragment = ChangeAccountDialogFragment.newInstance(viewModel.currentUserIdLiveData.value.orEmpty())
+        val fragment =
+            ChangeAccountDialogFragment.newInstance(viewModel.currentUserIdLiveData.value.orEmpty())
         fragment.show(childFragmentManager, DialogKey.Accounts.name)
     }
 
@@ -211,6 +246,13 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         arguments?.getParcelableArrayList<UriInfo>(BundleKey.InitialPhoto.name)
     }
 
+    val pollPostBody
+        get() = pollFragment?.let {
+            val composePollViewModel =
+                ViewModelProvider(it)[ComposePollFragment.ComposePollViewModel::class.java]
+            composePollViewModel.generatedPollPostBody
+        }
+
     private fun send() {
         val text = viewModel.text.value ?: return
         val isNsfw = viewModel.nsfw.value ?: false
@@ -219,10 +261,12 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         viewModel.longPost?.let { raw.add(it.copy(value = it.value.copy(tstamp = Date().time))) }
         viewModel.spoiler?.let { raw.add(it) }
 
+
         val postBodyOuter = PostBodyOuter(
             currentUserId,
             PostBody(text, replyTarget?.id, isNsfw = isNsfw, raw = raw.toList()),
-            adapter.getItems()
+            adapter.getItems(),
+            pollPostBody
         )
         PostService.newPostIntent(context, postBodyOuter)
         listener?.onFinish()
@@ -232,11 +276,17 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         super.onCreate(savedInstanceState)
         viewModel.event.observe(this, eventObserver)
         viewModel.counter.observe(this, counterObserver)
+        viewModel.enablePoll.observe(this, enablePollObserver)
         uriInfo?.let { viewModel.media = it }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_compose_post, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_compose_post, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         val bgRes = preferenceRepository.shapeOfAvatar.drawableRes
@@ -276,10 +326,14 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         syncMenuState()
 
         adapter = ThumbnailAdapter(viewModel.media.toMutableList(), thumbnailAdapterListener)
-        viewModel.previewAttachmentsVisibility.value = if (adapter.getItems().isNotEmpty()) View.VISIBLE else View.GONE
+        viewModel.previewAttachmentsVisibility.value =
+            if (adapter.getItems().isNotEmpty()) View.VISIBLE else View.GONE
         binding.thumbnailRecyclerView.adapter = adapter
 
-        Util.setTintForToolbarIcons(binding.viewLeftActionMenuView.context, binding.viewLeftActionMenuView.menu)
+        Util.setTintForToolbarIcons(
+            binding.viewLeftActionMenuView.context,
+            binding.viewLeftActionMenuView.menu
+        )
         Util.setTintForToolbarIcons(
             binding.viewRightActionMenuView.context,
             binding.viewRightActionMenuView.menu
@@ -319,7 +373,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private fun requestGalleryDialog() {
-        val permission = ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permission =
+            ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 activity!!,
@@ -331,7 +386,11 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         when (requestCode) {
             PermissionRequestCode.Storage.ordinal -> {
                 if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -375,8 +434,14 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
             R.id.menuPost -> send()
             R.id.menuLongPost -> composeLongPost()
             R.id.menuSpoiler -> setSpoiler()
+            R.id.menuPoll -> enablePoll()
         }
         return true
+    }
+
+    private fun enablePoll() {
+        if (viewModel.enablePoll.value == true) return
+        viewModel.enablePoll.value = true
     }
 
     private fun setSpoiler() {
@@ -400,8 +465,10 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     private fun cancelToCompose(force: Boolean = false) {
         val hasAnyMedia = adapter.getItems().isNotEmpty()
-        val hasAnyRaw = viewModel.longPost != null || viewModel.spoiler != null
-        val isChanged = viewModel.computedInitialText != viewModel.text.value || hasAnyMedia || hasAnyRaw
+        val hasAnyRaw =
+            viewModel.longPost != null || viewModel.spoiler != null || pollPostBody != null
+        val isChanged =
+            viewModel.computedInitialText != viewModel.text.value || hasAnyMedia || hasAnyRaw
         if (!force && isChanged) {
             val fragment = BasicDialogFragment.Builder()
                 .setMessage(R.string.discard_changes)
@@ -425,7 +492,10 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         }
     }
 
-    class ThumbnailAdapter(private val items: MutableList<UriInfo> = mutableListOf(), private val listener: Callback) :
+    class ThumbnailAdapter(
+        private val items: MutableList<UriInfo> = mutableListOf(),
+        private val listener: Callback
+    ) :
         RecyclerView.Adapter<ThumbnailAdapter.ViewHolder>() {
         interface Callback {
             fun onRemove()
@@ -435,7 +505,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.compose_thumbnail_image, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.compose_thumbnail_image, parent, false)
             return ViewHolder(view)
         }
 
@@ -491,6 +562,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         object ShowAccountList : Event()
     }
 
+
     class ComposePostViewModel private constructor(
         replyTargetArg: Post?,
         mentionToMyself: Boolean,
@@ -498,9 +570,15 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         currentUserId: String
     ) : ViewModel() {
         val event = SingleLiveEvent<Event>()
-        val currentUserIdLiveData: MutableLiveData<String> = MutableLiveData<String>().apply { value = currentUserId }
+        val currentUserIdLiveData: MutableLiveData<String> =
+            MutableLiveData<String>().apply { value = currentUserId }
         val myAccountAvatarUrl: LiveData<String> =
-            Transformations.map(currentUserIdLiveData) { User.getAvatarUrl(it, User.AvatarSize.Large) }
+            Transformations.map(currentUserIdLiveData) {
+                User.getAvatarUrl(
+                    it,
+                    User.AvatarSize.Large
+                )
+            }
         var spoiler: Spoiler? = null
         var media: List<UriInfo> = emptyList()
         var initialized: Boolean = false
@@ -525,6 +603,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
                 else -> ""
             }
         }
+        var enablePoll = MutableLiveData<Boolean>().apply { value = false }
 
         init {
             text.value = computedInitialText
@@ -560,12 +639,16 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     companion object {
 
-        fun newInstance(composePostFragmentOption: ComposePostFragmentOption? = null) = ComposePostFragment().apply {
-            arguments = Bundle().apply {
-                putString(BundleKey.InitialText.name, composePostFragmentOption?.initialText)
-                putParcelableArrayList(BundleKey.InitialPhoto.name, composePostFragmentOption?.intentExtraDataList)
+        fun newInstance(composePostFragmentOption: ComposePostFragmentOption? = null) =
+            ComposePostFragment().apply {
+                arguments = Bundle().apply {
+                    putString(BundleKey.InitialText.name, composePostFragmentOption?.initialText)
+                    putParcelableArrayList(
+                        BundleKey.InitialPhoto.name,
+                        composePostFragmentOption?.intentExtraDataList
+                    )
+                }
             }
-        }
 
         fun replyInstance(post: Post) = ComposePostFragment().apply {
             arguments = Bundle().apply {

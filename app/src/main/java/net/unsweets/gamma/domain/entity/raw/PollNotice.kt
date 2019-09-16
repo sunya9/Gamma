@@ -9,13 +9,14 @@ import net.unsweets.gamma.domain.entity.Poll
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class PollNotice(override val value: PollValue) : Raw<PollNotice.PollValue>, Parcelable {
+data class PollNotice(override val value: PollNoticeValue) : Raw<PollNotice.PollNoticeValue>,
+    Parcelable {
     @IgnoredOnParcel
     override val type: String = PollNotice.type
 
     @Parcelize
     @JsonClass(generateAdapter = true)
-    data class PollValue(
+    data class PollNoticeValue(
         val prompt: String,
         @Json(name = "poll_token") val pollToken: String,
         @Json(name = "closed_at") val closedAt: String,

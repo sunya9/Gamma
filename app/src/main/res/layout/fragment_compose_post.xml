@@ -43,7 +43,7 @@
                 tools:text="256" />
         </androidx.appcompat.widget.Toolbar>
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:fillViewport="true"
@@ -53,6 +53,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:animateLayoutChanges="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
@@ -128,7 +131,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:minHeight="100dp">
 
                     <net.unsweets.gamma.presentation.view.ClippedImageView
                         android:id="@+id/myAccountAvatarImageView"
@@ -168,13 +172,26 @@
                     android:id="@+id/thumbnailRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:minHeight="200dp"
                     android:orientation="horizontal"
+                    android:paddingStart="@dimen/margin_compose_post_start"
                     android:visibility="@{safeUnbox(viewModel.previewAttachmentsVisibility)}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:ignore="RtlSymmetry"
                     tools:listitem="@layout/compose_thumbnail_image" />
+
+                <FrameLayout
+                    android:id="@+id/pollLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_compose_post_start"
+                    android:layout_marginTop="@dimen/margin_half"
+                    android:layout_marginEnd="@dimen/margin_half"
+                    android:layout_marginBottom="@dimen/margin_half" />
             </LinearLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/bottomToolbar"

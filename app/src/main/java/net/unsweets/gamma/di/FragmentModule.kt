@@ -95,4 +95,10 @@ abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract fun conrtirbuteStreamPreferenceFragment(): SettingsActivity.StreamPreferenceFragment
+
+    @ContributesAndroidInjector
+    abstract fun conrtirbuteComposePollFragment(): ComposePollFragment
+
+    @ContributesAndroidInjector
+    abstract fun conrtirbuteComposePollOptionFragment(): ComposePollOptionFragment
 }

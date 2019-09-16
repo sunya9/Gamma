@@ -15,10 +15,10 @@ data class PollPostBody(
     val options: List<PollOption>,
     val duration: Int,
     @Json(name = "is_anonymous") val isAnonymous: Boolean,
-    @Json(name = "max_options") val maxOptions: Int
-) : Parcelable {
-    @IgnoredOnParcel
+    @Json(name = "max_options") val maxOptions: Int,
     val type: String = BuildConfig.APPLICATION_ID
+) : Parcelable {
+
     @IgnoredOnParcel
     @Json(name = "is_public")
     val isPublic: Boolean = true

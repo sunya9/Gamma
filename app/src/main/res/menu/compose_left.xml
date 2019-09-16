@@ -11,6 +11,13 @@
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
     <item
+        android:id="@+id/menuPoll"
+        android:checkable="true"
+        android:checked="false"
+        android:icon="@drawable/ic_poll_black_24dp"
+        android:title="@string/add_poll"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menuSpoiler"
         android:checkable="true"
         android:checked="false"

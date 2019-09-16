@@ -10,9 +10,11 @@ import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.PostBodyOuter
 import net.unsweets.gamma.domain.entity.raw.PostRaw
+import net.unsweets.gamma.domain.entity.raw.replacement.PostPoll
 import net.unsweets.gamma.domain.model.io.*
 import net.unsweets.gamma.domain.usecases.*
 import net.unsweets.gamma.util.ErrorIntent
+import net.unsweets.gamma.util.LogUtil
 import javax.inject.Inject
 
 private const val actionPrefix = "${BuildConfig.APPLICATION_ID}.service.PostService"
@@ -48,6 +50,8 @@ class PostService : IntentService("PostService") {
     lateinit var uploadFileUseCase: UploadFileUseCase
     @Inject
     lateinit var deletePostUseCase: DeletePostUseCase
+    @Inject
+    lateinit var createPollUseCase: CreatePollUseCase
 
     override fun onCreate() {
         AndroidInjection.inject(this)
@@ -76,6 +80,18 @@ class PostService : IntentService("PostService") {
                         inputStream?.close()
                         res
                     }
+                postBodyOuter.pollPostBody?.let {
+                    LogUtil.e("pollPostBody $it")
+                    runCatching {
+                        createPollUseCase.run(CreatePollInputData(it))
+                    }.onFailure {
+                        return sendErrorBroadcast(it)
+                    }.onSuccess {
+                        val pollNotice = PostPoll.createFromPoll(it.poll)
+                        raw.add(pollNotice)
+                    }
+                }
+
                 raw.addAll(replacementFileRawList)
                 val modifiedPostBody = postBodyOuter.postBody.copy(raw = raw)
                 runCatching {
@@ -129,6 +145,11 @@ class PostService : IntentService("PostService") {
         val responseIntent =
             resultIntent.getOrDefault(ErrorIntent.createErrorIntent(resultIntent.exceptionOrNull()))
         LocalBroadcastManager.getInstance(baseContext).sendBroadcast(responseIntent)
+    }
+
+    private fun sendErrorBroadcast(t: Throwable) {
+        val intent = ErrorIntent.createErrorIntent(t)
+        LocalBroadcastManager.getInstance(baseContext).sendBroadcast(intent)
     }
 
 

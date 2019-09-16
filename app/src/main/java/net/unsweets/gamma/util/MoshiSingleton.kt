@@ -7,6 +7,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import net.unsweets.gamma.domain.entity.Interaction
 import net.unsweets.gamma.domain.entity.raw.*
 import net.unsweets.gamma.domain.entity.raw.replacement.PostOEmbed
+import net.unsweets.gamma.domain.entity.raw.replacement.PostPoll
 import net.unsweets.gamma.presentation.util.PageableItemWrapperConverter
 import java.util.*
 
@@ -36,6 +37,7 @@ object MoshiSingleton {
         .add(
             PolymorphicJsonAdapterFactory.of(PostRaw::class.java, "type")
                 .withSubtype(PostOEmbed::class.java, OEmbed.type)
+                .withSubtype(PostPoll::class.java, PollNotice.type)
                 .withSubtype(Spoiler::class.java, Spoiler.type)
                 .withSubtype(LongPost::class.java, LongPost.type)
                 .withSubtype(ChannelInvite::class.java, ChannelInvite.type)

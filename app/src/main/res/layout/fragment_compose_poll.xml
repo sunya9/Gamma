@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="net.unsweets.gamma.presentation.fragment.ComposePollFragment.ComposePollViewModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/composePollCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentPadding="0dp"
+        tools:context=".presentation.fragment.ComposePollFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/composePollToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                app:menu="@menu/compose_poll"
+                app:title="@string/poll" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/composePollPromptTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_regular"
+                android:hint="@string/poll_prompt"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/optional_prompt_max_length">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/composePollOptionalPromptTextEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewModel.prompt}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/composePollRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="3"
+                tools:listitem="@layout/compose_poll_body_item" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/composePollOptionalAddChoiceButton"
+                style="@style/TextButton.Square"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.enableAddOptionButton}"
+                android:onClick="@{() -> viewModel.addOption()}"
+                android:text="@string/add_choice"
+                app:icon="@drawable/ic_playlist_add_black_24dp"
+                app:iconGravity="textStart" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/divider_full_bleed" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{() -> viewModel.openMoreOptions()}"
+                android:orientation="horizontal"
+                android:padding="@dimen/margin_regular">
+
+                <TextView
+                    android:id="@+id/composePollDurationLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/duration"
+                    app:layout_constraintEnd_toStartOf="@id/composePollMaxOptionsLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/composePollDurationValue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.durationStr}"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="@id/composePollDurationLabel"
+                    app:layout_constraintStart_toStartOf="@id/composePollDurationLabel"
+                    app:layout_constraintTop_toBottomOf="@id/composePollDurationLabel"
+                    tools:text="1d 2h 3m" />
+
+                <TextView
+                    android:id="@+id/composePollMaxOptionsLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/max_options"
+                    app:layout_constraintEnd_toStartOf="@id/composeAnonymousLabel"
+                    app:layout_constraintStart_toEndOf="@id/composePollDurationLabel"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/composePollMaxOptionsValue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.maxOptions.toString()}"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="@id/composePollMaxOptionsLabel"
+                    app:layout_constraintStart_toStartOf="@id/composePollMaxOptionsLabel"
+                    app:layout_constraintTop_toBottomOf="@id/composePollMaxOptionsLabel"
+                    tools:text="1" />
+
+                <TextView
+                    android:id="@+id/composeAnonymousLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anonymous"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/composePollMaxOptionsLabel"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/composeAnonymousValue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.isAnonymous ? @string/yes : @string/no}"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="@id/composeAnonymousLabel"
+                    app:layout_constraintStart_toStartOf="@id/composeAnonymousLabel"
+                    app:layout_constraintTop_toBottomOf="@id/composeAnonymousLabel"
+                    tools:text="@string/yes" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

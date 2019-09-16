@@ -44,4 +44,5 @@
     <dimen name="secondary_alpha">0.8</dimen>
     <dimen name="height_segment_item">48dp</dimen>
     <dimen name="size_avatar_rounded">10dp</dimen>
+    <dimen name="margin_compose_post_start">60dp</dimen>
 </resources>

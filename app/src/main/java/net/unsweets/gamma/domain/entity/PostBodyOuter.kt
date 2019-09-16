@@ -8,5 +8,6 @@ import net.unsweets.gamma.domain.model.UriInfo
 data class PostBodyOuter(
     val accountId: String,
     val postBody: PostBody,
-    val files: List<UriInfo> = emptyList()
+    val files: List<UriInfo> = emptyList(),
+    val pollPostBody: PollPostBody? = null
 ) : Parcelable

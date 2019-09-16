@@ -8,4 +8,5 @@
     <integer name="pref_loading_size_default_value">20</integer>
     <integer name="pref_cache_size_step">10</integer>
     <integer name="pref_cache_size_default_value">100</integer>
+    <integer name="optional_prompt_max_length">256</integer>
 </resources>
