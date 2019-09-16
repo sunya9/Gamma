@@ -242,6 +242,10 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
         return defaultPnutService.getFiles(getFilesParam.toMap()).await()
     }
 
+    override fun createPoll(pollPostBody: PollPostBody): PnutResponse<Poll> {
+        return defaultPnutService.createPoll(pollPostBody).execute().bodyOrThrow()
+    }
+
     private val cacheSize: Long = 1024 * 1024 * 10
 
 
@@ -277,4 +281,6 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
                 it.request().newBuilder().addHeader("Authorization", "Bearer $token").build()
             it.proceed(request)
         }
+
+
 }

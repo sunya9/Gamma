@@ -69,4 +69,6 @@ interface IPnutRepository {
     fun createFile(content: RequestBody, fileBody: FileBody): PnutResponse<File>
 
     fun updateDefaultPnutService(token: String)
+
+    fun createPoll(pollPostBody: PollPostBody): PnutResponse<Poll>
 }

@@ -77,7 +77,11 @@ interface PnutService {
     fun reportPost(@Path("postId") postId: String, reason: ReportReason): Call<PnutResponse<Post>>
 
     @GET("posts/{postId}/interactions")
-    fun getPostInteractions(@Path("postId") postId: String, @Query("filters") filters: InteractionFilter?, @Query("exclude") exclude: InteractionFilter?): Call<PnutResponse<List<Interaction>>>
+    fun getPostInteractions(
+        @Path("postId") postId: String, @Query("filters") filters: InteractionFilter?, @Query(
+            "exclude"
+        ) exclude: InteractionFilter?
+    ): Call<PnutResponse<List<Interaction>>>
 
     @GET("posts")
     fun getPosts(@Query("ids") ids: IDs): Call<PnutResponse<List<Post>>>
@@ -185,4 +189,8 @@ interface PnutService {
         @Part("type") type: RequestBody,
         @Part("is_public") isPublic: RequestBody
     ): Call<PnutResponse<File>>
+
+    @POST("polls")
+    fun createPoll(pollPostBody: PollPostBody): Call<PnutResponse<Poll>>
+
 }
