@@ -13,7 +13,7 @@ apply plugin: 'io.fabric'
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 
 android {
-    if(keystorePropertiesFile.exists()) {
+    if (keystorePropertiesFile.exists()) {
         // Create a variable called keystorePropertiesFile, and initialize it to your
         // keystore.properties file, in the rootProject folder.
 
