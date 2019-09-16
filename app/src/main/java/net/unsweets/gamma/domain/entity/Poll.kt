@@ -14,6 +14,7 @@ data class Poll(
     val id: String,
     @Json(name = "is_anonymous") val isAnonymous: Boolean,
     @Json(name = "is_public") val isPublic: Boolean,
+    @Json(name = "max_options") val maxOptions: Int,
     val options: List<PollOption>,
     @Json(name = "poll_token") val pollToken: String,
     val prompt: String,
@@ -25,10 +26,10 @@ data class Poll(
     @JsonClass(generateAdapter = true)
     data class PollOption(
         val text: String,
-        val position: Int,
-        @Json(name = "is_your_response") val isYourResponse: Boolean?,
-        val respondents :Int?,
-        @Json(name = "respondent_ids") val respondentIds: List<String>?
+        val position: Int? = null,
+        @Json(name = "is_your_response") val isYourResponse: Boolean? = null,
+        val respondents: Int? = null,
+        @Json(name = "respondent_ids") val respondentIds: List<String>? = null
     ) : Parcelable
 }
 
