@@ -152,4 +152,9 @@ class UseCaseModule {
         pnutCacheRepository: IPnutCacheRepository,
         preferenceRepository: IPreferenceRepository
     ): CacheInteractionUseCase = CacheInteractionUseCase(pnutCacheRepository, preferenceRepository)
+
+    @Provides
+    fun provideCreatePollUseCase(
+        pnutRepository: IPnutRepository
+    ): CreatePollUseCase = CreatePollUseCase(pnutRepository)
 }
