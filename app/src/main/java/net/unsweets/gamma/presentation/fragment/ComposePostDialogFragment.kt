@@ -124,6 +124,7 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
             }
         }
         dialog.window?.decorView?.visibility = View.GONE
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         dialog.setOnShowListener {
             if (savedInstanceState == null) {
                 revealAnimation(dialog.rootLayout)
