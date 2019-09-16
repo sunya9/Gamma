@@ -191,6 +191,6 @@ interface PnutService {
     ): Call<PnutResponse<File>>
 
     @POST("polls")
-    fun createPoll(pollPostBody: PollPostBody): Call<PnutResponse<Poll>>
+    fun createPoll(@Body pollPostBody: PollPostBody): Call<PnutResponse<Poll>>
 
 }
