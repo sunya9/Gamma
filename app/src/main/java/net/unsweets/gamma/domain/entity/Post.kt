@@ -7,8 +7,10 @@ import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.domain.entity.entities.Entities
 import net.unsweets.gamma.domain.entity.entities.HaveEntities
+import net.unsweets.gamma.domain.entity.raw.PollNotice
 import net.unsweets.gamma.domain.entity.raw.Raw
 import net.unsweets.gamma.domain.entity.raw.Spoiler
+import net.unsweets.gamma.presentation.adapter.PollOptionsAdapter
 import java.util.*
 
 @Parcelize
@@ -85,4 +87,12 @@ data class Post(
 
     @IgnoredOnParcel
     val isDeletedNonNull = isDeleted == true
+    @IgnoredOnParcel
+    val pollNotice = PollNotice.findPollNotice(raw)
+    @IgnoredOnParcel
+    var poll: Poll? = null
+    @IgnoredOnParcel
+    val pollOptionsAdapter by lazy {
+        pollNotice?.let { PollOptionsAdapter(it.value) }
+    }
 }

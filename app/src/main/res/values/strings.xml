@@ -242,6 +242,10 @@
     <string name="day">Day</string>
     <string name="hour">Hour</string>
     <string name="minute">Minute</string>
+    <string name="vote">Vote</string>
+    <string name="poll_closed_date_template">Closed at %s</string>
+    <string name="poll_held_date_template">~ %s</string>
+    <string name="poll_percent_template">%d%%</string>
     <plurals name="poll_day_template">
         <item quantity="zero" />
         <item quantity="one">%d day</item>
