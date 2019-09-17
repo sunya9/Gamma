@@ -71,4 +71,5 @@ interface IPnutRepository {
     fun updateDefaultPnutService(token: String)
 
     fun createPoll(pollPostBody: PollPostBody): PnutResponse<Poll>
+    suspend fun getPoll(pollId: String, pollToken: String): PnutResponse<Poll>
 }

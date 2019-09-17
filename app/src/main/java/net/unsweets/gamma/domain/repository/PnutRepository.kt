@@ -246,6 +246,10 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
         return defaultPnutService.createPoll(pollPostBody).execute().bodyOrThrow()
     }
 
+    override suspend fun getPoll(pollId: String, pollToken: String): PnutResponse<Poll> {
+        return defaultPnutService.getPoll(pollId, pollToken).await()
+    }
+
     private val cacheSize: Long = 1024 * 1024 * 10
 
 

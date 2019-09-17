@@ -193,4 +193,7 @@ interface PnutService {
     @POST("polls")
     fun createPoll(@Body pollPostBody: PollPostBody): Call<PnutResponse<Poll>>
 
+    @GET("polls/{pollId}")
+    fun getPoll(@Path("pollId") pollId: String, @Query("poll_token") pollToken: String): Call<PnutResponse<Poll>>
+
 }
