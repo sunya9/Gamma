@@ -157,4 +157,9 @@ class UseCaseModule {
     fun provideCreatePollUseCase(
         pnutRepository: IPnutRepository
     ): CreatePollUseCase = CreatePollUseCase(pnutRepository)
+
+    @Provides
+    fun provideGetPollUseCase(
+        pnutRepository: IPnutRepository
+    ): GetPollUseCase = GetPollUseCase(pnutRepository)
 }
