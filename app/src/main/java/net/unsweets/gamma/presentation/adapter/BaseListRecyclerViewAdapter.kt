@@ -98,43 +98,6 @@ class BaseListRecyclerViewAdapter<T : UniquePageable, V : RecyclerView.ViewHolde
         )
     }
 
-    fun updateSegment(info: PageableItemWrapper.Pager<T>, receivedMeta: PnutResponse.Meta) {
-        val position = options.itemList.indexOfFirst {
-            LogUtil.e("${it.getBeforeId()}, ${info.minId}, ${it.getSinceId()}, ${info.maxId}")
-            it is PageableItemWrapper.Pager && (it.getBeforeId() == info.minId || it.getSinceId() == info.maxId)
-        }
-        LogUtil.e("position $position")
-        LogUtil.e("updateSegment $info ${options.itemList.lastOrNull()}")
-//        LogUtil.e("position $position itemSize: ${options.itemList.size}")
-        if (position < 0) return
-        val updatedInfo = info.copy(
-            maxId = receivedMeta.max_id,
-            minId = receivedMeta.min_id,
-            more = receivedMeta.more ?: false,
-            state = PageableItemWrapper.Pager.State.None
-        )
-        when {
-            isFooterSegment(position) -> {
-                LogUtil.e("isFooterSegment")
-                options.itemList[position] = updatedInfo
-                notifyItemChanged(position)
-            }
-            updatedInfo.more -> {
-                LogUtil.e("more is true")
-                options.itemList[position] = updatedInfo
-                notifyItemChanged(position)
-            }
-            else -> {
-                notifyItemRemoved(position)
-            }
-        }
-
-    }
-
-    private fun isFooterSegment(position: Int): Boolean {
-        return bodyItemCount - 1 == position
-    }
-
     override fun onBindViewHolder(holder: V, position: Int) {
 //        val offset = if (options.reverse) -1 else 0
         //        LogUtil.e("options.itemList[itemPosition] ${options.itemList[itemPosition]}")
@@ -298,8 +261,8 @@ class BaseListRecyclerViewAdapter<T : UniquePageable, V : RecyclerView.ViewHolde
             LogUtil.e("add more segment $segment")
             options.itemList.add(index, segment)
             notifyItemInserted(index)
-        } else if (response.meta.more == false && index + 1 == options.itemList.size) {
-            val footerIndex = index + 1
+        } else if (response.meta.more == false && index == options.itemList.size) {
+            val footerIndex = index
             LogUtil.e("add footer segment")
             // Add the footer segment if insert position is end of list and more is false
             options.itemList.add(
