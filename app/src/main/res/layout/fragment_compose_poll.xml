@@ -127,12 +127,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/anonymous"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/composePollMaxOptionsLabel"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/composeAnonymousValue"
+                    android:visibility="gone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.isAnonymous ? @string/yes : @string/no}"
