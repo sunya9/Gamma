@@ -11,6 +11,7 @@ import net.unsweets.gamma.domain.entity.raw.PollNotice
 import net.unsweets.gamma.domain.entity.raw.Raw
 import net.unsweets.gamma.domain.entity.raw.Spoiler
 import net.unsweets.gamma.presentation.adapter.PollOptionsAdapter
+import net.unsweets.gamma.util.LogUtil
 import java.util.*
 
 @Parcelize
@@ -93,17 +94,18 @@ data class Post(
     @Transient
     var pollLastUpdate: Calendar? = null
     @IgnoredOnParcel
-    @Transient
-    var isPollNeedUpdate = true
-        get() = (pollLastUpdate?.apply {
-            add(Calendar.MINUTE, 1)
-        })?.time?.let { it < Calendar.getInstance().time } ?: true
+    var isPollNeedUpdate: Boolean = true
+        get() {
+            if (pollNotice == null) return false
+            LogUtil.e("in post model: isPollNeedUpdate $pollLastUpdate")
+            val res = (pollLastUpdate?.apply {
+                add(Calendar.MINUTE, 1)
+            })?.time?.let { it < Calendar.getInstance().time } ?: true
+            pollLastUpdate = Calendar.getInstance()
+            return res
+        }
     @IgnoredOnParcel
     var poll: Poll? = null
-        get() {
-            pollLastUpdate = Calendar.getInstance()
-            return field
-        }
     @IgnoredOnParcel
     val pollOptionsAdapter by lazy {
         pollNotice?.let { PollOptionsAdapter(it.value, poll) }

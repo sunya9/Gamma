@@ -504,8 +504,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         viewHolder.revisedIconImageView.visibility = getVisibility(revisionType.iconRes != null)
 
         val pollNotice = item.pollNotice
-        LogUtil.e("isPollNeedUpdate ${item.isPollNeedUpdate}")
-        if (pollNotice != null && item.isPollNeedUpdate) {
+        val isPollNeedUpdate = item.isPollNeedUpdate
+        LogUtil.e("isPollNeedUpdate ${isPollNeedUpdate}")
+        if (pollNotice != null && isPollNeedUpdate) {
             viewModel.loadPoll(item.id, pollNotice)
         }
         val poll = item.poll
@@ -527,7 +528,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                             }
                         }
                     }
+                } else if (item.pollOptionsAdapter != null) {
+
                 }
+                item.pollOptionsAdapter?.setPollDetail(poll)
                 viewHolder.pollVoteButton.isEnabled = item.pollOptionsAdapter?.votable ?: false
                 viewHolder.pollVoteButton.setOnClickListener {
                     viewModel.vote(
@@ -835,6 +839,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         }
 
         fun loadPoll(postId: String, pollNotice: PollNotice) {
+            LogUtil.e("loadPoll")
             viewModelScope.launch {
                 runCatching {
                     getPollUseCase.run(
