@@ -32,7 +32,7 @@ data class Poll(
         @Json(name = "respondent_ids") val respondentIds: List<String>? = null
     ) : Parcelable {
         fun getPercent(total: Int?) =
-            if (total == null || total == 0 || respondents == null) 0 else (respondents / total * 100)
+            if (total == null || total == 0 || respondents == null) 0 else (respondents.toFloat() / total.toFloat() * 100).toInt()
     }
 
     val total

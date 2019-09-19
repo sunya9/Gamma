@@ -90,9 +90,22 @@ data class Post(
     @IgnoredOnParcel
     val pollNotice = PollNotice.findPollNotice(raw)
     @IgnoredOnParcel
+    @Transient
+    var pollLastUpdate: Calendar? = null
+    @IgnoredOnParcel
+    @Transient
+    var isPollNeedUpdate = true
+        get() = (pollLastUpdate?.apply {
+            add(Calendar.MINUTE, 1)
+        })?.time?.let { it < Calendar.getInstance().time } ?: true
+    @IgnoredOnParcel
     var poll: Poll? = null
+        get() {
+            pollLastUpdate = Calendar.getInstance()
+            return field
+        }
     @IgnoredOnParcel
     val pollOptionsAdapter by lazy {
-        pollNotice?.let { PollOptionsAdapter(it.value) }
+        pollNotice?.let { PollOptionsAdapter(it.value, poll) }
     }
 }

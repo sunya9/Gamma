@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.data.PnutService
+import net.unsweets.gamma.domain.VoteBody
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
 import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
@@ -248,6 +249,14 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
 
     override suspend fun getPoll(pollId: String, pollToken: String): PnutResponse<Poll> {
         return defaultPnutService.getPoll(pollId, pollToken).await()
+    }
+
+    override suspend fun vote(
+        pollId: String,
+        pollToken: String,
+        voteBody: VoteBody
+    ): PnutResponse<Poll> {
+        return defaultPnutService.vote(pollId, pollToken, voteBody).await()
     }
 
     private val cacheSize: Long = 1024 * 1024 * 10

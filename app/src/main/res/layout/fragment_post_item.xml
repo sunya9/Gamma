@@ -226,6 +226,52 @@
                             app:tabRippleColor="@null" />
                     </FrameLayout>
 
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/pollCardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_regular"
+                        app:cardUseCompatPadding="true"
+                        app:contentPadding="@dimen/margin_regular">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/pollPromptTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:text="@tools:sample/lorem[5]" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/pollOptionsRecyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:itemCount="3"
+                                tools:listitem="@layout/poll_item_vote" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/pollVoteButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/vote"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+
+                            <TextView
+                                android:id="@+id/pollFooterTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/margin_half"
+                                android:layout_marginBottom="@dimen/margin_half"
+                                android:drawableStart="@drawable/ic_access_time_black_12dp"
+                                android:drawablePadding="@dimen/margin_half" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/detailInfoLayout"
                         android:layout_width="match_parent"
@@ -384,12 +430,12 @@
                     android:layout_width="@dimen/size_post_item_avatar"
                     android:layout_height="@dimen/size_post_item_avatar"
                     android:layout_marginStart="@dimen/margin_regular"
-                    app:layout_constraintDimensionRatio="w,1:1"
                     android:background="@drawable/bg_avatar_circle"
+                    app:layout_constraintDimensionRatio="w,1:1"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="@id/screenNameTextView"
-                    tools:src="@tools:sample/avatars"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/avatars" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
 

@@ -21,6 +21,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -38,32 +39,30 @@ import kotlinx.android.synthetic.main.fragment_post_item.view.*
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.broadcast.PostReceiver
-import net.unsweets.gamma.domain.entity.PnutResponse
-import net.unsweets.gamma.domain.entity.Post
-import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.entity.raw.LongPost
 import net.unsweets.gamma.domain.entity.raw.OEmbed
+import net.unsweets.gamma.domain.entity.raw.PollNotice
 import net.unsweets.gamma.domain.model.PageableItemWrapper
 import net.unsweets.gamma.domain.model.StreamType
-import net.unsweets.gamma.domain.model.io.CachePostInputData
-import net.unsweets.gamma.domain.model.io.GetCachedPostListInputData
-import net.unsweets.gamma.domain.model.io.GetPostInputData
+import net.unsweets.gamma.domain.model.io.*
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.GeneralPostParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
-import net.unsweets.gamma.domain.usecases.CachePostUseCase
-import net.unsweets.gamma.domain.usecases.GetCachedPostListUseCase
-import net.unsweets.gamma.domain.usecases.GetPostUseCase
+import net.unsweets.gamma.domain.usecases.*
 import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
+import net.unsweets.gamma.presentation.adapter.PollOptionsAdapter
 import net.unsweets.gamma.presentation.adapter.ReactionUsersAdapter
 import net.unsweets.gamma.presentation.adapter.ThumbnailViewPagerAdapter
 import net.unsweets.gamma.presentation.util.*
 import net.unsweets.gamma.service.PostService
 import net.unsweets.gamma.util.LogUtil
+import net.unsweets.gamma.util.SingleLiveEvent
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.set
 
 
 abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder>(),
@@ -80,6 +79,21 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         }
     }
 
+    private val updatePollObserver = Observer<GetPoll> { getPoll ->
+        if (getPoll == null) return@Observer
+        val items = viewModel.items
+        val index = items.indexOfFirst { it.uniqueKey == getPoll.postId }
+        if (index < 0) return@Observer
+        val item = items[index] as? PageableItemWrapper.Item<Post> ?: return@Observer
+        val post = item.item
+        post.poll = getPoll.poll
+        post.pollOptionsAdapter?.let {
+            it.setPollDetail(getPoll.poll)
+            it.notifyDataSetChanged()
+            adapter.notifyItemChanged(index)
+        }
+        viewModel.storeItems()
+    }
     private val wifiManager by lazy {
         val ctx = activity?.applicationContext ?: return@lazy null
         ctx.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -225,6 +239,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     lateinit var getCachedPostUseCase: GetCachedPostListUseCase
     @Inject
     lateinit var cachePostUseCase: CachePostUseCase
+    @Inject
+    lateinit var getPollUseCase: GetPollUseCase
+    @Inject
+    lateinit var voteUseCase: VoteUseCase
 
     abstract val streamType: StreamType
     open val generalPostParam: GeneralPostParam = GeneralPostParam(false)
@@ -236,7 +254,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 getPostUseCase,
                 getCachedPostUseCase,
                 cachePostUseCase,
-                generalPostParam
+                generalPostParam,
+                getPollUseCase,
+                voteUseCase
             )
         )[PostItemViewModel::class.java]
         super.onCreate(savedInstanceState)
@@ -244,6 +264,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             currentPosition = savedInstanceState.getInt(StateKey.CurrentPosition.name, -1)
             selectedPost = savedInstanceState.getParcelable(StateKey.SelectedPost.name)
         }
+        viewModel.updatePoll.observe(this, updatePollObserver)
 
     }
 
@@ -476,6 +497,48 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         }
         revisionType.iconRes?.let { viewHolder.revisedIconImageView.setImageResource(it) }
         viewHolder.revisedIconImageView.visibility = getVisibility(revisionType.iconRes != null)
+
+        val pollNotice = item.pollNotice
+        LogUtil.e("isPollNeedUpdate ${item.isPollNeedUpdate}")
+        if (pollNotice != null && item.isPollNeedUpdate) {
+            viewModel.loadPoll(item.id, pollNotice)
+        }
+        val poll = item.poll
+        val pollLikeValue: PollLikeValue? =
+            pollNotice?.value as? PollLikeValue ?: item.poll as? PollLikeValue
+        if (pollLikeValue != null) {
+            // TODO: get detail of poll in viewModel
+            viewHolder.pollPromptTextView.text = pollLikeValue.prompt
+            viewHolder.pollVoteButton.visibility = getVisibility((!pollLikeValue.alreadyClosed))
+            viewHolder.pollFooterTextView.text = pollLikeValue.getDateText(context)
+            if (poll != null) {
+                // prevent  chosen position to be initialized when it is triggered update like notifyDataSetChanged.
+                if (viewHolder.pollOptionsRecyclerView.adapter != item.pollOptionsAdapter) {
+                    viewHolder.pollOptionsRecyclerView.adapter = item.pollOptionsAdapter?.also {
+                        it.setPollDetail(poll)
+                        it.listener = object : PollOptionsAdapter.Callback {
+                            override fun onUpdateChoiceState(votable: Boolean) {
+                                viewHolder.pollVoteButton.isEnabled = votable
+                            }
+                        }
+                    }
+                }
+                viewHolder.pollVoteButton.isEnabled = item.pollOptionsAdapter?.votable ?: false
+                viewHolder.pollVoteButton.setOnClickListener {
+                    viewModel.vote(
+                        poll,
+                        item.pollOptionsAdapter?.getChoosedPositions,
+                        item.id
+                    )
+                }
+            } else {
+                viewHolder.pollOptionsRecyclerView.adapter = item.pollOptionsAdapter
+            }
+        } else {
+            viewHolder.pollVoteButton.setOnClickListener(null)
+            viewHolder.pollOptionsRecyclerView.adapter = null
+        }
+        viewHolder.pollCardView.visibility = getVisibility(pollNotice != null)
     }
 
     private fun updateRepostView(viewHolder: PostViewHolder, item: Post) {
@@ -535,7 +598,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val starText =
             resources.getQuantityString(R.plurals.star_count_template, starCount, starCount)
         viewHolder.starCountTextView.text = starText
-
     }
 
     private enum class RevisionType(val iconRes: Int?) {
@@ -703,6 +765,13 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         val revisedIconImageView: ImageView = itemView.revisedIconImageView
         val swipeActionsLayout: FrameLayout = itemView.swipeActionsLayout
         val absoluteDateTextView: TextView = itemView.absoluteDateTextView
+        val pollCardView: CardView = itemView.pollCardView
+        val pollPromptTextView: TextView = itemView.pollPromptTextView
+        val pollOptionsRecyclerView: RecyclerView = itemView.pollOptionsRecyclerView.also {
+            it.isNestedScrollingEnabled = false
+        }
+        val pollFooterTextView: TextView = itemView.pollFooterTextView
+        val pollVoteButton: MaterialButton = itemView.pollVoteButton
 
         init {
             addSpacerDecoration()
@@ -721,15 +790,20 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         }
     }
 
+    data class GetPoll(val postId: String, val poll: Poll)
+
     class PostItemViewModel(
         private val streamType: StreamType,
         private val getPostUseCase: GetPostUseCase,
         private val getCachedPostUseCase: GetCachedPostListUseCase,
         private val cachePostUseCase: CachePostUseCase,
-        private val generalPostParam: GeneralPostParam
+        private val generalPostParam: GeneralPostParam,
+        private val getPollUseCase: GetPollUseCase,
+        private val voteUseCase: VoteUseCase
     ) :
         BaseListFragment.BaseListViewModel<Post>() {
         var isAutoScrollTemporarily = false
+        val updatePoll = SingleLiveEvent<GetPoll>()
 
         override suspend fun getItems(requestPager: PageableItemWrapper.Pager<Post>?): PnutResponse<List<Post>> {
             val getPostParam = GetPostsParam().apply {
@@ -755,12 +829,40 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             }
         }
 
+        fun loadPoll(postId: String, pollNotice: PollNotice) {
+            viewModelScope.launch {
+                runCatching {
+                    getPollUseCase.run(
+                        GetPollInputData(
+                            pollNotice.value.pollId,
+                            pollNotice.value.pollToken
+                        )
+                    )
+                }.onSuccess {
+                    updatePoll.emit(GetPoll(postId, it.poll))
+                }
+            }
+        }
+
+        fun vote(poll: Poll, choosedPositions: Set<Int>?, postId: String) {
+            if (choosedPositions == null) return
+            viewModelScope.launch {
+                runCatching {
+                    voteUseCase.run(VoteInputData(poll.id, poll.pollToken, choosedPositions))
+                }.onSuccess {
+                    updatePoll.emit(GetPoll(postId, it.poll))
+                }
+            }
+        }
+
         class Factory(
             private val streamType: StreamType,
             private val getPostUseCase: GetPostUseCase,
             private val getCachedPostUseCase: GetCachedPostListUseCase,
             private val cachePostUseCase: CachePostUseCase,
-            private val generalPostParam: GeneralPostParam
+            private val generalPostParam: GeneralPostParam,
+            private val getPollUseCase: GetPollUseCase,
+            private val voteUseCase: VoteUseCase
         ) :
             ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -770,7 +872,9 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                     getPostUseCase,
                     getCachedPostUseCase,
                     cachePostUseCase,
-                    generalPostParam
+                    generalPostParam,
+                    getPollUseCase,
+                    voteUseCase
                 ) as T
             }
         }

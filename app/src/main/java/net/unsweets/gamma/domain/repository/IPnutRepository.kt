@@ -1,6 +1,7 @@
 package net.unsweets.gamma.domain.repository
 
 import android.net.Uri
+import net.unsweets.gamma.domain.VoteBody
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
 import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
@@ -72,4 +73,5 @@ interface IPnutRepository {
 
     fun createPoll(pollPostBody: PollPostBody): PnutResponse<Poll>
     suspend fun getPoll(pollId: String, pollToken: String): PnutResponse<Poll>
+    suspend fun vote(pollId: String, pollToken: String, voteBody: VoteBody): PnutResponse<Poll>
 }

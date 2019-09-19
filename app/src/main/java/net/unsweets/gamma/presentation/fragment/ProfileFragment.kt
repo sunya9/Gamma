@@ -136,6 +136,7 @@ class ProfileFragment : BaseFragment() {
                 names: List<String>,
                 sharedElements: MutableMap<String, View>
             ) {
+                binding.circleImageView.clipToOutline = true
                 sharedElements[names[0]] = binding.circleImageView
             }
         })

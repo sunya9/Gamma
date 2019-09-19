@@ -12,7 +12,7 @@ interface PollLikeValue {
     val closedAt: Date
     val id: String
     val alreadyClosed
-        get() = closedAt.time < Date().time
+        get() = closedAt.time < Calendar.getInstance(TimeZone.getTimeZone("UTC")).time.time
 
     fun getDateText(context: Context): String {
         val dateStr = closedAt.toFormatString(context)

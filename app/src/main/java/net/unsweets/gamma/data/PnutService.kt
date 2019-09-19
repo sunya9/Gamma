@@ -1,5 +1,6 @@
 package net.unsweets.gamma.data
 
+import net.unsweets.gamma.domain.VoteBody
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import okhttp3.MultipartBody
@@ -195,5 +196,8 @@ interface PnutService {
 
     @GET("polls/{pollId}")
     fun getPoll(@Path("pollId") pollId: String, @Query("poll_token") pollToken: String): Call<PnutResponse<Poll>>
+
+    @PUT("polls/{pollId}/response")
+    fun vote(@Path("pollId") pollId: String, @Query("poll_token") pollToken: String, @Body voteBody: VoteBody): Call<PnutResponse<Poll>>
 
 }
