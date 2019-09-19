@@ -16,7 +16,7 @@ interface PnutService {
     @POST("posts?include_post_raw=1")
     fun createPost(@Body postBody: PostBody): Call<PnutResponse<Post>>
 
-    @PUT("posts/{postId}")
+    @PUT("posts/{postId}?include_post_raw=1")
     fun editPost(@Path("postId") postId: String, @Body postBody: PostBody): Call<PnutResponse<Post>>
 
     @DELETE("posts/{postId}")
@@ -61,16 +61,16 @@ interface PnutService {
     @GET("posts/{postId}/thread")
     fun getThread(@Path("postId") postId: String, @QueryMap params: Map<String, String>): Call<PnutResponse<List<Post>>>
 
-    @PUT("posts/{postId}/bookmark")
+    @PUT("posts/{postId}/bookmark?include_post_raw=1")
     fun createStar(@Path("postId") postId: String, @Body note: String = ""): Call<PnutResponse<Post>>
 
-    @DELETE("posts/{postId}/bookmark")
+    @DELETE("posts/{postId}/bookmark?include_post_raw=1")
     fun deleteStar(@Path("postId") postId: String): Call<PnutResponse<Post>>
 
-    @PUT("posts/{postId}/repost")
+    @PUT("posts/{postId}/repost?include_post_raw=1")
     fun createRepost(@Path("postId") postId: String): Call<PnutResponse<Post>>
 
-    @DELETE("posts/{postId}/repost")
+    @DELETE("posts/{postId}/repost?include_post_raw=1")
     fun deleteRepost(@Path("postId") postId: String): Call<PnutResponse<Post>>
 
     // TODO: I don't know correct type
