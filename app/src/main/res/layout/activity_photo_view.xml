@@ -11,31 +11,33 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical">
+            android:layout_height="0dp">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
+                android:background="@android:color/transparent"
                 android:layout_width="match_parent"
+                android:layout_gravity="top"
+                android:layout_marginTop="24dp"
                 android:layout_height="?attr/actionBarSize" />
 
             <net.unsweets.gamma.presentation.view.AvoidExceptionViewPager
                 android:id="@+id/mediaViewPager"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="match_parent" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/mediaviewPagerIndicator"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
+                android:layout_gravity="bottom"
                 android:background="@android:color/transparent"
                 app:tabBackground="@android:color/transparent"
                 app:tabIndicatorFullWidth="true"
                 app:tabIndicatorGravity="bottom"
                 app:tabIndicatorHeight="2dp" />
-        </LinearLayout>
+        </FrameLayout>
     </androidx.core.widget.NestedScrollView>
 </com.thefuntasty.hauler.HaulerView>

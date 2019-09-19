@@ -45,6 +45,7 @@ import net.unsweets.gamma.domain.entity.raw.OEmbed
 import net.unsweets.gamma.domain.entity.raw.PollNotice
 import net.unsweets.gamma.domain.model.PageableItemWrapper
 import net.unsweets.gamma.domain.model.StreamType
+import net.unsweets.gamma.domain.model.ThumbAndFull
 import net.unsweets.gamma.domain.model.io.*
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.GeneralPostParam
@@ -205,7 +206,11 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     override fun cancel() {}
 
     override fun onClick(path: String, position: Int, items: List<String>) {
-        val newIntent = PhotoViewActivity.photoViewInstance(context!!, items, position)
+        val newIntent = PhotoViewActivity.photoViewInstance(
+            context!!,
+            items.map { ThumbAndFull(it, it) },
+            position
+        )
         startActivity(newIntent)
     }
 

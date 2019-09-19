@@ -72,6 +72,11 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@color/colorPhotoViewBackground</item>
+        <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationButtonStyle.PhotoView
+        </item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="BottomSheetAdditionalStyle">
@@ -121,6 +126,10 @@
     </style>
 
     <style name="ToolbarNavigationButtonStyle.Profile">
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <style name="ToolbarNavigationButtonStyle.PhotoView">
         <item name="android:tint">@android:color/white</item>
     </style>
 

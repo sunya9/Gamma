@@ -14,19 +14,27 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import kotlinx.android.synthetic.main.activity_photo_view.*
 import net.unsweets.gamma.R
+import net.unsweets.gamma.domain.model.ThumbAndFull
 import net.unsweets.gamma.presentation.fragment.PhotoViewItemFragment
 
 
 class PhotoViewActivity : BaseActivity() {
     private enum class IntentKey { Photos, Index }
+
     companion object {
         private const val singleTransitionName = "singleTransitionName"
-        fun photoViewInstance(context: Context?, item: String) =
+        fun photoViewInstance(context: Context?, item: ThumbAndFull) =
             photoViewInstance(context, listOf(item))
 
         fun startActivity(
             activity: Activity?,
             item: String,
+            imageView: ImageView,
+            transitionName: String? = null
+        ) = startActivity(activity, ThumbAndFull(item, item), imageView, transitionName)
+        fun startActivity(
+            activity: Activity?,
+            item: ThumbAndFull,
             imageView: ImageView,
             transitionName: String? = null
         ) {
@@ -38,15 +46,15 @@ class PhotoViewActivity : BaseActivity() {
             activity?.startActivity(intent, options.toBundle())
         }
 
-        fun photoViewInstance(context: Context?, items: List<String>, index: Int = -1) =
+        fun photoViewInstance(context: Context?, items: List<ThumbAndFull>, index: Int = -1) =
             Intent(context, PhotoViewActivity::class.java).apply {
-                putStringArrayListExtra(IntentKey.Photos.name, ArrayList(items))
+                putParcelableArrayListExtra(IntentKey.Photos.name, ArrayList(items))
                 putExtra(IntentKey.Index.name, index)
             }
     }
 
     private val photos by lazy {
-        intent.getStringArrayListExtra(IntentKey.Photos.name)
+        intent.getParcelableArrayListExtra<ThumbAndFull>(IntentKey.Photos.name)
     }
 
     private val index by lazy {
@@ -86,7 +94,7 @@ class PhotoViewActivity : BaseActivity() {
         })
     }
 
-    class MediaViewPager(fm: FragmentManager, items: List<String>) :
+    class MediaViewPager(fm: FragmentManager, items: List<ThumbAndFull>) :
         FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments = items.map { PhotoViewItemFragment.newInstance(it) }
         override fun getItem(position: Int): Fragment = fragments[position]
