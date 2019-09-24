@@ -72,7 +72,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:src="@tools:sample/backgrounds/scenic" />
 
-                    <net.unsweets.gamma.presentation.view.ClippedImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/viewCurrentAvatarImage"
                         android:layout_width="@dimen/size_edit_avatar"
                         android:layout_height="@dimen/size_edit_avatar"

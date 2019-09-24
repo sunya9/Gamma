@@ -425,7 +425,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/starStateView" />
 
-                <net.unsweets.gamma.presentation.view.ClippedImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/avatarImageView"
                     android:layout_width="@dimen/size_post_item_avatar"
                     android:layout_height="@dimen/size_post_item_avatar"

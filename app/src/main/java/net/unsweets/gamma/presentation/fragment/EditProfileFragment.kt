@@ -209,7 +209,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
             DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        binding.viewCurrentAvatarImage.setBackgroundResource(preferenceRepository.shapeOfAvatar.drawableRes)
+//        binding.viewCurrentAvatarImage.setShape(preferenceRepository.shapeOfAvatar)
         return binding.root
     }
 

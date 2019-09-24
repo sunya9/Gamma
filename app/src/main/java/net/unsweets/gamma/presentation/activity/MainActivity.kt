@@ -303,7 +303,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         DataBindingUtil.getBinding<NavigationDrawerHeaderBinding>(header)?.let { binding ->
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
-            binding.navigationDrawerAvatarImageView.setBackgroundResource(preferenceRepository.shapeOfAvatar.drawableRes)
+//            binding.navigationDrawerAvatarImageView.setShape(preferenceRepository.shapeOfAvatar)
         }
         navigationView.setNavigationItemSelectedListener(::onOptionsItemSelected)
         binding.navigationView.addHeaderView(accountListView)

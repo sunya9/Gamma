@@ -57,7 +57,7 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="\@screen_name" />
 
-        <net.unsweets.gamma.presentation.view.ClippedImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/navigationDrawerAvatarImageView"
             android:layout_width="@dimen/size_navigation_drawer_icon"
             android:layout_height="@dimen/size_navigation_drawer_icon"

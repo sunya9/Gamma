@@ -35,6 +35,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_post_item.view.*
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
@@ -726,14 +727,14 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         shapeOfAvatar: ShapeOfAvatar
     ) : RecyclerView.ViewHolder(mView) {
         val rootCardView: CardView = itemView.rootCardView
-        val avatarView: ImageView = itemView.avatarImageView.also {
+        val avatarView: CircleImageView = itemView.avatarImageView.also {
             it.setOnTouchListener { view, motionEvent ->
                 if (view.isEnabled && motionEvent.actionMasked == MotionEvent.ACTION_MOVE && avatarSwipe) {
                     itemTouchHelper.startSwipe(this)
                 }
                 false
             }
-            it.setBackgroundResource(shapeOfAvatar.drawableRes)
+//            it.setShape(shapeOfAvatar)
         }
         val screenNameTextView: TextView = itemView.screenNameTextView
         val bodyTextView: TextView = itemView.bodyTextView

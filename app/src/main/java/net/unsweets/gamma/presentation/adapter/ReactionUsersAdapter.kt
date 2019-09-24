@@ -25,7 +25,7 @@ class ReactionUsersAdapter(
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.reaction_user_item, parent, false)
         return ViewHolder(view).also {
-            it.avatarView.setBackgroundResource(shapeOfAvatar.drawableRes)
+            //            it.avatarView.setShape(shapeOfAvatar)
         }
     }
 

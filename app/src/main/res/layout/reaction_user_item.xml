@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
-    <net.unsweets.gamma.presentation.view.ClippedImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/reactionUserIconImageView"
         android:layout_width="@dimen/size_avatar_reaction"
         android:layout_height="@dimen/size_avatar_reaction"

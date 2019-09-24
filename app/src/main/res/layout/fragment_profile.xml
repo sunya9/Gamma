@@ -282,12 +282,13 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.google.android.material.card.MaterialCardView>
 
-                        <net.unsweets.gamma.presentation.view.ClippedImageView
+                        <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/circleImageView"
                             android:layout_width="@dimen/size_profile_avatar"
                             android:layout_height="@dimen/size_profile_avatar"
                             android:layout_marginTop="48dp"
                             android:clickable="true"
+                            android:scaleType="centerCrop"
                             android:focusable="true"
                             android:foreground="@drawable/fg_profile_avatar"
                             android:onClick="@{() -> viewModel.showAvatar()}"

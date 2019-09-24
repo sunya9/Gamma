@@ -20,6 +20,7 @@
             app:entries="@array/shape_of_avatar"
             app:entryValues="@array/shape_of_avatar_values"
             app:key="@string/pref_shape_of_avatar_key"
+            app:isPreferenceVisible="false"
             app:title="@string/pref_shape_of_avatar_title"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>

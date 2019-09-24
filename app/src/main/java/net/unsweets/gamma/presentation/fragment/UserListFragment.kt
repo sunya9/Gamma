@@ -101,7 +101,7 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
     class UserViewHolder(mView: View, shapeOfAvatar: ShapeOfAvatar) :
         RecyclerView.ViewHolder(mView) {
         val avatarView: ImageView = itemView.avatarImageView.also {
-            it.setBackgroundResource(shapeOfAvatar.drawableRes)
+            //            it.setShape(shapeOfAvatar)
         }
         val screenNameTextView: TextView = itemView.screenNameTextView
         val handleNameTextView: TextView = itemView.handleNameTextView

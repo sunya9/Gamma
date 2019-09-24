@@ -79,7 +79,7 @@ class AccountListAdapter(
         shapeOfAvatar: ShapeOfAvatar
     ) : RecyclerView.ViewHolder(itemView) {
         private val avatarView: ImageView = itemView.accountListItemAvatarImageView.also {
-            it.setBackgroundResource(shapeOfAvatar.drawableRes)
+            //            it.setShape(shapeOfAvatar)
         }
         private val usernameView: TextView = itemView.accountListItemScreenNameTextView
         private val nameView: TextView = itemView.accountListItemNameTextView

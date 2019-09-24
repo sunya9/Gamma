@@ -146,7 +146,8 @@ class ProfileFragment : BaseFragment() {
             .apply(RequestOptions.bitmapTransform(BlurTransformation(20)))
             .into(binding.coverImageView)
 
-        binding.circleImageView.setBackgroundResource(preferenceRepository.shapeOfAvatar.drawableRes)
+//        binding.circleImageView.setShape(preferenceRepository.shapeOfAvatar)
+//        binding.circleImageView.setBackgroundResource(preferenceRepository.shapeOfAvatar.drawableRes)
 
         return binding.root
     }
