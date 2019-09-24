@@ -21,7 +21,6 @@ import net.unsweets.gamma.domain.model.io.GetUsersInputData
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.model.params.single.SearchUserParam
-import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import net.unsweets.gamma.domain.usecases.CacheUserUseCase
 import net.unsweets.gamma.domain.usecases.GetCachedUserListUseCase
 import net.unsweets.gamma.domain.usecases.GetUsersUseCase
@@ -67,7 +66,7 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
     private val entityListener: View.OnTouchListener = EntityOnTouchListener()
 
     override fun createViewHolder(mView: View, viewType: Int): UserViewHolder =
-        UserViewHolder(mView, preferenceRepository.shapeOfAvatar)
+        UserViewHolder(mView)
 
     override fun onClickItemListener(
         viewHolder: UserViewHolder,
@@ -99,11 +98,9 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
 
     override fun getItemLayout(): Int = R.layout.fragment_user_item
 
-    class UserViewHolder(mView: View, shapeOfAvatar: ShapeOfAvatar) :
+    class UserViewHolder(mView: View) :
         RecyclerView.ViewHolder(mView) {
-        val avatarView: ImageView = itemView.avatarImageView.also {
-            //            it.setShape(shapeOfAvatar)
-        }
+        val avatarView: ImageView = itemView.avatarImageView
         val screenNameTextView: TextView = itemView.screenNameTextView
         val handleNameTextView: TextView = itemView.handleNameTextView
         val bodyTextView: TextView = itemView.bodyTextView

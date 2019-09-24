@@ -17,8 +17,7 @@ import net.unsweets.gamma.presentation.util.GlideApp
 class AccountListAdapter(
     private val accounts: List<Account>,
     private val listener: Listener,
-    private val showAddAccountButton: Boolean = true,
-    private val shapeOfAvatar: ShapeOfAvatar
+    private val showAddAccountButton: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private enum class ItemViewType { Body, Footer }
@@ -36,7 +35,7 @@ class AccountListAdapter(
                     R.layout.account_list_item,
                     parent,
                     false
-                ), shapeOfAvatar
+                )
             )
             ItemViewType.Footer -> FooterViewHolder(
                 inflater.inflate(
@@ -74,13 +73,8 @@ class AccountListAdapter(
     }
 
 
-    class ItemViewHolder(
-        itemView: View,
-        shapeOfAvatar: ShapeOfAvatar
-    ) : RecyclerView.ViewHolder(itemView) {
-        private val avatarView: ImageView = itemView.accountListItemAvatarImageView.also {
-            //            it.setShape(shapeOfAvatar)
-        }
+    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val avatarView: ImageView = itemView.accountListItemAvatarImageView
         private val usernameView: TextView = itemView.accountListItemScreenNameTextView
         private val nameView: TextView = itemView.accountListItemNameTextView
         fun bindTo(account: Account) {

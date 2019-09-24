@@ -280,8 +280,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         PostViewHolder(
             mView,
             itemTouchHelper,
-            preferenceRepository.avatarSwipe,
-            preferenceRepository.shapeOfAvatar
+            preferenceRepository.avatarSwipe
         )
 
     override fun onClickItemListener(
@@ -289,9 +288,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         item: Post,
         itemWrapper: PageableItemWrapper<Post>
     ) {
-        val recyclerView = getRecyclerView(view ?: return)
         val clickedItemPosition = calcPosition(viewHolder.adapterPosition)
-//            calcPosition(recyclerView.findViewHolderForItemId(item.uniqueKey.toLong())?.adapterPosition ?: return)
         LogUtil.e(
             "clickedItemPosition: $clickedItemPosition, expandedViewHolderPos: ${previousViewHolderItem?.viewHolder?.oldPosition
                 ?: -1}"
@@ -723,8 +720,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     class PostViewHolder(
         mView: View,
         itemTouchHelper: ItemTouchHelper,
-        avatarSwipe: Boolean,
-        shapeOfAvatar: ShapeOfAvatar
+        avatarSwipe: Boolean
     ) : RecyclerView.ViewHolder(mView) {
         val rootCardView: CardView = itemView.rootCardView
         val avatarView: CircleImageView = itemView.avatarImageView.also {
@@ -734,7 +730,6 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 }
                 false
             }
-//            it.setShape(shapeOfAvatar)
         }
         val screenNameTextView: TextView = itemView.screenNameTextView
         val bodyTextView: TextView = itemView.bodyTextView

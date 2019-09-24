@@ -35,12 +35,8 @@ class PollOptionsAdapter(private val pollLikeValue: PollLikeValue, private var p
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemViewTypeLocal = itemViewType
+        itemViewType
         val view = inflater.inflate(R.layout.poll_item_view, parent, false)
-//        return when (itemViewTypeLocal) {
-//            ViewType.Votable -> VotableViewHolder(view)
-//            ViewType.ViewOnly -> OptionsViewHolder(view)
-//        }
         return OptionsViewHolder(view)
     }
 
@@ -70,13 +66,6 @@ class PollOptionsAdapter(private val pollLikeValue: PollLikeValue, private var p
     override fun onBindViewHolder(holder: OptionsViewHolder, position: Int) {
         val option = options[position]
         val pollLocal = poll
-//        when {
-//            holder is VotableViewHolder && pollLocal != null -> holder.bindTo(
-//                option,
-//                choosedPositions
-//            )
-//            holder is OptionsViewHolder -> holder.bindTo(option, choosedPositions, pollLocal) { reachedLimit }
-//        }
         holder.bindTo(option, choosedPositions, pollLocal) {
             listener?.onUpdateChoiceState(votable)
 

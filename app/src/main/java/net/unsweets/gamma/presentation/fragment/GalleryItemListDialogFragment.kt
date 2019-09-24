@@ -170,8 +170,7 @@ class GalleryItemListDialogFragment : BaseBottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        dialog
-            ?.window
+        dialog.window
             ?.decorView
             ?.findViewById<View>(com.google.android.material.R.id.touch_outside)
             ?.setOnClickListener { dismiss() }

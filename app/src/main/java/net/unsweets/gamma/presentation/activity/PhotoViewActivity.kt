@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_photo_view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.model.ThumbAndFull
 import net.unsweets.gamma.presentation.fragment.PhotoViewItemFragment
+import net.unsweets.gamma.util.LogUtil
 
 
 class PhotoViewActivity : BaseActivity() {
@@ -43,6 +44,7 @@ class PhotoViewActivity : BaseActivity() {
                 activity,
                 Pair.create(imageView, singleTransitionName)
             )
+            LogUtil.e(transitionName)
             activity?.startActivity(intent, options.toBundle())
         }
 

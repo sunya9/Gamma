@@ -1,11 +1,9 @@
 package net.unsweets.gamma.domain.entity.entities
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.view.View
-import net.unsweets.gamma.R
 import net.unsweets.gamma.presentation.fragment.PostItemFragment
 import net.unsweets.gamma.presentation.fragment.ProfileFragment
 import net.unsweets.gamma.presentation.util.FragmentHelper
@@ -62,12 +60,12 @@ interface HaveEntities {
 
         private fun openLink(context: Context, entity: Entities.SealedEntity.LinkEntities) {
             val link = entity.link
-            val menuLabel = context.getString(R.string.post)
+//            val menuLabel = context.getString(R.string.post)
 
 //            val pendingIntent = ComposePostActivity.shareUrlIntent(context, null, link).run {
 //                PendingIntent.getActivity(context, 0, this, 0)
 //            }
-            val icon = BitmapFactory.decodeResource(context.resources, R.drawable.ic_create_black_24dp)
+//            val icon = BitmapFactory.decodeResource(context.resources, R.drawable.ic_create_black_24dp)
             Util.openCustomTabUrl(context, link)
         }
     }

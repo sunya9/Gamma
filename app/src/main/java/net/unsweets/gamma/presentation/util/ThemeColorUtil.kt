@@ -9,6 +9,7 @@ import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.repository.PreferenceRepository
 
 object ThemeColorUtil {
+    @Suppress("DEPRECATION")
     enum class DarkMode(val value: Int) {
         FollowSystem(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM),
         Off(AppCompatDelegate.MODE_NIGHT_NO),

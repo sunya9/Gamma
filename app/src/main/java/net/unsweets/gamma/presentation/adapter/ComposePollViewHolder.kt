@@ -53,7 +53,7 @@ class ComposePollViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         textInputEditText.setText(option.text)
         textInputEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                listener.updateItem(option.copy(text = s?.toString().orEmpty()), position)
+                listener.updateItem(option.copy(text = s?.toString().orEmpty()), adapterPosition)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
