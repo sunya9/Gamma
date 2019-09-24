@@ -23,6 +23,7 @@ object BindingUtil {
         val request = GlideApp
             .with(this)
             .load(url)
+            .dontAnimate()
         if (placeholder != null)
             request.placeholder(placeholder)
         request.into(this)

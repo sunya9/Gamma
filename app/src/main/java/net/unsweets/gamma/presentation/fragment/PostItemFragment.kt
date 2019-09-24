@@ -377,7 +377,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
         val url = item.mainPost.user?.getAvatarUrl(User.AvatarSize.Large).orEmpty()
         GlideApp.with(this).load(url)
-            .into(viewHolder.avatarView)
+            .dontAnimate().into(viewHolder.avatarView)
         viewHolder.avatarView.clipToOutline = true
         val iconTransition = getString(R.string.icon_transition)
         val iconTransitionName =

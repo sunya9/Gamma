@@ -84,7 +84,8 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
         position: Int,
         isMainItem: Boolean
     ) {
-        GlideApp.with(this).load(item.content.avatarImage.link).into(viewHolder.avatarView)
+        GlideApp.with(this).load(item.content.avatarImage.link).dontAnimate()
+            .into(viewHolder.avatarView)
         viewHolder.screenNameTextView.text = item.username
         viewHolder.handleNameTextView.text = item.name
         viewHolder.bodyTextView.apply {

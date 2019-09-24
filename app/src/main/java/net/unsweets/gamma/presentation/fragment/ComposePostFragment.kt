@@ -343,7 +343,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         binding.viewRightActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
 
         replyTarget?.user?.let {
-            GlideApp.with(this).load(it.content.avatarImage.link).into(binding.replyAvatarImageView)
+            GlideApp.with(this).load(it.content.avatarImage.link).dontAnimate()
+                .into(binding.replyAvatarImageView)
         }
 
         viewModel.text.observeOnce(this, Observer<String> {

@@ -84,7 +84,8 @@ class AccountListAdapter(
         private val usernameView: TextView = itemView.accountListItemScreenNameTextView
         private val nameView: TextView = itemView.accountListItemNameTextView
         fun bindTo(account: Account) {
-            GlideApp.with(itemView.context).load(account.getAvatarUrl()).into(avatarView)
+            GlideApp.with(itemView.context).load(account.getAvatarUrl()).dontAnimate()
+                .into(avatarView)
             usernameView.text = account.usernameWithAt
             nameView.text = account.name
         }

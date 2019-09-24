@@ -34,7 +34,7 @@ class ReactionUsersAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = reactionUsers[position]
         GlideApp.with(holder.itemView).load(user.getAvatarUrl(User.AvatarSize.Normal))
-            .into(holder.avatarView)
+            .dontAnimate().into(holder.avatarView)
         holder.avatarView.setOnClickListener {
             listener.onUserClick(user)
         }
