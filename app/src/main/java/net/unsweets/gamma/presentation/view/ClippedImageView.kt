@@ -7,13 +7,13 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 
 
 class ClippedImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
-) : ImageView(context, attrs) {
+) : AppCompatImageView(context, attrs) {
     init {
         clipToOutline = true
         outlineProvider = OutlineProvider()
