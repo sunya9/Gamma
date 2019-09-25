@@ -3,6 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="net.unsweets.gamma.presentation.fragment.ProfileFragment.ProfileViewModel" />
+    </data>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
@@ -14,12 +22,6 @@
             android:id="@+id/profileCoordinatorLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/profileViewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBar"
@@ -309,15 +311,12 @@
                     app:tabGravity="fill"
                     app:tabMode="fixed" />
             </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/profileViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="viewModel"
-            type="net.unsweets.gamma.presentation.fragment.ProfileFragment.ProfileViewModel" />
-    </data>
 </layout>
