@@ -7,7 +7,8 @@ import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.SearchUserParam
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
-class GetUsersUseCase(val pnutRepository: IPnutRepository) : AsyncUseCase<GetUsersOutputData, GetUsersInputData>() {
+class GetUsersUseCase(private val pnutRepository: IPnutRepository) :
+    AsyncUseCase<GetUsersOutputData, GetUsersInputData>() {
     override suspend fun run(params: GetUsersInputData): GetUsersOutputData {
         val res = when (val userListType = params.userListType) {
             is UserListType.Followers -> pnutRepository.getFollowers(userListType.userId, params.getUsersParam)

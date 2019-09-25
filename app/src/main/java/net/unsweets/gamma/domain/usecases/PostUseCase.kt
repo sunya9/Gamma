@@ -6,7 +6,10 @@ import net.unsweets.gamma.domain.repository.IAccountRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.util.ErrorCollections
 
-class PostUseCase(val pnutRepository: IPnutRepository, val accountRepository: IAccountRepository) :
+class PostUseCase(
+    private val pnutRepository: IPnutRepository,
+    private val accountRepository: IAccountRepository
+) :
     UseCase<PostOutputData, PostInputData>() {
     override fun run(params: PostInputData): PostOutputData {
         val token = accountRepository.getToken(params.accountId) ?: throw ErrorCollections.AccountNotFound
