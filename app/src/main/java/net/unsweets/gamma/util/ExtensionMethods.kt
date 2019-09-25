@@ -10,11 +10,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.PnutResponse
-import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -96,24 +94,4 @@ fun <T> Response<T>.bodyOrThrow(): T {
         throw ErrorCollections.CommunicationError.create(json)
     }
     throw Constants.unknownErrorException
-}
-
-
-fun RoundedImageView.rounded() {
-    this.cornerRadius = 10f
-    this.isOval = false
-}
-
-fun RoundedImageView.oval() {
-    this.isOval = true
-    this.cornerRadius = 0f
-}
-
-fun RoundedImageView.square() {
-    this.isOval = false
-    this.cornerRadius = 0f
-}
-
-fun RoundedImageView.setShape(shapeOfAvatar: ShapeOfAvatar) {
-    shapeOfAvatar.setShape(this)
 }

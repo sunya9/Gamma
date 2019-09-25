@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.compose_thumbnail_image.view.*
 import net.unsweets.gamma.R
@@ -343,7 +344,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         binding.viewRightActionMenuView.setOnMenuItemClickListener(::onOptionsItemSelected)
 
         replyTarget?.user?.let {
-            GlideApp.with(this).load(it.content.avatarImage.link).dontAnimate()
+            GlideApp.with(this).load(it.content.avatarImage.link)
+                .apply(RequestOptions.circleCropTransform())
                 .into(binding.replyAvatarImageView)
         }
 

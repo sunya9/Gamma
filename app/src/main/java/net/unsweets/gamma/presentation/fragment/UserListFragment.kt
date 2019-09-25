@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.fragment_user_item.view.*
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
@@ -83,7 +84,9 @@ abstract class UserListFragment : BaseListFragment<User, UserListFragment.UserVi
         position: Int,
         isMainItem: Boolean
     ) {
-        GlideApp.with(this).load(item.content.avatarImage.link).dontAnimate()
+        GlideApp.with(this)
+            .load(item.content.avatarImage.link)
+            .apply(RequestOptions.circleCropTransform())
             .into(viewHolder.avatarView)
         viewHolder.screenNameTextView.text = item.username
         viewHolder.handleNameTextView.text = item.name

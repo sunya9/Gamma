@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.account_list_footer_item.view.*
 import kotlinx.android.synthetic.main.account_list_item.view.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.model.Account
-import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import net.unsweets.gamma.presentation.util.GlideApp
 
 class AccountListAdapter(
@@ -78,7 +78,8 @@ class AccountListAdapter(
         private val usernameView: TextView = itemView.accountListItemScreenNameTextView
         private val nameView: TextView = itemView.accountListItemNameTextView
         fun bindTo(account: Account) {
-            GlideApp.with(itemView.context).load(account.getAvatarUrl()).dontAnimate()
+            GlideApp.with(itemView.context).load(account.getAvatarUrl())
+                .apply(RequestOptions.circleCropTransform())
                 .into(avatarView)
             usernameView.text = account.usernameWithAt
             nameView.text = account.name

@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/avatarImageView"
             android:layout_width="@dimen/size_post_item_avatar"
             android:layout_height="@dimen/size_post_item_avatar"

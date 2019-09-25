@@ -69,7 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <de.hdodenhof.circleimageview.CircleImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/replyAvatarImageView"
                             android:layout_width="@dimen/size_post_item_avatar"
                             android:layout_height="@dimen/size_post_item_avatar"
@@ -134,7 +134,7 @@
                     android:layout_weight="1"
                     android:minHeight="100dp">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/myAccountAvatarImageView"
                         android:layout_width="@dimen/size_post_item_avatar_mini"
                         android:layout_height="@dimen/size_post_item_avatar_mini"
@@ -145,7 +145,7 @@
                         android:focusable="true"
                         android:foreground="@drawable/fg_profile_avatar"
                         android:onClick="@{() -> viewModel.showAccountList()}"
-                        app:glideSrc="@{viewModel.myAccountAvatarUrl}"
+                        app:glideAvatarSrc="@{viewModel.myAccountAvatarUrl}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:src="@tools:sample/avatars" />

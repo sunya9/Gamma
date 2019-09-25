@@ -8,10 +8,29 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
 import net.unsweets.gamma.R
 
 object BindingUtil {
+    @BindingAdapter("glideAvatarSrc")
+    @JvmStatic
+    fun ImageView.glideAvatarSrc(url: String?) {
+        if (url.isNullOrEmpty()) {
+            setImageDrawable(null)
+            return
+        }
+        val placeholder = this.drawable
+        val request = GlideApp
+            .with(this)
+            .load(url)
+            .apply(RequestOptions.circleCropTransform())
+
+        if (placeholder != null)
+            request.placeholder(placeholder)
+        request.into(this)
+    }
+
     @BindingAdapter("glideSrc")
     @JvmStatic
     fun ImageView.glideSrc(url: String?) {
@@ -23,7 +42,7 @@ object BindingUtil {
         val request = GlideApp
             .with(this)
             .load(url)
-            .dontAnimate()
+
         if (placeholder != null)
             request.placeholder(placeholder)
         request.into(this)

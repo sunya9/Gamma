@@ -57,7 +57,7 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="\@screen_name" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/navigationDrawerAvatarImageView"
             android:layout_width="@dimen/size_navigation_drawer_icon"
             android:layout_height="@dimen/size_navigation_drawer_icon"
@@ -65,7 +65,7 @@
             android:layout_marginBottom="16dp"
             android:cropToPadding="false"
             android:elevation="4dp"
-            app:glideSrc="@{viewModel.user.content.avatarImage.link}"
+            app:glideAvatarSrc="@{viewModel.user.content.avatarImage.link}"
             app:layout_constraintBottom_toTopOf="@+id/navigationDrawerHandleNameTextView"
             app:layout_constraintStart_toStartOf="@+id/navigationDrawerScreenNameTextView"
             app:layout_constraintTop_toTopOf="@+id/navigationDrawerHeaderImageView"

@@ -32,10 +32,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.fragment_post_item.view.*
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
@@ -51,7 +51,6 @@ import net.unsweets.gamma.domain.model.io.*
 import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.GeneralPostParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
-import net.unsweets.gamma.domain.model.preference.ShapeOfAvatar
 import net.unsweets.gamma.domain.usecases.*
 import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
@@ -250,6 +249,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     @Inject
     lateinit var voteUseCase: VoteUseCase
 
+    private val glideRequest by lazy {
+        GlideApp.with(this)
+    }
+
     abstract val streamType: StreamType
     open val generalPostParam: GeneralPostParam = GeneralPostParam(false)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -373,8 +376,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
                 ?: getString(R.string.this_post_has_deleted)
 
         val url = item.mainPost.user?.getAvatarUrl(User.AvatarSize.Large).orEmpty()
-        GlideApp.with(this).load(url)
-            .dontAnimate().into(viewHolder.avatarView)
+        glideRequest.load(url)
+            .apply(RequestOptions.circleCropTransform())
+            .apply(RequestOptions.circleCropTransform())
+            .into(viewHolder.avatarView)
         viewHolder.avatarView.clipToOutline = true
         val iconTransition = getString(R.string.icon_transition)
         val iconTransitionName =
@@ -434,7 +439,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             viewHolder.thumbnailTabLayout.visibility =
                 if (photos.size == 1) View.GONE else View.VISIBLE
             if (isWifiEnabled) photos.forEach {
-                GlideApp.with(context).load(it.value.url).preload()
+                glideRequest.load(it.value.url).preload()
             }
         } else {
             viewHolder.thumbnailViewPagerFrameLayout.visibility = View.GONE
@@ -723,7 +728,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         avatarSwipe: Boolean
     ) : RecyclerView.ViewHolder(mView) {
         val rootCardView: CardView = itemView.rootCardView
-        val avatarView: CircleImageView = itemView.avatarImageView.also {
+        val avatarView: ImageView = itemView.avatarImageView.also {
             it.setOnTouchListener { view, motionEvent ->
                 if (view.isEnabled && motionEvent.actionMasked == MotionEvent.ACTION_MOVE && avatarSwipe) {
                     itemTouchHelper.startSwipe(this)

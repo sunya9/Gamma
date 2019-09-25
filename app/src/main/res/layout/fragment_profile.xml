@@ -284,7 +284,7 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.google.android.material.card.MaterialCardView>
 
-                        <de.hdodenhof.circleimageview.CircleImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/circleImageView"
                             android:layout_width="@dimen/size_profile_avatar"
                             android:layout_height="@dimen/size_profile_avatar"
@@ -295,7 +295,7 @@
                             android:foreground="@drawable/fg_profile_avatar"
                             android:onClick="@{() -> viewModel.showAvatar()}"
                             android:transitionName="avatar_image_transition"
-                            app:glideSrc="@{viewModel.iconUrl}"
+                            app:glideAvatarSrc="@{viewModel.iconUrl}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"

@@ -72,7 +72,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:src="@tools:sample/backgrounds/scenic" />
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/viewCurrentAvatarImage"
                         android:layout_width="@dimen/size_edit_avatar"
                         android:layout_height="@dimen/size_edit_avatar"
@@ -82,7 +82,7 @@
                         android:focusable="true"
                         android:foreground="@drawable/fg_btn_edit_avatar"
                         android:onClick="@{() -> viewModel.showDialogToChangeAvatar()}"
-                        app:glideSrc="@{viewModel.avatarUri}"
+                        app:glideAvatarSrc="@{viewModel.avatarUri}"
                         app:layout_constraintBottom_toBottomOf="@id/viewCoverImage"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/viewCoverImage"
