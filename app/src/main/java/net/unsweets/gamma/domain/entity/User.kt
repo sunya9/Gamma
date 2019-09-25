@@ -15,14 +15,14 @@ import java.util.*
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class User(
-    val badge: Badge?,
+    val badge: Badge? = null,
     val content: UserContent,
     val counts: UserCount,
     @Json(name = "created_at") val createdAt: Date,
     @Json(name = "follows_you") val followsYou: Boolean,
     val id: String,
     val locale: String,
-    val name: String?,
+    val name: String? = null,
     val timezone: String,
     val type: AccountType,
     val username: String,
@@ -30,7 +30,7 @@ data class User(
     @Json(name = "you_can_follow") val youCanFollow: Boolean,
     @Json(name = "you_follow") val youFollow: Boolean,
     @Json(name = "you_muted") val youMuted: Boolean,
-    val verified: VerifiedDomain?,
+    val verified: VerifiedDomain? = null,
     @Json(name = "pagination_id") override val paginationId: String? = null
 ) : UniquePageable, Parcelable {
     @IgnoredOnParcel

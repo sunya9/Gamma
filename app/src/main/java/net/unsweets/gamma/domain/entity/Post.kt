@@ -19,33 +19,33 @@ import java.util.*
 data class Post(
     @Json(name = "created_at") var createdAt: Date,
     var id: String,
-    @Json(name = "is_deleted") var isDeleted: Boolean?,
-    @Json(name = "is_nsfw") var isNsfw: Boolean?,
-    @Json(name = "is_revised") var isRevised: Boolean?,
-    var revision: String?,
-    var source: Client?,
-    var user: User?,
-    @Json(name = "thread_id") var threadId: String?,
-    @Json(name = "reply_to") var replyTo: String?,
-    @Json(name = "repost_of") var repostOf: Post?,
-    var counts: PostCount?,
-    var content: PostContent?,
-    @Json(name = "you_bookmarked") var youBookmarked: Boolean?,
-    @Json(name = "you_reposted") var youReposted: Boolean?,
-    @Json(name = "pagination_id") override var paginationId: String?,
-    @Json(name = "raw") var raw: List<Raw<*>>?,
-    @Json(name = "bookmarked_by") val bookmarkedBy: List<User>?,
-    @Json(name = "reposted_by") val repostedBy: List<User>?
+    @Json(name = "is_deleted") var isDeleted: Boolean? = null,
+    @Json(name = "is_nsfw") var isNsfw: Boolean? = null,
+    @Json(name = "is_revised") var isRevised: Boolean? = null,
+    var revision: String? = null,
+    var source: Client? = null,
+    var user: User? = null,
+    @Json(name = "thread_id") var threadId: String? = null,
+    @Json(name = "reply_to") var replyTo: String? = null,
+    @Json(name = "repost_of") var repostOf: Post? = null,
+    var counts: PostCount? = null,
+    var content: PostContent? = null,
+    @Json(name = "you_bookmarked") var youBookmarked: Boolean? = null,
+    @Json(name = "you_reposted") var youReposted: Boolean? = null,
+    @Json(name = "pagination_id") override var paginationId: String? = null,
+    @Json(name = "raw") var raw: List<Raw<*>>? = null,
+    @Json(name = "bookmarked_by") val bookmarkedBy: List<User>? = null,
+    @Json(name = "reposted_by") val repostedBy: List<User>? = null
 ) : UniquePageable, Parcelable {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
 
     @Parcelize
     data class PostContent(
-        override var text: String?,
-        override var html: String?,
-        override var entities: Entities?,
-        @Json(name = "link_not_parsed") var linksNotParsed: Boolean?
+        override var text: String? = null,
+        override var html: String? = null,
+        override var entities: Entities? = null,
+        @Json(name = "link_not_parsed") var linksNotParsed: Boolean? = null
     ) : HaveEntities, Parcelable
 
     @Parcelize
