@@ -20,6 +20,9 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
+    - name: Test
+      run: ./gradlew task test
+
     - name: Slack notification
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
