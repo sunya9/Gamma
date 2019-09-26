@@ -146,7 +146,17 @@ class PnutRepositoryMock : IPnutRepository {
     }
 
     override suspend fun updateMyProfile(profileBody: ProfileBody): PnutResponse<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val user = Users.getUser("1")
+        val content = user.content.copy(text = profileBody.content?.text)
+        return success {
+            user.copy(
+                name = profileBody.name,
+                locale = profileBody.locale.orEmpty(),
+                timezone = profileBody.timezone.orEmpty(),
+                content = content
+            )
+        }
+
     }
 
     override suspend fun getFollowing(
