@@ -239,15 +239,31 @@ class PnutRepositoryMock : IPnutRepository {
     }
 
     override suspend fun verifyToken(token: String): PnutResponse<Token> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return success {
+            when (token) {
+                "valid" -> {
+                    val user = Users.getUser("1")
+                    val scopes = Token.Scope.values()
+                    val storage = Token.Storage(0, 10)
+                    Token(
+                        Client("test", "https://example.com/", "test"),
+                        listOf(*scopes),
+                        user,
+                        storage
+                    )
+                }
+                else -> throw Exception()
+            }
+        }
     }
 
     override fun createFile(content: RequestBody, fileBody: FileBody): PnutResponse<File> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+
     override fun updateDefaultPnutService(token: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // TODO: service mock?
     }
 
     override fun createPoll(pollPostBody: PollPostBody): PnutResponse<Poll> {
