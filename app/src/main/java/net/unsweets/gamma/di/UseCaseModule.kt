@@ -30,10 +30,9 @@ class UseCaseModule {
     @Provides
     fun provideSetUpTokenUseCase(
         pnutRepository: IPnutRepository,
-        accountRepository: IAccountRepository,
-        preferenceRepository: IPreferenceRepository
+        accountRepository: IAccountRepository
     ): SetupTokenUseCase =
-        SetupTokenUseCase(pnutRepository, accountRepository, preferenceRepository)
+        SetupTokenUseCase(pnutRepository, accountRepository)
 
     @Provides
     fun provideGetAuthenticatedUserUseCase(

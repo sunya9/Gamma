@@ -56,8 +56,7 @@ class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
         return runBlocking {
             SetupTokenUseCase(
                 module.providePnutRepository(),
-                module.provideAccountRepository(),
-                module.providePreferenceRepository()
+                module.provideAccountRepository()
             ).run(Unit)
         }.existDefaultAccount
     }
