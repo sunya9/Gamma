@@ -20,7 +20,7 @@ data class Poll(
     override val prompt: String,
     val source: Client,
     val type: String,
-    val user: User?
+    val user: User? = null
 ) : Parcelable, PollLikeValue {
     @Parcelize
     @JsonClass(generateAdapter = true)

@@ -9,6 +9,7 @@ import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.util.ErrorCollections
+import net.unsweets.sample.Polls
 import net.unsweets.sample.Users
 import okhttp3.RequestBody
 import java.util.*
@@ -283,11 +284,22 @@ class PnutRepositoryMock : IPnutRepository {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+
     override suspend fun vote(
         pollId: String,
         pollToken: String,
         voteBody: VoteBody
     ): PnutResponse<Poll> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val poll = Polls.getPoll(pollId) ?: throw Exception()
+        val newPoll = voteBody.positions.fold(poll) { accPoll, position ->
+            val indexedValue = accPoll.options.withIndex().find { it.value.position == position }
+                ?: return@fold accPoll
+            val newOptionValue = indexedValue.value.copy(isYourResponse = true)
+            val newOptions = accPoll.options.toMutableList().also {
+                it[indexedValue.index] = newOptionValue
+            }
+            accPoll.copy(options = newOptions)
+        }
+        return success { newPoll }
     }
 }
