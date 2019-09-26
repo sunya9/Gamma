@@ -1,6 +1,5 @@
 package net.unsweets.gamma.data
 
-import net.unsweets.gamma.domain.VoteBody
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import okhttp3.MultipartBody

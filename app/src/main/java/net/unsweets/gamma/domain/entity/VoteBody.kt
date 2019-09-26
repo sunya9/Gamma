@@ -1,4 +1,4 @@
-package net.unsweets.gamma.domain
+package net.unsweets.gamma.domain.entity
 
 import com.squareup.moshi.JsonClass
 
