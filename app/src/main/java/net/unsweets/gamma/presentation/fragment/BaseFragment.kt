@@ -11,7 +11,7 @@ abstract class BaseFragment : DaggerFragment() {
     @Inject
     lateinit var preferenceRepository: IPreferenceRepository
     protected fun backToPrevFragment() {
-        val fm = fragmentManager ?: return
+        val fm = parentFragmentManager
         if (fm.backStackEntryCount > 0) {
             fm.popBackStack()
         }

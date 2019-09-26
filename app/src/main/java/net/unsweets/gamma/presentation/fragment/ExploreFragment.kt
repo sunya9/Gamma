@@ -24,7 +24,7 @@ sealed class ExploreFragment : PostItemFragment(), Util.DrawerContentFragment {
     }
 
     private fun setupToolbar(toolbar: Toolbar) {
-        toolbar.setNavigationOnClickListener { FragmentHelper.backFragment(fragmentManager) }
+        toolbar.setNavigationOnClickListener { FragmentHelper.backFragment(parentFragmentManager) }
         toolbar.setOnClickListener {
             val ctx = context ?: return@setOnClickListener
             getRecyclerView(view!!).layoutManager?.startSmoothScroll(SmoothScroller(ctx))

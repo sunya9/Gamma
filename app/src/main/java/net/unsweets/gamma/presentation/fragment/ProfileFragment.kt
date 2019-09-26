@@ -288,7 +288,7 @@ class ProfileFragment : BaseFragment() {
     private enum class RequestCode { UpdateProfile }
 
     private fun showEditProfileDialog() {
-        val fm = fragmentManager ?: return
+        val fm = parentFragmentManager
         val fragment = EditProfileFragment.newInstance(userId).also {
             //            val transition =
 //                TransitionInflater.from(context).inflateTransition(R.transition.edit_profile)
