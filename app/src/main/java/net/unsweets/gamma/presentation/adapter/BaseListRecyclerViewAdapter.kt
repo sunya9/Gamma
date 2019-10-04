@@ -222,7 +222,6 @@ class BaseListRecyclerViewAdapter<T : UniquePageable, V : RecyclerView.ViewHolde
         }
         LogUtil.e("index $index")
         if (index < 0) return
-        options.itemList[index] = item
         notifyItemChanged(index)
     }
 
