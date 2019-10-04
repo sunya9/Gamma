@@ -5,11 +5,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.entities.Entities
 import net.unsweets.gamma.domain.entity.entities.HaveEntities
 import net.unsweets.gamma.domain.entity.image.Avatar
 import net.unsweets.gamma.domain.entity.image.Cover
-
 import java.util.*
 
 @Parcelize
@@ -26,10 +26,10 @@ data class User(
     val timezone: String,
     val type: AccountType,
     val username: String,
-    @Json(name = "you_blocked") val youBlocked: Boolean,
+    @Json(name = "you_blocked") var youBlocked: Boolean,
     @Json(name = "you_can_follow") val youCanFollow: Boolean,
-    @Json(name = "you_follow") val youFollow: Boolean,
-    @Json(name = "you_muted") val youMuted: Boolean,
+    @Json(name = "you_follow") var youFollow: Boolean,
+    @Json(name = "you_muted") var youMuted: Boolean,
     val verified: VerifiedDomain? = null,
     @Json(name = "pagination_id") override val paginationId: String? = null
 ) : UniquePageable, Parcelable {
@@ -83,6 +83,18 @@ data class User(
 
     @IgnoredOnParcel
     val me = followsYou && youFollow && !youCanFollow
+
+    @IgnoredOnParcel
+    val relationshipTextRes: Int?
+        get() = me.takeIf { !it }.let {
+            when {
+                youFollow -> R.string.following
+                !youFollow -> R.string.follow
+                youBlocked -> R.string.blocked
+                youMuted -> R.string.muted
+                else -> null
+            }
+        }
 
     enum class AvatarSize(val size: Int) { Mini(24), Small(48), Normal(64), Large(96) }
 

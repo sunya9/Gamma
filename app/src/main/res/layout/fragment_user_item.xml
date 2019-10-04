@@ -32,9 +32,10 @@
 
         <TextView
             android:id="@+id/screenNameTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_regular"
+            app:layout_constraintEnd_toStartOf="@id/actionButton"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintStart_toEndOf="@+id/avatarImageView"
             app:layout_constraintTop_toBottomOf="@id/relationshipTextView"
@@ -42,11 +43,11 @@
 
         <TextView
             android:id="@+id/handleNameTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            app:layout_constraintEnd_toStartOf="@id/actionButton"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_half"
-            app:layout_constraintStart_toEndOf="@+id/screenNameTextView"
-            app:layout_constraintBaseline_toBaselineOf="@id/screenNameTextView"
+            app:layout_constraintStart_toStartOf="@+id/screenNameTextView"
+            app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
             tools:text="@tools:sample/full_names" />
 
         <TextView
@@ -60,6 +61,18 @@
             app:layout_constraintTop_toBottomOf="@id/screenNameTextView"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/actionButton"
+            style="@style/Button.Outlined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/bodyTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/handleNameTextView"
+            app:layout_constraintTop_toTopOf="@id/screenNameTextView"
+            tools:text="@string/following" />
+
         <TextView
             android:id="@+id/bodyTextView"
             android:layout_width="0dp"
@@ -69,7 +82,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/screenNameTextView"
-            app:layout_constraintTop_toBottomOf="@+id/screenNameTextView"
-            tools:text="@tools:sample/lorem" />
+            app:layout_constraintTop_toBottomOf="@+id/handleNameTextView"
+            tools:text="@tools:sample/lorem[10]" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

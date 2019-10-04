@@ -107,5 +107,5 @@ object Util {
     fun getWindowBackgroundColor(context: Context): Int =
         getAttributeValue(context, android.R.attr.windowBackground)
 
-
+    fun getVisibility(b: Boolean) = if (b) View.VISIBLE else View.GONE
 }
