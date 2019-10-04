@@ -17,6 +17,8 @@ class GetUsersUseCase(private val pnutRepository: IPnutRepository) :
                 GetUsersParam(params.getUsersParam.toMap()).apply {
                     add(SearchUserParam(userListType.keyword))
                 })
+            is UserListType.Blocked -> pnutRepository.getBlockedUsers(params.getUsersParam)
+            is UserListType.Muted -> pnutRepository.getMutedUsers(params.getUsersParam)
         }
         return GetUsersOutputData(res)
     }
