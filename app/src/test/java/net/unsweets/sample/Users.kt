@@ -61,7 +61,7 @@ object Users {
     )
 
     private val user3 = User(
-        id = "2",
+        id = "3",
         content = User.UserContent(
             avatarImage = Avatar(false, 1, 1, "https://example.com/avatar"),
             coverImage = Cover(false, 1, 1, "https://example.com/avatar"),
@@ -84,10 +84,62 @@ object Users {
         type = User.AccountType.HUMAN,
         timezone = "Asia/Tokyo"
     )
+
+    private val user4 = User(
+        id = "4",
+        content = User.UserContent(
+            avatarImage = Avatar(false, 1, 1, "https://example.com/avatar"),
+            coverImage = Cover(false, 1, 1, "https://example.com/avatar"),
+            entities = null,
+            text = null,
+            markdownText = null,
+            html = null
+        ),
+        badge = null,
+        counts = User.UserCount(0, 0, 0, 0, 0, 0),
+        createdAt = Date(),
+        followsYou = true,
+        youBlocked = true,
+        youCanFollow = true,
+        youFollow = true,
+        youMuted = false,
+        locale = "ja_JP",
+        username = "foo",
+        name = "bar",
+        type = User.AccountType.HUMAN,
+        timezone = "Asia/Tokyo"
+    )
+
+    private val user5 = User(
+        id = "5",
+        content = User.UserContent(
+            avatarImage = Avatar(false, 1, 1, "https://example.com/avatar"),
+            coverImage = Cover(false, 1, 1, "https://example.com/avatar"),
+            entities = null,
+            text = null,
+            markdownText = null,
+            html = null
+        ),
+        badge = null,
+        counts = User.UserCount(0, 0, 0, 0, 0, 0),
+        createdAt = Date(),
+        followsYou = true,
+        youBlocked = false,
+        youCanFollow = true,
+        youFollow = true,
+        youMuted = true,
+        locale = "ja_JP",
+        username = "foo",
+        name = "bar",
+        type = User.AccountType.HUMAN,
+        timezone = "Asia/Tokyo"
+    )
     private val db = mapOf(
         "1" to user1,
         "2" to user2,
-        "3" to user3
+        "3" to user3,
+        "4" to user4,
+        "5" to user5
     )
 
 }

@@ -33,11 +33,12 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentProfileBinding
+import net.unsweets.gamma.domain.Relationship
 import net.unsweets.gamma.domain.entity.User
-import net.unsweets.gamma.domain.model.io.FollowInputData
 import net.unsweets.gamma.domain.model.io.GetProfileInputData
-import net.unsweets.gamma.domain.usecases.FollowUseCase
+import net.unsweets.gamma.domain.model.io.UpdateRelationshipInputData
 import net.unsweets.gamma.domain.usecases.GetProfileUseCase
+import net.unsweets.gamma.domain.usecases.UpdateRelationshipUseCase
 import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.ProfilePagerAdapter
 import net.unsweets.gamma.presentation.util.EntityOnTouchListener
@@ -64,7 +65,7 @@ class ProfileFragment : BaseFragment() {
     @Inject
     lateinit var getProfileUseCase: GetProfileUseCase
     @Inject
-    lateinit var followUseCase: FollowUseCase
+    lateinit var updateRelationshipUseCase: UpdateRelationshipUseCase
 
     private val viewModel: ProfileViewModel by lazy {
         ViewModelProvider(
@@ -72,7 +73,7 @@ class ProfileFragment : BaseFragment() {
             ProfileViewModel.Factory(
                 activity!!.application,
                 getProfileUseCase,
-                followUseCase,
+                updateRelationshipUseCase,
                 userId
             )
         )[ProfileViewModel::class.java]
@@ -318,7 +319,7 @@ class ProfileFragment : BaseFragment() {
     class ProfileViewModel(
         private val app: Application,
         private val getProfileUseCase: GetProfileUseCase,
-        private val followUseCase: FollowUseCase,
+        private val updateRelationshipUseCase: UpdateRelationshipUseCase,
         private val userId: String?
     ) : AndroidViewModel(app) {
         val event = SingleLiveEvent<Event>()
@@ -427,7 +428,13 @@ class ProfileFragment : BaseFragment() {
                 runCatching {
                     loading.postValue(true)
                     val user = user.value ?: return@launch
-                    followUseCase.run(FollowInputData(user.id, follow))
+                    val relationship = if (follow) Relationship.Follow else Relationship.UnFollow
+                    updateRelationshipUseCase.run(
+                        UpdateRelationshipInputData(
+                            user.id,
+                            relationship
+                        )
+                    )
                 }.onSuccess {
                     user.postValue(it.res.data)
                 }
@@ -438,13 +445,18 @@ class ProfileFragment : BaseFragment() {
         class Factory(
             private val application: Application,
             private val getProfileUseCase: GetProfileUseCase,
-            private val followUseCase: FollowUseCase,
+            private val updateRelationshipUseCase: UpdateRelationshipUseCase,
             private val userId: String?
         ) :
             ViewModelProvider.AndroidViewModelFactory(application) {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return ProfileViewModel(application, getProfileUseCase, followUseCase, userId) as T
+                return ProfileViewModel(
+                    application,
+                    getProfileUseCase,
+                    updateRelationshipUseCase,
+                    userId
+                ) as T
             }
         }
     }

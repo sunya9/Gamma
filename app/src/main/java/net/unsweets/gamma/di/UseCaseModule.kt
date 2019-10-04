@@ -85,7 +85,7 @@ class UseCaseModule {
     @Provides
     fun provideFollowUseCase(
         pnutRepository: IPnutRepository
-    ): FollowUseCase = FollowUseCase(pnutRepository)
+    ): UpdateRelationshipUseCase = UpdateRelationshipUseCase(pnutRepository)
 
     @Provides
     fun provideGetAccountListUseCase(
