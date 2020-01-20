@@ -18,5 +18,12 @@
         "https://oss.sonatype.org/content/repositories/snapshots/"
       ]
     }
+  ],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  },
+  "assignees": [
+    "sunya9"
   ]
 }
