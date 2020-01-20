@@ -96,7 +96,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.50")
 
 
-    val moshiVersion = "1.9.0-SNAPSHOT"
+    val moshiVersion = "1.9.2"
     implementation("com.squareup.moshi:moshi:$moshiVersion")
     implementation("com.squareup.moshi:moshi-adapters:$moshiVersion")
     implementation("com.squareup.moshi:moshi-kotlin:$moshiVersion")
