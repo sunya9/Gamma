@@ -89,7 +89,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.1.0-beta04")
     implementation("com.squareup.retrofit2:retrofit:2.5.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.5.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.7.1")
     implementation("androidx.preference:preference:1.1.0")
     implementation("com.otaliastudios:nestedscrollcoordinatorlayout:1.0.3")
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
