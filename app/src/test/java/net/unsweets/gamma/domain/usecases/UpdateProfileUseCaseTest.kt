@@ -2,13 +2,17 @@ package net.unsweets.gamma.domain.usecases
 
 import kotlinx.coroutines.runBlocking
 import net.unsweets.gamma.domain.model.io.UpdateProfileInputData
-import net.unsweets.gamma.mock.Mocks
+import net.unsweets.gamma.mock.PnutRepositoryMock
+import net.unsweets.sample.Users
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert
 import org.junit.Test
 
 class UpdateProfileUseCaseTest {
-    private val updateProfileUseCase = UpdateProfileUseCase(Mocks.pnutRepository)
+    private val me = Users.me
+    private val mockData = PnutRepositoryMock.PnutMockData(users = listOf(me))
+    private val db = PnutRepositoryMock(mockData)
+    private val updateProfileUseCase = UpdateProfileUseCase(db)
 
     @Test
     fun succeed() {
