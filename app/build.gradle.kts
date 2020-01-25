@@ -153,7 +153,7 @@ dependencies {
     implementation("jp.wasabeef:glide-transformations:4.1.0")
     implementation("me.zhanghai.android.materialprogressbar:library:1.6.1")
 
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13")
     androidTestImplementation("androidx.test:runner:1.2.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
 }
