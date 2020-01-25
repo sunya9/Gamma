@@ -3,6 +3,7 @@ package net.unsweets.gamma.domain.entity
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -18,8 +19,11 @@ data class Channel(
     val counts: ChannelCount,
     @Json(name = "you_subscribed") val youSubscribed: Boolean,
     @Json(name = "you_muted") val youMuted: Boolean,
-    @Json(name = "has_unread") val hasUnread: Boolean
-) : Parcelable {
+    @Json(name = "has_unread") val hasUnread: Boolean,
+    @Json(name = "pagination_id") override var paginationId: String? = null
+) : Parcelable, UniquePageable {
+    @IgnoredOnParcel
+    override val uniqueKey: String by lazy { id }
     @Parcelize
     @JsonClass(generateAdapter = true)
     data class ChannelCount(

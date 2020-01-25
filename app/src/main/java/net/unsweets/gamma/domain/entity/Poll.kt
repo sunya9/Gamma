@@ -3,6 +3,7 @@ package net.unsweets.gamma.domain.entity
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -20,8 +21,12 @@ data class Poll(
     override val prompt: String,
     val source: Client,
     val type: String,
-    val user: User? = null
-) : Parcelable, PollLikeValue {
+    val user: User? = null,
+    @Json(name = "pagination_id") override var paginationId: String? = null
+) : Parcelable, PollLikeValue, UniquePageable {
+    @IgnoredOnParcel
+    override val uniqueKey: String by lazy { id }
+
     @Parcelize
     @JsonClass(generateAdapter = true)
     data class PollOption(
