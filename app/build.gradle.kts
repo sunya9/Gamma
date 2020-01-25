@@ -130,7 +130,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
 
-    implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.14.6")
 
     val daggerVersion = "2.23.2"
     implementation("com.google.dagger:dagger:$daggerVersion")
