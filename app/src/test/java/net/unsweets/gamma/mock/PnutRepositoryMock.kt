@@ -9,12 +9,43 @@ import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.util.ErrorCollections
-import net.unsweets.sample.Polls
+import net.unsweets.gamma.util.TestException
 import net.unsweets.sample.Users
 import okhttp3.RequestBody
 import java.util.*
 
-class PnutRepositoryMock : IPnutRepository {
+open class PnutRepositoryMock(private val pnutMockData: PnutMockData = PnutMockData()) :
+    IPnutRepository {
+    data class PnutMockData(
+        val posts: List<Post> = emptyList(),
+        val users: List<User> = emptyList(),
+        val channels: List<Channel> = emptyList(),
+        val messages: List<Message> = emptyList(),
+        val polls: List<Poll> = emptyList(),
+        val files: List<File> = emptyList()
+    )
+
+    private data class PnutMemoryDB(
+        val posts: Map<String, Post> = emptyMap(),
+        val users: Map<String, User> = emptyMap(),
+        val channels: Map<String, Channel> = emptyMap(),
+        val messages: Map<String, Message> = emptyMap(),
+        val polls: Map<String, Poll> = emptyMap(),
+        val files: Map<String, File> = emptyMap()
+    )
+
+    private fun <T : Unique> List<T>.toMap() = this.map { it.uniqueKey to it }.toMap()
+
+    private val pnutMemoryDb by lazy {
+        PnutMemoryDB(
+            posts = pnutMockData.posts.toMap(),
+            users = pnutMockData.users.toMap(),
+            channels = pnutMockData.channels.toMap(),
+            messages = pnutMockData.messages.toMap(),
+            polls = pnutMockData.polls.toMap(),
+            files = pnutMockData.files.toMap()
+        )
+    }
 
     private fun <T> success(code: Int = 200, data: () -> T): PnutResponse<T> {
         return PnutResponse(PnutResponse.Meta(code), data())
@@ -100,8 +131,8 @@ class PnutRepositoryMock : IPnutRepository {
 
     override fun createPostSync(postBody: PostBody, token: String): PnutResponse<Post> {
         return when {
-            postBody.text.isEmpty() -> throw Exception()
-            token.isEmpty() -> throw Exception()
+            postBody.text.isEmpty() -> throw TestException()
+            token.isEmpty() -> throw TestException()
             else -> success {
                 Post(
                     createdAt = Date(),
@@ -141,12 +172,13 @@ class PnutRepositoryMock : IPnutRepository {
     override suspend fun getUserProfile(userId: String): PnutResponse<User> {
         return when {
             userId.isEmpty() -> throw ErrorCollections.CommunicationError(errorResponse)
-            else -> success { Users.getUser(userId) }
+            else -> success { pnutMemoryDb.users.getValue(userId) }
         }
     }
 
     override suspend fun updateMyProfile(profileBody: ProfileBody): PnutResponse<User> {
-        val user = Users.getUser("1")
+        // TODO: ???
+        val user = Users.me
         val content = user.content.copy(text = profileBody.content?.text)
         return success {
             user.copy(
@@ -187,16 +219,16 @@ class PnutRepositoryMock : IPnutRepository {
 
     override suspend fun follow(userId: String): PnutResponse<User> {
         return success {
-            val user = Users.getUser(userId)
-            if (user.youFollow) throw Exception()
+            val user = pnutMemoryDb.users.getValue(userId)
+            if (user.youFollow) throw TestException()
             user.copy(youFollow = true)
         }
     }
 
     override suspend fun unFollow(userId: String): PnutResponse<User> {
         return success {
-            val user = Users.getUser(userId)
-            if (!user.youFollow) throw Exception()
+            val user = pnutMemoryDb.users.getValue(userId)
+            if (!user.youFollow) throw TestException()
             user.copy(youFollow = false)
         }
     }
@@ -210,11 +242,19 @@ class PnutRepositoryMock : IPnutRepository {
     }
 
     override suspend fun block(userId: String): PnutResponse<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return success {
+            val user = pnutMemoryDb.users.getValue(userId)
+            if (user.youBlocked) throw TestException()
+            user.copy(youBlocked = true, youFollow = false)
+        }
     }
 
     override suspend fun unBlock(userId: String): PnutResponse<User> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return success {
+            val user = pnutMemoryDb.users.getValue(userId)
+            if (!user.youBlocked) throw TestException()
+            user.copy(youBlocked = false, youFollow = false)
+        }
     }
 
     override suspend fun updateCover(uri: Uri): PnutResponse<User> {
@@ -249,22 +289,7 @@ class PnutRepositoryMock : IPnutRepository {
     }
 
     override suspend fun verifyToken(token: String): PnutResponse<Token> {
-        return success {
-            when (token) {
-                "valid" -> {
-                    val user = Users.getUser("1")
-                    val scopes = Token.Scope.values()
-                    val storage = Token.Storage(0, 10)
-                    Token(
-                        Client("test", "https://example.com/", "test"),
-                        listOf(*scopes),
-                        user,
-                        storage
-                    )
-                }
-                else -> throw Exception()
-            }
-        }
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun createFile(content: RequestBody, fileBody: FileBody): PnutResponse<File> {
@@ -290,7 +315,7 @@ class PnutRepositoryMock : IPnutRepository {
         pollToken: String,
         voteBody: VoteBody
     ): PnutResponse<Poll> {
-        val poll = Polls.getPoll(pollId) ?: throw Exception()
+        val poll = pnutMemoryDb.polls.getValue(pollId)
         val newPoll = voteBody.positions.fold(poll) { accPoll, position ->
             val indexedValue = accPoll.options.withIndex().find { it.value.position == position }
                 ?: return@fold accPoll
