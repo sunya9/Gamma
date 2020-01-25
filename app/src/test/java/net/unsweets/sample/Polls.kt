@@ -2,13 +2,15 @@ package net.unsweets.sample
 
 import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.domain.entity.Poll
+import net.unsweets.gamma.util.RandomID
 import java.util.*
 
 object Polls {
-    private val poll1 = Poll(
+    val poll1
+        get() = Poll(
         Date(),
         Date(),
-        "1",
+            RandomID.get,
         isAnonymous = true,
         isPublic = true,
 
@@ -30,11 +32,4 @@ object Polls {
         source = Clients.testClient,
         type = BuildConfig.APPLICATION_ID
     )
-    private val db = mapOf(
-        "1" to poll1
-    )
-
-    fun getPoll(id: String): Poll? {
-        return db[id]
-    }
 }
