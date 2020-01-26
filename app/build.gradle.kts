@@ -87,7 +87,7 @@ dependencies {
 
     implementation("com.google.android.material:material:1.1.0-alpha10")
     implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.recyclerview:recyclerview:1.1.0-beta04")
+    implementation("androidx.recyclerview:recyclerview:1.1.0")
     implementation("com.squareup.retrofit2:retrofit:2.5.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.5.0")
     implementation("androidx.preference:preference:1.1.0")
