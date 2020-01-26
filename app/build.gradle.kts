@@ -109,7 +109,7 @@ dependencies {
     kapt("com.android.databinding:compiler:3.1.4")
     kapt("android.arch.lifecycle:compiler:1.1.1")
 
-    val coroutinesVersion = "1.3.0"
+    val coroutinesVersion = "1.3.3-1.3.70-eap-42"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
