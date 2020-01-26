@@ -17,6 +17,48 @@
         "https://jitpack.io",
         "https://oss.sonatype.org/content/repositories/snapshots/"
       ]
+    },
+    {
+      "packagePatterns": [
+        "com.google.dagger"
+      ],
+      "groupName": "dagger"
+    },
+    {
+      "packagePatterns": [
+        "com.google.firebase"
+      ],
+      "groupName": "firebase"
+    },
+    {
+      "packagePatterns": [
+        "com.android.support"
+      ],
+      "groupName": "com.android.support"
+    },
+    {
+      "packagePatterns": [
+        "com.github.bumptech.glide"
+      ],
+      "groupName": "glide"
+    },
+    {
+      "packagePatterns": [
+        "com.squareup.moshi"
+      ],
+      "groupName": "moshi"
+    },
+    {
+      "packagePatterns": [
+        "org.jetbrains.kotlinx:kotlinx-coroutines"
+      ],
+      "groupName": "kotlinx-coroutines"
+    },
+    {
+      "packagePatterns": [
+        "androidx.lifecycle:lifecycle"
+      ],
+      "groupName": "androidx.lifecycle"
     }
   ],
   "automerge": true,
