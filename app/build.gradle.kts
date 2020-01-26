@@ -124,7 +124,7 @@ dependencies {
     implementation("android.arch.navigation:navigation-fragment-ktx:$navVersion")
     implementation("android.arch.navigation:navigation-ui-ktx:$navVersion")
 
-    val roomVersion = "2.1.0"
+    val roomVersion = "2.2.3"
 
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
