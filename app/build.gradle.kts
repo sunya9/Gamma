@@ -145,7 +145,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
 
-    val firebaseVersion = "17.2.0"
+    val firebaseVersion = "17.2.2"
     implementation("com.google.firebase:firebase-core:$firebaseVersion")
     implementation("com.google.firebase:firebase-analytics:$firebaseVersion")
     implementation("com.crashlytics.sdk.android:crashlytics:2.10.1")
