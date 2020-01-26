@@ -93,7 +93,7 @@ dependencies {
     implementation("androidx.preference:preference:1.1.0")
     implementation("com.otaliastudios:nestedscrollcoordinatorlayout:1.0.3")
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.50")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
 
 
     val moshiVersion = "1.9.2"
