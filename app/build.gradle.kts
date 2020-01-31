@@ -26,11 +26,6 @@ android {
         versionCode = 6
         versionName = "0.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = mapOf("room.schemaLocation" to "$projectDir/schemas")
-            }
-        }
         renderscriptTargetApi = 23
         renderscriptSupportModeEnabled = true
     }
@@ -62,7 +57,10 @@ android {
             }
         }
     }
-
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -80,6 +78,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
     implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta4")
@@ -107,7 +106,6 @@ dependencies {
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
     kapt("com.android.databinding:compiler:3.1.4")
-    kapt("android.arch.lifecycle:compiler:1.1.1")
 
     val coroutinesVersion = "1.3.0"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
@@ -119,16 +117,6 @@ dependencies {
     implementation("com.android.support:support-emoji:$supportVersion")
     implementation("com.android.support:appcompat-v7:$supportVersion")
     implementation("com.android.support:support-emoji-bundled:$supportVersion")
-
-    val navVersion = "1.0.0"
-    implementation("android.arch.navigation:navigation-fragment-ktx:$navVersion")
-    implementation("android.arch.navigation:navigation-ui-ktx:$navVersion")
-
-    val roomVersion = "2.2.3"
-
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
 
     implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
 
@@ -153,7 +141,7 @@ dependencies {
     implementation("jp.wasabeef:glide-transformations:4.1.0")
     implementation("me.zhanghai.android.materialprogressbar:library:1.6.1")
 
-    testImplementation("junit:junit:4.13")
+    testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test:runner:1.2.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
 }
