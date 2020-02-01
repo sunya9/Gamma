@@ -62,13 +62,27 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
             DialogKey.Avatar.name -> viewModel.newAvatarUri.value
             DialogKey.Cover.name -> viewModel.newCoverUri.value
             else -> null
-        }
+        } ?: return
+        val menuUndo = menu.findItem(R.id.menuUndo)
+        val menuDelete = menu.findItem(R.id.menuDelete)
+        val deleteState = when (tag) {
+            DialogKey.Avatar.name -> viewModel.user.value?.content?.avatarImage?.isDefault
+            DialogKey.Cover.name -> viewModel.user.value?.content?.coverImage?.isDefault
+            else -> true
+        } ?: true
         when (imageState) {
             is ImageState.Keep -> {
-                menu.findItem(R.id.menuUndo).isVisible = false
+                menuUndo.isVisible = false
+                menuDelete.isVisible = !deleteState
             }
             is ImageState.NewImage -> {
-                menu.findItem(R.id.menuUndo).isVisible = true
+                menuUndo.isVisible = true
+                menuDelete.isVisible = true
+                menuDelete.isVisible = !deleteState
+            }
+            is ImageState.Delete -> {
+                menuUndo.isVisible = true
+                menuDelete.isVisible = false
             }
         }
     }
@@ -81,10 +95,13 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
                 DialogKey.Avatar.name -> changeAvatar()
                 DialogKey.Cover.name -> changeCover()
             }
+            R.id.menuDelete -> deleteImage(tag)
         }
     }
 
     private fun undoImage(tag: String) = newImageState(tag, ImageState.Keep)
+    private fun deleteImage(tag: String) = newImageState(tag, ImageState.Delete)
+
     private fun newImageState(tag: String, imageState: ImageState) {
         when (tag) {
             DialogKey.Avatar.name -> viewModel.newAvatarUri.value = imageState
@@ -334,6 +351,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
     sealed class ImageState {
         object Keep : ImageState()
         data class NewImage(val uri: Uri) : ImageState()
+        object Delete : ImageState()
     }
 
     class EditProfileViewModel private constructor(
@@ -397,30 +415,54 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
             loading.value = true
             viewModelScope.launch {
                 val avatarTask = async(start = CoroutineStart.LAZY) {
-                    val newAvatarUriValue = newAvatarUri.value
-                    if (newAvatarUriValue is ImageState.NewImage) {
-                        runCatching {
-                            updateUserImageUseCase.run(
-                                UpdateUserImageInputData(
-                                    newAvatarUriValue.uri,
-                                    UpdateUserImageInputData.Type.Avatar
+                    when (val newAvatarUriValue = newAvatarUri.value ?: ImageState.Keep) {
+                        is ImageState.Keep -> Result.success(null)
+                        is ImageState.NewImage -> {
+                            runCatching {
+                                updateUserImageUseCase.run(
+                                    UpdateUserImageInputData(
+                                        newAvatarUriValue.uri,
+                                        UpdateUserImageInputData.Type.Avatar
+                                    )
                                 )
-                            )
+                            }
                         }
-                    } else Result.success(null)
+                        is ImageState.Delete -> {
+                            runCatching {
+                                updateUserImageUseCase.run(
+                                    UpdateUserImageInputData(
+                                        null,
+                                        UpdateUserImageInputData.Type.Avatar
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
                 val coverTask = async(start = CoroutineStart.LAZY) {
-                    val newCoverUriValue = newCoverUri.value
-                    if (newCoverUriValue is ImageState.NewImage) {
-                        runCatching {
-                            updateUserImageUseCase.run(
-                                UpdateUserImageInputData(
-                                    newCoverUriValue.uri,
-                                    UpdateUserImageInputData.Type.Cover
+                    when (val newCoverUriValue = newCoverUri.value ?: ImageState.Keep) {
+                        ImageState.Keep -> Result.success(null)
+                        is ImageState.NewImage -> {
+                            runCatching {
+                                updateUserImageUseCase.run(
+                                    UpdateUserImageInputData(
+                                        newCoverUriValue.uri,
+                                        UpdateUserImageInputData.Type.Cover
+                                    )
                                 )
-                            )
+                            }
                         }
-                    } else Result.success(null)
+                        ImageState.Delete -> {
+                            runCatching {
+                                updateUserImageUseCase.run(
+                                    UpdateUserImageInputData(
+                                        null,
+                                        UpdateUserImageInputData.Type.Cover
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
                 val profileTask = async(start = CoroutineStart.LAZY) {
                     runCatching {

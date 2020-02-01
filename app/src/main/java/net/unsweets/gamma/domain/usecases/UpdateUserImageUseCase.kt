@@ -8,8 +8,20 @@ class UpdateUserImageUseCase(private val pnutRepository: IPnutRepository) :
     AsyncUseCase<UpdateUserImageOutputData, UpdateUserImageInputData>() {
     override suspend fun run(params: UpdateUserImageInputData): UpdateUserImageOutputData {
         val res = when (params.type) {
-            UpdateUserImageInputData.Type.Avatar -> pnutRepository.updateAvatar(params.uri)
-            UpdateUserImageInputData.Type.Cover -> pnutRepository.updateCover(params.uri)
+            UpdateUserImageInputData.Type.Avatar -> {
+                if (params.uri != null) {
+                    pnutRepository.updateAvatar(params.uri)
+                } else {
+                    pnutRepository.deleteAvatar()
+                }
+            }
+            UpdateUserImageInputData.Type.Cover -> {
+                if (params.uri != null) {
+                    pnutRepository.updateCover(params.uri)
+                } else {
+                    pnutRepository.deleteCover()
+                }
+            }
         }
         return UpdateUserImageOutputData(res)
     }
