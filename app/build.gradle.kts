@@ -84,7 +84,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta4")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
-    implementation("com.google.android.material:material:1.1.0-alpha10")
+    implementation("com.google.android.material:material:1.2.0-alpha04")
     implementation("androidx.appcompat:appcompat:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.1.0")
     implementation("com.squareup.retrofit2:retrofit:2.5.0")
