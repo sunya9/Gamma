@@ -5,6 +5,13 @@ import net.unsweets.gamma.util.RandomID
 import java.util.*
 
 object Posts {
+    val normalPost
+        get() = Post(
+            id = RandomID.get,
+            createdAt = Date(),
+            youBookmarked = false,
+            youReposted = false
+        )
     val unStarredPost
         get() = Post(
             id = RandomID.get,
