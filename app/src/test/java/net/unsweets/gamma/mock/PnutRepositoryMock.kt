@@ -57,6 +57,14 @@ open class PnutRepositoryMock(private val pnutMockData: PnutMockData = PnutMockD
 
     private val errorResponse = ErrorResponse(ErrorResponse.Meta(400, ""))
 
+    override suspend fun deleteCover(): PnutResponse<User> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun deleteAvatar(): PnutResponse<User> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override suspend fun getUnifiedStream(getPostsParam: GetPostsParam): PnutResponse<List<Post>> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

@@ -199,4 +199,10 @@ interface PnutService {
     @PUT("polls/{pollId}/response")
     fun vote(@Path("pollId") pollId: String, @Query("poll_token") pollToken: String, @Body voteBody: VoteBody): Call<PnutResponse<Poll>>
 
+    @DELETE("users/me/avatar")
+    fun deleteAvatar(): Call<PnutResponse<User>>
+
+    @DELETE("users/me/cover")
+    fun deleteCover(): Call<PnutResponse<User>>
+
 }

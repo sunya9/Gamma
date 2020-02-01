@@ -55,6 +55,8 @@ interface IPnutRepository {
     suspend fun unBlock(userId: String): PnutResponse<User>
     suspend fun updateCover(uri: Uri): PnutResponse<User>
     suspend fun updateAvatar(uri: Uri): PnutResponse<User>
+    suspend fun deleteCover(): PnutResponse<User>
+    suspend fun deleteAvatar(): PnutResponse<User>
 
     // channel and messages
     suspend fun getChannels(paginationParam: PaginationParam): PnutResponse<List<Channel>>

@@ -23,6 +23,14 @@ import java.util.*
 
 class PnutRepository(private val context: Context, defaultAccountToken: String? = null) :
     IPnutRepository {
+    override suspend fun deleteCover(): PnutResponse<User> {
+        return defaultPnutService.deleteCover().await()
+    }
+
+    override suspend fun deleteAvatar(): PnutResponse<User> {
+        return defaultPnutService.deleteAvatar().await()
+    }
+
     override suspend fun searchUsers(getSearchUsersParam: GetUsersParam): PnutResponse<List<User>> {
         return defaultPnutService.searchUsers(getSearchUsersParam.toMap()).await()
     }
