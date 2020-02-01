@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import net.unsweets.gamma.domain.entity.Poll
 import net.unsweets.gamma.domain.model.io.VoteInputData
 import net.unsweets.gamma.mock.PnutRepositoryMock
-import net.unsweets.sample.Polls
+import net.unsweets.gamma.sample.Polls
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert

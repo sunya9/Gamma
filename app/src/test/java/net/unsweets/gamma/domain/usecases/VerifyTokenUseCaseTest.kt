@@ -8,9 +8,9 @@ import net.unsweets.gamma.domain.model.Account
 import net.unsweets.gamma.domain.model.io.VerifyTokenInputData
 import net.unsweets.gamma.mock.AccountRepositoryMock
 import net.unsweets.gamma.mock.PnutRepositoryMock
+import net.unsweets.gamma.sample.Users
 import net.unsweets.gamma.util.RandomID
 import net.unsweets.gamma.util.TestException
-import net.unsweets.sample.Users
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert
 import org.junit.Test

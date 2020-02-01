@@ -5,8 +5,8 @@ import net.unsweets.gamma.domain.Relationship
 import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.model.io.UpdateRelationshipInputData
 import net.unsweets.gamma.mock.PnutRepositoryMock
+import net.unsweets.gamma.sample.Users
 import net.unsweets.gamma.util.TestException
-import net.unsweets.sample.Users
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert
 import org.junit.Test

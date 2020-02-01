@@ -8,9 +8,9 @@ import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.repository.IPnutRepository
+import net.unsweets.gamma.sample.Users
 import net.unsweets.gamma.util.ErrorCollections
 import net.unsweets.gamma.util.TestException
-import net.unsweets.sample.Users
 import okhttp3.RequestBody
 import java.util.*
 

@@ -1,4 +1,4 @@
-package net.unsweets.sample
+package net.unsweets.gamma.sample
 
 import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.entity.image.Avatar

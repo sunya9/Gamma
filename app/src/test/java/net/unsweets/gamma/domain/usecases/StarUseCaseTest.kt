@@ -4,8 +4,8 @@ import net.unsweets.gamma.domain.entity.PnutResponse
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.model.io.StarInputData
 import net.unsweets.gamma.mock.PnutRepositoryMock
+import net.unsweets.gamma.sample.Posts
 import net.unsweets.gamma.util.TestException
-import net.unsweets.sample.Posts
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert
 import org.junit.Test
