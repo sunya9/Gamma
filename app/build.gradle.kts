@@ -61,6 +61,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -142,6 +145,9 @@ dependencies {
     implementation("me.zhanghai.android.materialprogressbar:library:1.6.1")
 
     testImplementation("junit:junit:4.12")
+    testImplementation("org.mockito:mockito-core:2.23.0")
+    testImplementation("org.powermock:powermock-module-junit4:2.0.2")
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
     androidTestImplementation("androidx.test:runner:1.2.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
 }
