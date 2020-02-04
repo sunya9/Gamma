@@ -14,7 +14,19 @@ plugins {
     id("com.google.gms.oss.licenses.plugin")
     id("io.fabric")
     id("com.google.gms.google-services") apply false
+    id("jacoco")
+}
 
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+task("jacocoTestReport", JacocoReport::class) {
+    dependsOn("testDebugUnitTest")
+    reports {
+        xml.isEnabled = true
+        csv.isEnabled = false
+    }
 }
 
 android {
@@ -33,6 +45,9 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        }
+        getByName("debug") {
+            isTestCoverageEnabled = true
         }
     }
     dataBinding {
@@ -60,9 +75,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    testOptions {
-        unitTests.isReturnDefaultValues = true
     }
 }
 
