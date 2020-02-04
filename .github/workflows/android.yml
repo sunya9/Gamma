@@ -34,7 +34,14 @@ jobs:
       run: ./gradlew lint
 
     - name: Test
-      run: ./gradlew task test
+      run: ./gradlew test
+
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./app/build/jacoco/testDebugUnitTest.exec
+        flags: unittests
+        fail_ci_if_error: true
 
     - name: Slack notification
       env:
