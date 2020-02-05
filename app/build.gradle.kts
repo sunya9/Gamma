@@ -26,7 +26,11 @@ task("jacocoTestReport", JacocoReport::class) {
     reports {
         xml.isEnabled = true
         csv.isEnabled = false
+        html.isEnabled = true
     }
+    sourceDirectories.setFrom("${projectDir}/src/main/java")
+    classDirectories.setFrom("${buildDir}/tmp/kotlin-classes/debug")
+    executionData.setFrom(files("${buildDir}/jacoco/testDebugUnitTest.exec"))
 }
 
 android {
