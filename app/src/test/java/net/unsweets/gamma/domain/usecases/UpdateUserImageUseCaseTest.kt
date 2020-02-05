@@ -112,4 +112,61 @@ class UpdateUserImageUseCaseTest {
             )
         }
     }
+
+    @Test
+    fun succeedToDeleteAvatar() {
+        val pnutRepository = object : PnutRepositoryMock() {
+            override suspend fun deleteAvatar(): PnutResponse<User> {
+                val user =
+                    me.copy(
+                        content = me.content.copy(
+                            avatarImage = me.content.avatarImage.copy(
+                                link = "deleted",
+                                isDefault = true
+                            )
+                        )
+                    )
+                return Response.success(user)
+            }
+        }
+        val updateUserImageUseCase = UpdateUserImageUseCase(pnutRepository)
+        val res = runBlocking {
+            updateUserImageUseCase.run(
+                UpdateUserImageInputData(
+                    null,
+                    UpdateUserImageInputData.Type.Avatar
+                )
+            )
+        }
+        Assert.assertThat(res.res.data.content.avatarImage.isDefault, `is`(true))
+    }
+
+    @Test
+    fun succeedToDeleteCover() {
+        val pnutRepository = object : PnutRepositoryMock() {
+            override suspend fun deleteCover(): PnutResponse<User> {
+                val user =
+                    me.copy(
+                        content = me.content.copy(
+                            coverImage = me.content.coverImage.copy(
+                                link = "deleted",
+                                isDefault = true
+                            )
+                        )
+                    )
+                return Response.success(user)
+            }
+        }
+        val updateUserImageUseCase = UpdateUserImageUseCase(pnutRepository)
+        val res = runBlocking {
+            updateUserImageUseCase.run(
+                UpdateUserImageInputData(
+                    null,
+                    UpdateUserImageInputData.Type.Cover
+                )
+            )
+        }
+        Assert.assertThat(res.res.data.content.coverImage.isDefault, `is`(true))
+    }
+
 }
