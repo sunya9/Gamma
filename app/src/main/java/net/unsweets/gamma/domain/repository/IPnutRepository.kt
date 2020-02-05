@@ -2,10 +2,7 @@ package net.unsweets.gamma.domain.repository
 
 import android.net.Uri
 import net.unsweets.gamma.domain.entity.*
-import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
-import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
-import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
-import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
+import net.unsweets.gamma.domain.model.params.composed.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import okhttp3.RequestBody
 
@@ -59,7 +56,7 @@ interface IPnutRepository {
     suspend fun deleteAvatar(): PnutResponse<User>
 
     // channel and messages
-    suspend fun getChannels(paginationParam: PaginationParam): PnutResponse<List<Channel>>
+    suspend fun getChannels(getChannelsParam: GetChannelsParam): PnutResponse<List<Channel>>
     suspend fun getMessages(channelId: String, paginationParam: PaginationParam): PnutResponse<List<Message>>
 
     // others

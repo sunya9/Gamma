@@ -1,7 +1,6 @@
 package net.unsweets.gamma.data
 
 import net.unsweets.gamma.domain.entity.*
-import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -165,7 +164,7 @@ interface PnutService {
     fun getChannelMessages(@Path("channelId") channelId: String, @QueryMap paging: Map<String, String>): Call<PnutResponse<List<Message>>>
 
     @GET("users/me/channels")
-    fun getChannelsCreatedByMe(@QueryMap paging: PaginationParam): Call<PnutResponse<List<Channel>>>
+    fun getChannelsCreatedByMe(@QueryMap paging: Map<String, String>): Call<PnutResponse<List<Channel>>>
 
 
     @GET("users/me/channels/existing_pm")

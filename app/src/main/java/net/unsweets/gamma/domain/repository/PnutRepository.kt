@@ -5,10 +5,7 @@ import android.net.Uri
 import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.data.PnutService
 import net.unsweets.gamma.domain.entity.*
-import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
-import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
-import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
-import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
+import net.unsweets.gamma.domain.model.params.composed.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.util.Constants
 import net.unsweets.gamma.util.MoshiSingleton
@@ -231,8 +228,8 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
         return defaultPnutService.unBlock(userId).await()
     }
 
-    override suspend fun getChannels(paginationParam: PaginationParam): PnutResponse<List<Channel>> {
-        return defaultPnutService.getChannelsCreatedByMe(paginationParam).await()
+    override suspend fun getChannels(getChannelsParam: GetChannelsParam): PnutResponse<List<Channel>> {
+        return defaultPnutService.getChannelsCreatedByMe(getChannelsParam.toMap()).await()
     }
 
     override suspend fun getMessages(
