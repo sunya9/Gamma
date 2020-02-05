@@ -39,7 +39,7 @@ jobs:
     - uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./app/build/jacoco/testDebugUnitTest.exec
+        file: ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
         flags: unittests
         fail_ci_if_error: true
 
