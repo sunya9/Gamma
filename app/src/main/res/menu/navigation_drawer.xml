@@ -42,20 +42,20 @@
             </menu>
         </item>
     </group>
-    <!--    <group-->
-    <!--        android:id="@+id/otherGroup"-->
-    <!--        android:menuCategory="secondary"-->
-    <!--        android:visible="false"-->
-    <!--        android:orderInCategory="250">-->
-    <!--        <item-->
-    <!--            android:id="@+id/messages"-->
-    <!--            android:icon="@drawable/ic_mail_black_24dp"-->
-    <!--            android:title="@string/messages" />-->
-    <!--        <item-->
-    <!--            android:id="@+id/file"-->
-    <!--            android:icon="@drawable/ic_cloud_black_24dp"-->
-    <!--            android:title="@string/files" />-->
-    <!--    </group>-->
+    <group
+        android:id="@+id/otherGroup"
+        android:menuCategory="secondary"
+        android:orderInCategory="250"
+        android:visible="false">
+        <item
+            android:id="@+id/channels"
+            android:icon="@drawable/ic_mail_black_24dp"
+            android:title="@string/channels" />
+        <!--            <item-->
+        <!--                android:id="@+id/file"-->
+        <!--                android:icon="@drawable/ic_cloud_black_24dp"-->
+        <!--                android:title="@string/files" />-->
+    </group>
     <group
         android:id="@+id/other"
         android:menuCategory="system">

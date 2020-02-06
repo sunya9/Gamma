@@ -249,6 +249,10 @@
     <string name="following">Following</string>
     <string name="blocked">Blocked</string>
     <string name="muted">Muted</string>
+    <string name="private_channels">Private Channels</string>
+    <string name="public_channels">Public channels</string>
+    <string name="channel">Channel</string>
+    <string name="channels">Channels</string>
     <plurals name="poll_day_template">
         <item quantity="zero" />
         <item quantity="one">%d day</item>

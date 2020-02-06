@@ -388,6 +388,7 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
                     R.id.trending,
                     R.id.global -> showExploreStream(it.itemId)
 //                    R.id.file -> goToFiles()
+                    R.id.channels -> goToChannels()
                     R.id.settings -> goToSettings()
                 }
                 closeDrawer()
@@ -399,6 +400,13 @@ class MainActivity : BaseActivity(), BaseActivity.HaveDrawer, PostReceiver.Callb
         val tag = menuId.toString()
         val cache = supportFragmentManager.findFragmentByTag(tag)
         val fragment = cache ?: fragmentMap[menuId]?.let { it() } ?: return
+        addFragment(supportFragmentManager, fragment, tag)
+    }
+
+    private fun goToChannels() {
+        val tag = ChannelsFragment::class.java.simpleName
+        val cache = supportFragmentManager.findFragmentByTag(tag)
+        val fragment = cache ?: ChannelsFragment.newInstance()
         addFragment(supportFragmentManager, fragment, tag)
     }
 
