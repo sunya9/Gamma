@@ -2,10 +2,7 @@ package net.unsweets.gamma.mock
 
 import android.net.Uri
 import net.unsweets.gamma.domain.entity.*
-import net.unsweets.gamma.domain.model.params.composed.GetFilesParam
-import net.unsweets.gamma.domain.model.params.composed.GetInteractionsParam
-import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
-import net.unsweets.gamma.domain.model.params.composed.GetUsersParam
+import net.unsweets.gamma.domain.model.params.composed.*
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.sample.Users
@@ -273,7 +270,7 @@ open class PnutRepositoryMock(private val pnutMockData: PnutMockData = PnutMockD
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun getChannels(paginationParam: PaginationParam): PnutResponse<List<Channel>> {
+    override suspend fun getChannels(getChannelsParam: GetChannelsParam): PnutResponse<List<Channel>> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
