@@ -59,6 +59,12 @@
         "androidx.lifecycle:lifecycle"
       ],
       "groupName": "androidx.lifecycle"
+    },
+    {
+      "packagePatterns": [
+        "com.squareup.retrofit2"
+      ],
+      "groupName": "retrofit2"
     }
   ],
   "automerge": true,
