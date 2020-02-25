@@ -3,7 +3,7 @@ package net.unsweets.gamma.mock
 import net.unsweets.gamma.domain.model.Account
 import net.unsweets.gamma.domain.repository.IAccountRepository
 
-class AccountRepositoryMock(private val accounts: List<Account> = emptyList()) :
+open class AccountRepositoryMock(private val accounts: List<Account> = emptyList()) :
     IAccountRepository {
     private val memoryDb by lazy {
         accounts.map { it.id to it }.toMap().toMutableMap()
