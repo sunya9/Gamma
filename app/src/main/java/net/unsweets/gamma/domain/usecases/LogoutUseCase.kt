@@ -4,7 +4,10 @@ import net.unsweets.gamma.domain.model.io.LogoutOutputData
 import net.unsweets.gamma.domain.repository.IAccountRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
-class LogoutUseCase(private val accountRepository: IAccountRepository, val pnutRepository: IPnutRepository) :
+class LogoutUseCase(
+  private val accountRepository: IAccountRepository,
+  private val pnutRepository: IPnutRepository
+) :
     UseCase<LogoutOutputData, Unit>() {
     override fun run(params: Unit): LogoutOutputData {
         val currentAccount = accountRepository.getDefaultAccount() ?: return LogoutOutputData(null)
