@@ -24,7 +24,7 @@ object Users {
         followsYou = true,
         youBlocked = false,
         youCanFollow = false,
-        youFollow = false,
+          youFollow = true,
         youMuted = false,
         locale = "ja_JP",
         username = "foo",
