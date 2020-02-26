@@ -21,7 +21,7 @@ class UploadFileUseCase(private val pnutRepository: IPnutRepository) :
         val res = pnutRepository.createFile(
             content,
             FileBody(
-                FileBody.Kind.image,
+              net.unsweets.gamma.domain.entity.File.FileKind.IMAGE, // TODO: Fix it
                 file.name
             )
         )
