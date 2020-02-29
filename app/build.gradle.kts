@@ -22,7 +22,7 @@ jacoco {
 }
 
 task("jacocoTestReport", JacocoReport::class) {
-  dependsOn("testDebugUnitTest")
+  dependsOn("testDebugUnitTest", "createDebugCoverageReport")
   reports {
     xml.isEnabled = true
     csv.isEnabled = false
@@ -30,7 +30,12 @@ task("jacocoTestReport", JacocoReport::class) {
   }
   sourceDirectories.setFrom("${projectDir}/src/main/java")
   classDirectories.setFrom("${buildDir}/tmp/kotlin-classes/debug")
-  executionData.setFrom(files("${buildDir}/jacoco/testDebugUnitTest.exec"))
+  executionData.setFrom(fileTree(buildDir) {
+    include(
+      "jacoco/testDebugUnitTest.exec",
+      "outputs/code_coverage/debugAndroidTest/connected/*coverage.ec"
+    )
+  })
 }
 
 android {
