@@ -39,6 +39,7 @@ task("jacocoTestReport", JacocoReport::class) {
 }
 
 android {
+  ndkVersion = "21.0.6113669"
   compileSdkVersion(28)
   defaultConfig {
     applicationId = "net.unsweets.gamma"
