@@ -22,14 +22,15 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LoginActivityTest {
   @get:Rule
-  val intentsTestRule =
-    object : IntentsTestRule<LoginActivity>(LoginActivity::class.java, false, false) {
-
-    }
+  val intentsTestRule = IntentsTestRule<LoginActivity>(LoginActivity::class.java, true, false)
+  private val intent = Intent(Intent.ACTION_MAIN).also {
+    it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+  }
 
   @Test
   fun openBrowserWhenClickLoginButton() {
-    intentsTestRule.launchActivity(null)
+    intentsTestRule.launchActivity(intent)
     Espresso.onView(ViewMatchers.withId(R.id.loginButton)).perform(ViewActions.click())
     val intent = Iterables.getOnlyElement(Intents.getIntents())
     val scopes = arrayOf(
@@ -50,7 +51,7 @@ class LoginActivityTest {
 
   @Test
   fun openBrowserWhenClickSignUpButton() {
-    intentsTestRule.launchActivity(null)
+    intentsTestRule.launchActivity(intent)
     Espresso.onView(ViewMatchers.withId(R.id.signUpButton)).perform(ViewActions.click())
     val intent = Iterables.getOnlyElement(Intents.getIntents())
     assertThat(intent).hasAction(Intent.ACTION_VIEW)
