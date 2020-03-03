@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-
+    name: Build & Test
     runs-on: macOS-latest
 
     steps:
@@ -45,6 +45,11 @@ jobs:
           flags: unittests
           fail_ci_if_error: true
 
+
+  notify:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: Slack notification
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
