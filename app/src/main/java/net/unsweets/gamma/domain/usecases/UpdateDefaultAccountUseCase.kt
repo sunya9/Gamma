@@ -5,7 +5,7 @@ import net.unsweets.gamma.domain.model.io.UpdateDefaultAccountOutputData
 import net.unsweets.gamma.domain.repository.IAccountRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
-class UpdateDefaultAccountUseCase(
+open class UpdateDefaultAccountUseCase(
     private val accountRepository: IAccountRepository,
     private val pnutRepository: IPnutRepository
 ) :

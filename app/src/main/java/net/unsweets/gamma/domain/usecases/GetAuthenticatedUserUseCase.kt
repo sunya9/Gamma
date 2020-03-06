@@ -4,7 +4,7 @@ import net.unsweets.gamma.domain.model.io.GetAuthenticatedUserInputData
 import net.unsweets.gamma.domain.repository.IPnutCacheRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
-class GetAuthenticatedUserUseCase(
+open class GetAuthenticatedUserUseCase(
     private val pnutRepository: IPnutRepository,
     private val pnutCacheRepository: IPnutCacheRepository
 ) : AsyncUseCase<Unit, GetAuthenticatedUserInputData>() {

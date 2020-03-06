@@ -5,7 +5,7 @@ import net.unsweets.gamma.domain.model.io.VoteInputData
 import net.unsweets.gamma.domain.model.io.VoteOutputData
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
-class VoteUseCase(private val pnutRepository: IPnutRepository) :
+open class VoteUseCase(private val pnutRepository: IPnutRepository) :
     AsyncUseCase<VoteOutputData, VoteInputData>() {
     override suspend fun run(params: VoteInputData): VoteOutputData {
         val voteBody =

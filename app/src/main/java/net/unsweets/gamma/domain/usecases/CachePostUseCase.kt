@@ -6,7 +6,7 @@ import net.unsweets.gamma.domain.repository.IPnutCacheRepository
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.util.LogUtil
 
-class CachePostUseCase(
+open class CachePostUseCase(
     private val pnutCacheRepository: IPnutCacheRepository,
     private val preferenceRepository: IPreferenceRepository
 ) :

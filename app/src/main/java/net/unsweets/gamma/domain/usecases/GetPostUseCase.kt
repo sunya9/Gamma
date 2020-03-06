@@ -10,7 +10,7 @@ import net.unsweets.gamma.domain.model.params.single.SearchPostParam
 import net.unsweets.gamma.domain.repository.IPnutRepository
 import net.unsweets.gamma.domain.repository.IPreferenceRepository
 
-class GetPostUseCase(
+open class GetPostUseCase(
     private val pnutRepository: IPnutRepository,
     private val preferenceRepository: IPreferenceRepository
 ) :
