@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LoginActivityTest {
   @get:Rule
-  val intentsTestRule = IntentsTestRule<LoginActivity>(LoginActivity::class.java, true, false)
+  val intentsTestRule = IntentsTestRule(LoginActivity::class.java, true, false)
   private val intent = Intent(Intent.ACTION_MAIN).also {
     it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
     it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
