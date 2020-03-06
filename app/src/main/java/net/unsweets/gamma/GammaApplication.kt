@@ -2,6 +2,7 @@ package net.unsweets.gamma
 
 import android.app.Activity
 import android.content.Intent
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
@@ -20,52 +21,58 @@ import net.unsweets.gamma.presentation.activity.LoginActivity
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
 
 
-class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
-    val module by lazy { AppModule(this) }
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+open class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
+  val module by lazy { AppModule(this) }
+  override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+    return appComponent
+  }
 
-        return DaggerAppComponent.builder().appModule(module).build()
-    }
-
-    override fun onCreate() {
-        updateBaseTheme()
-        updateTheme()
-        super.onCreate()
-        val config = BundledEmojiCompatConfig(this)
-            .setReplaceAll(true)
-        EmojiCompat.init(config)
-        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
-        Fabric.with(this, Crashlytics.Builder().core(core).build())
+  private lateinit var appComponent: AndroidInjector<GammaApplication>
+  override fun onCreate() {
+    updateBaseTheme()
+    updateTheme()
+    appComponent = DaggerAppComponent.builder().appModule(module).build()
+    super.onCreate()
+    val config = BundledEmojiCompatConfig(this)
+      .setReplaceAll(true)
+    EmojiCompat.init(config)
+    val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
+    Fabric.with(this, Crashlytics.Builder().core(core).build())
 //        if (!setToken()) return backToLoginActivity() // failed
 
-    }
+  }
 
-    fun updateBaseTheme() {
-        val darkMode = module.providePreferenceRepository().darkMode
-        AppCompatDelegate.setDefaultNightMode(darkMode.value)
-    }
+  fun updateBaseTheme() {
+    val darkMode = module.providePreferenceRepository().darkMode
+    AppCompatDelegate.setDefaultNightMode(darkMode.value)
+  }
 
-    private fun backToLoginActivity() {
-        val newIntent = Intent(applicationContext, LoginActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        startActivity(newIntent)
+  private fun backToLoginActivity() {
+    val newIntent = Intent(applicationContext, LoginActivity::class.java).apply {
+      addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
     }
+    startActivity(newIntent)
+  }
 
-    private fun setToken(): Boolean {
-        return runBlocking {
-            SetupTokenUseCase(
-                module.providePnutRepository(),
-                module.provideAccountRepository()
-            ).run(Unit)
-        }.existDefaultAccount
-    }
+  private fun setToken(): Boolean {
+    return runBlocking {
+      SetupTokenUseCase(
+        module.providePnutRepository(),
+        module.provideAccountRepository()
+      ).run(Unit)
+    }.existDefaultAccount
+  }
 
-    fun updateTheme() {
-        ThemeColorUtil.applyTheme(this)
-    }
+  fun updateTheme() {
+    ThemeColorUtil.applyTheme(this)
+  }
 
-    companion object {
-        fun getInstance(activity: Activity) = activity.application as GammaApplication
-    }
+  @VisibleForTesting
+  fun updateAppComponent(appComponent: AndroidInjector<GammaApplication>) {
+    this.appComponent = appComponent
+  }
+
+  companion object {
+    fun getInstance(activity: Activity) = activity.application as GammaApplication
+  }
 }
