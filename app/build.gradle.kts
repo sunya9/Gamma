@@ -91,6 +91,11 @@ android {
   }
   testOptions {
     unitTests.isIncludeAndroidResources = false
+    unitTests.isReturnDefaultValues = true
+  }
+  packagingOptions {
+    // https://github.com/mockito/mockito/issues/1376#issuecomment-391192483
+    pickFirst("mockito-extensions/org.mockito.plugins.MockMaker")
   }
 }
 
@@ -158,7 +163,8 @@ dependencies {
   implementation("com.google.dagger:dagger-android-support:$daggerVersion")
   kapt("com.google.dagger:dagger-compiler:$daggerVersion")
   kapt("com.google.dagger:dagger-android-processor:$daggerVersion")
-  kaptTest("com.google.dagger:dagger-compiler:$daggerVersion")
+  kaptAndroidTest("com.google.dagger:dagger-compiler:$daggerVersion")
+  kaptAndroidTest("com.google.dagger:dagger-android-processor:$daggerVersion")
 
   implementation("com.theartofdev.edmodo:android-image-cropper:2.8.0")
   implementation("com.github.thefuntasty.hauler:library:2.0.0")
@@ -174,11 +180,11 @@ dependencies {
   implementation("me.zhanghai.android.materialprogressbar:library:1.6.1")
 
   testImplementation("junit:junit:4.12")
-  testImplementation("org.mockito:mockito-core:2.23.0")
-  testImplementation("org.powermock:powermock-module-junit4:2.0.2")
-  testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
-  androidTestImplementation("androidx.test:runner:1.2.0")
+  testImplementation("org.mockito:mockito-core:2.28.2")
+  testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
+  androidTestImplementation("org.mockito:mockito-core:2.28.2")
+  androidTestImplementation("org.mockito:mockito-android:2.28.2")
   testImplementation("org.robolectric:robolectric:4.3")
   androidTestImplementation("androidx.test:core:1.2.0")
   androidTestImplementation("androidx.test.espresso:espresso-intents:3.2.0")
@@ -186,9 +192,8 @@ dependencies {
   androidTestImplementation("androidx.test.ext:junit:1.1.1")
   androidTestImplementation("androidx.test.ext:truth:1.2.0")
   androidTestImplementation("com.google.truth:truth:0.42")
-
-
-
+  testImplementation("org.powermock:powermock-module-junit4:2.0.2")
+  testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
 }
 
 androidExtensions {
