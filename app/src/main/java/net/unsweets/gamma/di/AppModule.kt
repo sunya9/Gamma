@@ -12,7 +12,7 @@ import javax.inject.Singleton
         UseCaseComponent::class
     ]
 )
-class AppModule(private val application: Application) {
+open class AppModule(private val application: Application) {
     private val accountRepository = AccountRepository(application)
     private val pnutRepository =
         PnutRepository(application, accountRepository.getDefaultAccount()?.token)

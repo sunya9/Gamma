@@ -9,7 +9,7 @@ import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.usecases.*
 
 @Module
-class UseCaseModule {
+open class UseCaseModule {
     @Provides
     fun provideTokenUseCase(
         accountRepository: IAccountRepository,
