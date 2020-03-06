@@ -14,27 +14,31 @@ import kotlin.reflect.KClass
 
 
 class EntryActivity : BaseActivity(), CoroutineScope by MainScope() {
-    @Inject
-    lateinit var setupTokenUseCase: SetupTokenUseCase
+  @Inject
+  lateinit var setupTokenUseCase: SetupTokenUseCase
 
-    override fun onResume() {
-        super.onResume()
-        if (!BuildConfig.DEBUG) ClearCacheService.startService(this)
-        findViewById<View>(android.R.id.content).systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+  override fun onResume() {
+    super.onResume()
+    proceed()
+  }
 
-        val existDefaultAccount: Boolean = runBlocking {
-            val res = setupTokenUseCase.run(Unit)
-            res.existDefaultAccount
-        }
-        val intentClass: KClass<out Activity> =
-            if (existDefaultAccount)
-                MainActivity::class
-            else
-                LoginActivity::class
+  private fun proceed() {
+    if (!BuildConfig.DEBUG) ClearCacheService.startService(this)
+    findViewById<View>(android.R.id.content).systemUiVisibility =
+      View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 
-        val intent = Intent(this, intentClass.java)
-        startActivity(intent)
-        finish()
+    val existDefaultAccount: Boolean = runBlocking {
+      val res = setupTokenUseCase.run(Unit)
+      res.existDefaultAccount
     }
+    val intentClass: KClass<out Activity> =
+      if (existDefaultAccount)
+        MainActivity::class
+      else
+        LoginActivity::class
+
+    val intent = Intent(this, intentClass.java)
+    startActivity(intent)
+    finish()
+  }
 }
