@@ -1,18 +1,14 @@
 package net.unsweets.gamma.presentation.activity
 
 import android.content.Intent
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.runBlocking
-import net.unsweets.gamma.GammaApplication
-import net.unsweets.gamma.di.DaggerTestAppComponent
-import net.unsweets.gamma.di.FakeAppModule
-import net.unsweets.gamma.di.FakeUseCaseModule
 import net.unsweets.gamma.domain.model.io.GetAccountListOutputData
 import net.unsweets.gamma.domain.model.io.SetupTokenOutputData
 import net.unsweets.gamma.domain.usecases.GetAccountListUseCase
 import net.unsweets.gamma.domain.usecases.SetupTokenUseCase
+import net.unsweets.gamma.testutil.OverrideModules
 import net.unsweets.gamma.testutil.Util
 import org.hamcrest.Matchers.`is`
 import org.junit.Assert
@@ -29,35 +25,15 @@ class EntryActivityTest {
     it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
     it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
   }
-  private val app by lazy {
-    ApplicationProvider.getApplicationContext<GammaApplication>()
-  }
 
   private fun startActivity(): EntryActivity {
     return intentsTestRule.launchActivity(intent)
   }
 
-  data class Modules(
-    val fakeAppModule: FakeAppModule,
-    val fakeUseCaseModule: FakeUseCaseModule
-  )
-
-  private fun overrideModules(callback: (modules: Modules) -> Unit) {
-    val fakeUseCaseModule = FakeUseCaseModule()
-    val fakeAppModule = FakeAppModule(app)
-    val modules = Modules(fakeAppModule, fakeUseCaseModule)
-    callback(modules)
-    val component = DaggerTestAppComponent.builder()
-      .fakeUseCaseModule(modules.fakeUseCaseModule)
-      .fakeAppModule(modules.fakeAppModule)
-      .build()
-    component.inject(app)
-    app.updateAppComponent(component)
-  }
 
   @Test
   fun launchMainActivityWhenSomeAccountsExists() {
-    overrideModules {
+    OverrideModules {
       it.fakeUseCaseModule.setupTokenUseCase = Mockito.mock(SetupTokenUseCase::class.java).also {
         runBlocking { Mockito.`when`(it.run(Unit)).thenReturn(SetupTokenOutputData(true)) }
       }
@@ -76,7 +52,7 @@ class EntryActivityTest {
 
   @Test
   fun launchLoginActivityWhenHasAccountsDoesNotExists() {
-    overrideModules {
+    OverrideModules {
       it.fakeUseCaseModule.setupTokenUseCase = Mockito.mock(SetupTokenUseCase::class.java).also {
         runBlocking { Mockito.`when`(it.run(Unit)).thenReturn(SetupTokenOutputData(false)) }
       }
