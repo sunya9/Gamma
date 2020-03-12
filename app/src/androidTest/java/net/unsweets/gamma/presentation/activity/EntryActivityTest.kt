@@ -4,13 +4,11 @@ import android.content.Intent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.runBlocking
-import net.unsweets.gamma.domain.model.io.GetAccountListOutputData
 import net.unsweets.gamma.domain.model.io.SetupTokenOutputData
-import net.unsweets.gamma.domain.usecases.GetAccountListUseCase
 import net.unsweets.gamma.domain.usecases.SetupTokenUseCase
+import net.unsweets.gamma.testutil.IntentUtil
 import net.unsweets.gamma.testutil.OverrideModules
-import net.unsweets.gamma.testutil.Util
-import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -20,47 +18,39 @@ import org.mockito.Mockito
 @RunWith(AndroidJUnit4::class)
 class EntryActivityTest {
   @get:Rule
-  val intentsTestRule = ActivityTestRule(EntryActivity::class.java, false, false)
-  private val intent = Intent().also {
-    it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-  }
+  val activityTestRule = ActivityTestRule(EntryActivity::class.java, true, false)
 
-  private fun startActivity(): EntryActivity {
-    return intentsTestRule.launchActivity(intent)
-  }
-
+  private fun getFakeSetupTokenUseCase(result: Boolean) =
+    Mockito.mock(SetupTokenUseCase::class.java).also {
+      runBlocking { Mockito.`when`(it.run(Unit)).thenReturn(SetupTokenOutputData(result)) }
+    }
 
   @Test
   fun launchMainActivityWhenSomeAccountsExists() {
     OverrideModules {
-      it.fakeUseCaseModule.setupTokenUseCase = Mockito.mock(SetupTokenUseCase::class.java).also {
-        runBlocking { Mockito.`when`(it.run(Unit)).thenReturn(SetupTokenOutputData(true)) }
-      }
-      it.fakeUseCaseModule.getAccountListUseCase =
-        Mockito.mock(GetAccountListUseCase::class.java).also {
-          runBlocking { Mockito.`when`(it.run(Unit)) }.thenReturn(GetAccountListOutputData(emptyList()))
-        }
-
+      it.fakeUseCaseModule.setupTokenUseCase = getFakeSetupTokenUseCase(true)
     }
-    startActivity()
-    Assert.assertThat(
-      Util.getActivityInstance()!!.javaClass.name,
-      `is`(MainActivity::class.java.name)
-    )
+    IntentUtil.assertIntent(MainActivity::class) {
+      activityTestRule.launchActivity(Intent())
+    }
+    assertActivityIsFinished()
   }
 
   @Test
   fun launchLoginActivityWhenHasAccountsDoesNotExists() {
     OverrideModules {
-      it.fakeUseCaseModule.setupTokenUseCase = Mockito.mock(SetupTokenUseCase::class.java).also {
-        runBlocking { Mockito.`when`(it.run(Unit)).thenReturn(SetupTokenOutputData(false)) }
-      }
+      it.fakeUseCaseModule.setupTokenUseCase = getFakeSetupTokenUseCase(false)
     }
-    startActivity()
+    IntentUtil.assertIntent(LoginActivity::class) {
+      activityTestRule.launchActivity(Intent())
+    }
+    assertActivityIsFinished()
+  }
+
+  private fun assertActivityIsFinished() {
     Assert.assertThat(
-      Util.getActivityInstance()!!.javaClass.name,
-      `is`(LoginActivity::class.java.name)
+      activityTestRule.activity.isFinishing,
+      Matchers.`is`(true)
     )
   }
 }
