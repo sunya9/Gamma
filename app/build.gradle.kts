@@ -97,6 +97,16 @@ android {
     // https://github.com/mockito/mockito/issues/1376#issuecomment-391192483
     pickFirst("mockito-extensions/org.mockito.plugins.MockMaker")
   }
+
+  sourceSets {
+    val sharedTestDir = "src/sharedTest/java"
+    getByName("test") {
+      java.srcDir(sharedTestDir)
+    }
+    getByName("androidTest") {
+      java.srcDir(sharedTestDir)
+    }
+  }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -115,7 +125,7 @@ dependencies {
   implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleVersion")
   implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
   implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
-  testImplementation("androidx.arch.core:core-testing:2.1.0")
+  androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
 
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
   implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta4")
@@ -194,6 +204,8 @@ dependencies {
   androidTestImplementation("com.google.truth:truth:0.42")
   testImplementation("org.powermock:powermock-module-junit4:2.0.2")
   testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
+  androidTestImplementation("org.powermock:powermock-module-junit4:2.0.2")
+  androidTestImplementation("org.powermock:powermock-api-mockito2:2.0.2")
 }
 
 androidExtensions {
