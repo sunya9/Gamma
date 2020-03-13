@@ -5,7 +5,7 @@ import net.unsweets.gamma.domain.model.io.VerifyTokenOutputData
 import net.unsweets.gamma.domain.repository.IAccountRepository
 import net.unsweets.gamma.domain.repository.IPnutRepository
 
-class VerifyTokenUseCase(
+open class VerifyTokenUseCase(
     private val accountRepository: IAccountRepository,
     private val pnutRepository: IPnutRepository
 ) : AsyncUseCase<VerifyTokenOutputData, VerifyTokenInputData>() {

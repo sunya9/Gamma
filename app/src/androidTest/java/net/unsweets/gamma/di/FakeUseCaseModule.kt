@@ -2,6 +2,11 @@ package net.unsweets.gamma.di
 
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.runBlocking
+import net.unsweets.gamma.domain.model.CachedList
+import net.unsweets.gamma.domain.model.StreamType
+import net.unsweets.gamma.domain.model.io.GetCachedPostListInputData
+import net.unsweets.gamma.domain.model.io.GetCachedPostListOutputData
 import net.unsweets.gamma.domain.usecases.*
 import org.mockito.Mockito
 
@@ -9,12 +14,13 @@ import org.mockito.Mockito
 class FakeUseCaseModule {
   lateinit var setupTokenUseCase: SetupTokenUseCase
   lateinit var getAccountListUseCase: GetAccountListUseCase
+  lateinit var verifyTokenUseCase: VerifyTokenUseCase
 
   @Provides
   fun provideSetupTokenUseCase() = setupTokenUseCase
 
   @Provides
-  fun provideTokenUseCase(): VerifyTokenUseCase = Mockito.mock(VerifyTokenUseCase::class.java)
+  fun provideTokenUseCase(): VerifyTokenUseCase = verifyTokenUseCase
 
   @Provides
   fun provideGetPostUseCase(): GetPostUseCase =
@@ -80,7 +86,13 @@ class FakeUseCaseModule {
 
   @Provides
   fun provideGetCachedPostListUseCase(): GetCachedPostListUseCase =
-    Mockito.mock(GetCachedPostListUseCase::class.java)
+    Mockito.mock(GetCachedPostListUseCase::class.java).also {
+      runBlocking {
+        Mockito.`when`(it.run(GetCachedPostListInputData(StreamType.Home)))
+      }.thenReturn(
+        GetCachedPostListOutputData(CachedList(emptyList()))
+      )
+    }
 
   @Provides
   fun provideGetCachedUserListUseCase(): GetCachedUserListUseCase =
