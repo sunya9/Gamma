@@ -10,7 +10,6 @@ open class EventViewModel<T>: ViewModel() {
 
     fun sendEvent(sendEvent: T) {
         _event.value = sendEvent
-        _event.call()
     }
 
 }
