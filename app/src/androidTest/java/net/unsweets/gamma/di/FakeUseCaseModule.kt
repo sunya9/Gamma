@@ -2,11 +2,6 @@ package net.unsweets.gamma.di
 
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.runBlocking
-import net.unsweets.gamma.domain.model.CachedList
-import net.unsweets.gamma.domain.model.StreamType
-import net.unsweets.gamma.domain.model.io.GetCachedPostListInputData
-import net.unsweets.gamma.domain.model.io.GetCachedPostListOutputData
 import net.unsweets.gamma.domain.usecases.*
 import org.mockito.Mockito
 
@@ -15,6 +10,8 @@ class FakeUseCaseModule {
   lateinit var setupTokenUseCase: SetupTokenUseCase
   lateinit var getAccountListUseCase: GetAccountListUseCase
   lateinit var verifyTokenUseCase: VerifyTokenUseCase
+  lateinit var getCachedPostListUseCase: GetCachedPostListUseCase
+  lateinit var getCurrentAccountUseCase: GetCurrentAccountUseCase
 
   @Provides
   fun provideSetupTokenUseCase() = setupTokenUseCase
@@ -53,8 +50,7 @@ class FakeUseCaseModule {
   fun provideRepostUseCase(): RepostUseCase = Mockito.mock(RepostUseCase::class.java)
 
   @Provides
-  fun provideGetCurrentAccountUseCase(): GetCurrentAccountUseCase =
-    Mockito.mock(GetCurrentAccountUseCase::class.java)
+  fun provideGetCurrentAccountUseCase(): GetCurrentAccountUseCase = getCurrentAccountUseCase
 
   @Provides
   fun provideUpdateProfileUseCase(): UpdateProfileUseCase =
@@ -85,14 +81,7 @@ class FakeUseCaseModule {
     Mockito.mock(UpdateUserImageUseCase::class.java)
 
   @Provides
-  fun provideGetCachedPostListUseCase(): GetCachedPostListUseCase =
-    Mockito.mock(GetCachedPostListUseCase::class.java).also {
-      runBlocking {
-        Mockito.`when`(it.run(GetCachedPostListInputData(StreamType.Home)))
-      }.thenReturn(
-        GetCachedPostListOutputData(CachedList(emptyList()))
-      )
-    }
+  fun provideGetCachedPostListUseCase(): GetCachedPostListUseCase = getCachedPostListUseCase
 
   @Provides
   fun provideGetCachedUserListUseCase(): GetCachedUserListUseCase =
