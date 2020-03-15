@@ -1,6 +1,5 @@
 package net.unsweets.gamma.domain.usecases
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.runBlocking
 import net.unsweets.gamma.domain.entity.Client
@@ -13,16 +12,11 @@ import net.unsweets.gamma.mock.PnutRepositoryMock
 import net.unsweets.gamma.sample.Users
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestRule
 import org.mockito.Mockito
 
 
 class GetAuthenticatedUserUseCaseTest {
-  @get:Rule
-  val rule: TestRule = InstantTaskExecutorRule()
-
   @Test
   fun success() {
     val me = Users.me
@@ -44,7 +38,7 @@ class GetAuthenticatedUserUseCaseTest {
     }
     val liveData = Mockito.mock(MutableLiveData<Token>()::class.java)
     val useCase = GetAuthenticatedUserUseCase(pnutRepository, pnutCacheRepository)
-    val res = runBlocking { useCase.run(GetAuthenticatedUserInputData(liveData)) }
+    runBlocking { useCase.run(GetAuthenticatedUserInputData(liveData)) }
     Mockito.verify(liveData, Mockito.times(2)).postValue(Mockito.any())
   }
 }
