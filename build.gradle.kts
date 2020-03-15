@@ -26,6 +26,11 @@ allprojects {
         maven(url = "https://jitpack.io")
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
     }
+  configurations.all {
+    resolutionStrategy {
+      force("org.objenesis:objenesis:2.6")
+    }
+  }
 }
 
 task("clean", Delete::class) {
