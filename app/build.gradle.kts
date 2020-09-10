@@ -22,7 +22,7 @@ jacoco {
 }
 
 task("jacocoTestReport", JacocoReport::class) {
-  dependsOn("testDebugUnitTest", "createDebugCoverageReport")
+  dependsOn("testDebugUnitTest", "connectedDebugAndroidTest", "createDebugCoverageReport")
   reports {
     xml.isEnabled = true
     csv.isEnabled = false
