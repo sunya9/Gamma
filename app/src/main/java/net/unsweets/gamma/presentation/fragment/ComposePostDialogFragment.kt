@@ -1,5 +1,7 @@
 package net.unsweets.gamma.presentation.fragment
 
+import android.R.attr.centerX
+import android.R.attr.centerY
 import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
@@ -21,6 +23,7 @@ import net.unsweets.gamma.presentation.util.BackPressedHookable
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
 import net.unsweets.gamma.util.LogUtil
 import kotlin.math.hypot
+
 
 class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback {
 
@@ -83,7 +86,11 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_compose_post_dialog, container, false)
     }
 
@@ -127,11 +134,19 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         dialog.setOnShowListener {
             if (savedInstanceState == null) {
-                revealAnimation(dialog.rootLayout)
-                view.let {
+//                revealAnimation(dialog.rootLayout)
+                view?.let {
                     val anim = AnimatorInflater.loadAnimator(context, R.animator.bg_compose_window)
-                    anim.setTarget(dialog.window)
-                    anim.start()
+//                    val animator = ViewAnimationUtils.createCircularReveal(
+//                        view,
+//                        centerX,
+//                        centerY,
+//                        0,
+//                        endRadius
+//                    )
+//                    createRevealAnim(true, it)?.start()
+//                    anim.setTarget(dialog.window)
+//                    anim.start()
                 }
             }
         }
@@ -156,6 +171,7 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
         anim.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator?) {
                 super.onAnimationStart(animation)
+                LogUtil.e("animation start")
                 fragment?.onAnimationStart(open)
             }
 
@@ -183,7 +199,8 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
     private fun revealAnimation(root: View) {
         val viewTreeObserver = root.viewTreeObserver
         if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     dialog?.window?.decorView?.visibility = View.VISIBLE

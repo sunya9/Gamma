@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.ErrorResponse
@@ -55,7 +55,7 @@ class VerifyTokenActivity : BaseActivity() {
                 } ?: R.string.cannot_get_intent_data
                 failure(Exception(getString(res)))
             } catch (e: Exception) {
-                Crashlytics.log("verify token error")
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
 
         } else {

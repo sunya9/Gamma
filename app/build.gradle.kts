@@ -12,8 +12,8 @@ plugins {
   id("kotlin-android-extensions")
   id("kotlin-kapt")
   id("com.google.gms.oss.licenses.plugin")
-  id("io.fabric")
   id("com.google.gms.google-services") apply false
+  id("com.google.firebase.crashlytics")
   id("jacoco")
 }
 
@@ -184,7 +184,8 @@ dependencies {
   val firebaseVersion = "17.2.2"
   implementation("com.google.firebase:firebase-core:$firebaseVersion")
   implementation("com.google.firebase:firebase-analytics:$firebaseVersion")
-  implementation("com.crashlytics.sdk.android:crashlytics:2.10.1")
+  implementation("com.google.firebase:firebase-crashlytics:17.2.2")
+  implementation("com.google.firebase:firebase-analytics:17.6.0")
 
   implementation("jp.wasabeef:glide-transformations:4.1.0")
   implementation("me.zhanghai.android.materialprogressbar:library:1.6.1")
@@ -206,6 +207,8 @@ dependencies {
   testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
   androidTestImplementation("org.powermock:powermock-module-junit4:2.0.2")
   androidTestImplementation("org.powermock:powermock-api-mockito2:2.0.2")
+  implementation("com.github.Chrisvin:EasyReveal:1.2")
+
 }
 
 androidExtensions {

@@ -6,11 +6,8 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
-import io.fabric.sdk.android.Fabric
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.runBlocking
@@ -19,6 +16,7 @@ import net.unsweets.gamma.di.DaggerAppComponent
 import net.unsweets.gamma.domain.usecases.SetupTokenUseCase
 import net.unsweets.gamma.presentation.activity.LoginActivity
 import net.unsweets.gamma.presentation.util.ThemeColorUtil
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 
 open class GammaApplication : DaggerApplication(), CoroutineScope by MainScope() {
@@ -36,8 +34,8 @@ open class GammaApplication : DaggerApplication(), CoroutineScope by MainScope()
     val config = BundledEmojiCompatConfig(this)
       .setReplaceAll(true)
     EmojiCompat.init(config)
-    val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
-    Fabric.with(this, Crashlytics.Builder().core(core).build())
+    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+
 //        if (!setToken()) return backToLoginActivity() // failed
 
   }
