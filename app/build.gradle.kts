@@ -15,6 +15,7 @@ plugins {
   id("com.google.gms.google-services") apply false
   id("com.google.firebase.crashlytics")
   id("jacoco")
+  id("androidx.navigation.safeargs.kotlin")
 }
 
 jacoco {
@@ -131,7 +132,7 @@ dependencies {
   implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta4")
   implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
-  implementation("com.google.android.material:material:1.2.0-alpha04")
+  implementation("com.google.android.material:material:1.3.0-alpha03")
   implementation("androidx.appcompat:appcompat:1.1.0")
   implementation("androidx.recyclerview:recyclerview:1.1.0")
   implementation("com.squareup.retrofit2:retrofit:2.5.0")
@@ -208,7 +209,10 @@ dependencies {
   androidTestImplementation("org.powermock:powermock-module-junit4:2.0.2")
   androidTestImplementation("org.powermock:powermock-api-mockito2:2.0.2")
   implementation("com.github.Chrisvin:EasyReveal:1.2")
-
+  // Kotlin
+  val navVersion = "2.3.1"
+  implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
+  implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
 }
 
 androidExtensions {
