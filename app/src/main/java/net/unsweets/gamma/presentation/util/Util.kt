@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
+import android.os.Handler
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -25,9 +26,16 @@ object Util {
 
     }
 
-    fun hideKeyboard(view: View) {
+    fun hideKeyboard(view: View, callback: (() -> Unit)? = null, delayMs: Long = 10) {
         val imm = getImm(view.context)
         imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+        if(callback != null) {
+            Handler().postDelayed({
+                // dirty hack
+                // workaround for strange animation
+                callback()
+            }, delayMs)
+        }
     }
 
     private fun getImm(context: Context) =
