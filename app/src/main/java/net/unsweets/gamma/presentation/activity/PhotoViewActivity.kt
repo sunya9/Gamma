@@ -5,10 +5,15 @@ import android.app.ActivityOptions
 import android.app.SharedElementCallback
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -66,9 +71,25 @@ class PhotoViewActivity : BaseActivity() {
         MediaViewPager(supportFragmentManager, photos)
     }
 
+    private fun fixTopPadding() {
+        val rect = Rect()
+        window.decorView.getWindowVisibleDisplayFrame(rect)
+        val statusBarHeight = rect.top
+        toolbar.layoutParams = FrameLayout.LayoutParams(toolbar.layoutParams).also {
+            it.leftMargin = toolbar.marginLeft
+            it.bottomMargin = toolbar.marginBottom
+            it.rightMargin = toolbar.marginRight
+            it.topMargin = statusBarHeight
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        fixTopPadding()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_photo_view)
         postponeEnterTransition()
         setSupportActionBar(toolbar)
