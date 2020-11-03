@@ -32,4 +32,7 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeShareActivity(): ShareActivity
+
+    @ContributesAndroidInjector(modules = [FragmentModule::class])
+    abstract fun contributeComposePostActivity(): ComposePostActivity
 }

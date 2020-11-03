@@ -65,6 +65,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     override fun onUpdateLongPost(longPost: LongPost?) {
         viewModel.longPost = longPost
+        parentFragmentManager.popBackStack()
     }
 
     override fun onUpdateSpoiler(spoiler: Spoiler?) {
@@ -170,7 +171,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         val nsfwMenuItem = findMenuItemWithinLeftMenu(R.id.menuNsfw) ?: return
         val nsfwFlag = viewModel.nsfw.value ?: false
         nsfwMenuItem.isChecked = nsfwFlag
-        Util.setTintForCheckableMenuItem(context!!, nsfwMenuItem)
+        Util.setTintForCheckableMenuItem(requireContext(), nsfwMenuItem)
     }
 
 
@@ -184,13 +185,13 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private fun updatePollMenuItem() {
         val pollMenuItem = findMenuItemWithinLeftMenu(R.id.menuPoll) ?: return
         pollMenuItem.isChecked = viewModel.enablePoll.value == true
-        Util.setTintForCheckableMenuItem(context!!, pollMenuItem)
+        Util.setTintForCheckableMenuItem(requireContext(), pollMenuItem)
     }
 
     private fun updateSpoilerMenuItem() {
         val spoilerMenuItem = findMenuItemWithinLeftMenu(R.id.menuSpoiler) ?: return
         spoilerMenuItem.isChecked = viewModel.spoiler != null
-        Util.setTintForCheckableMenuItem(context!!, spoilerMenuItem)
+        Util.setTintForCheckableMenuItem(requireContext(), spoilerMenuItem)
     }
 
     private val viewModel: ComposePostViewModel by lazy {
@@ -227,7 +228,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = parentFragment as? Callback
+        listener = context as? Callback
     }
 
     @Inject
@@ -377,10 +378,13 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     private fun requestGalleryDialog() {
         val permission =
-            ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
-                activity!!,
+                requireActivity(),
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                 PermissionRequestCode.Storage.ordinal
             )
@@ -423,7 +427,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
 
-    private fun focusToEditText() {
+    fun focusToEditText() {
         binding.composeTextEditText.requestFocus()
         Util.showKeyboard(binding.composeTextEditText)
     }
@@ -461,12 +465,12 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     private fun toggleNSFW(item: MenuItem) {
         val nextValue = !item.isChecked
         item.isChecked = nextValue
-        Util.setTintForCheckableMenuItem(context!!, item)
+        Util.setTintForCheckableMenuItem(requireContext(), item)
         viewModel.nsfw.value = nextValue
     }
 
 
-    private fun cancelToCompose(force: Boolean = false) {
+    fun cancelToCompose(force: Boolean = false): Boolean {
         val hasAnyMedia = adapter.getItems().isNotEmpty()
         val hasAnyRaw =
             viewModel.longPost != null || viewModel.spoiler != null || pollPostBody != null
@@ -478,8 +482,10 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
                 .setPositive(R.string.discard)
                 .build(RequestCode.Discard.ordinal)
             fragment.show(childFragmentManager, DialogKey.Discard.name)
+            return false
         } else {
             listener?.onFinish()
+            return true
         }
     }
 
@@ -637,11 +643,11 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     @Parcelize
     data class ComposePostFragmentOption(
         val initialText: String? = null,
-        val intentExtraDataList: ArrayList<UriInfo>? = null
+        val intentExtraDataList: ArrayList<UriInfo>? = null,
+        val post: Post? = null
     ) : Parcelable
 
     companion object {
-
         fun newInstance(composePostFragmentOption: ComposePostFragmentOption? = null) =
             ComposePostFragment().apply {
                 arguments = Bundle().apply {
@@ -650,13 +656,8 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
                         BundleKey.InitialPhoto.name,
                         composePostFragmentOption?.intentExtraDataList
                     )
+                    putParcelable(BundleKey.ReplyTarget.name, composePostFragmentOption?.post)
                 }
             }
-
-        fun replyInstance(post: Post) = ComposePostFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable(BundleKey.ReplyTarget.name, post)
-            }
-        }
     }
 }

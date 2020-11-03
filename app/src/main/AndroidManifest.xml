@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:name=".GammaApplication"
@@ -14,6 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".presentation.activity.ComposePostActivity"
+            android:theme="@style/FullScreenDialogStyle"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.activity.ShareActivity"
             android:exported="true"
