@@ -63,7 +63,7 @@ class BasicDialogFragment : DialogFragment(), DialogInterface.OnClickListener {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = MaterialAlertDialogBuilder(context)
+        val builder = MaterialAlertDialogBuilder(requireContext())
         title?.let {
             when (it) {
                 is BundledValue.Literal -> builder.setTitle(it.text)

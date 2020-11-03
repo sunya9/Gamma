@@ -67,7 +67,7 @@ class ChangeAccountDialogFragment : DaggerDialogFragment() {
             false
         )
 
-        return MaterialAlertDialogBuilder(context)
+        return MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.accounts)
             .setView(view)
             .create()

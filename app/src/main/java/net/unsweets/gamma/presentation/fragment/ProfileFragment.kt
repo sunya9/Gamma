@@ -71,7 +71,7 @@ class ProfileFragment : BaseFragment() {
         ViewModelProvider(
             this,
             ProfileViewModel.Factory(
-                activity!!.application,
+                requireActivity().application,
                 getProfileUseCase,
                 updateRelationshipUseCase,
                 userId
@@ -127,7 +127,7 @@ class ProfileFragment : BaseFragment() {
             viewModel.getUser()
         }
         binding.profileDescriptionTextView.setOnTouchListener(entityOnTouchListener)
-        val pagerAdapter = ProfilePagerAdapter(context!!, childFragmentManager, userId)
+        val pagerAdapter = ProfilePagerAdapter(requireContext(), childFragmentManager, userId)
         binding.profileViewPager.adapter = pagerAdapter
         binding.profileViewPagerTab.setupWithViewPager(binding.profileViewPager)
 
@@ -189,7 +189,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun fixTransition(iconUrl: String) {
-        GlideApp.with(context!!)
+        GlideApp.with(requireContext())
             .load(iconUrl)
             .addListener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -232,7 +232,7 @@ class ProfileFragment : BaseFragment() {
             )
             viewModel.toolbarBgColor.postValue(ColorUtils.setAlphaComponent(bgColor, per.toInt()))
         })
-        viewModel.toolbarBgColor.value = ContextCompat.getColor(context!!, R.color.colorStatusBar)
+        viewModel.toolbarBgColor.value = ContextCompat.getColor(requireContext(), R.color.colorStatusBar)
 
     }
 

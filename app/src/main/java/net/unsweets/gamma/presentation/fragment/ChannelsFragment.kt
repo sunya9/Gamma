@@ -11,7 +11,7 @@ import net.unsweets.gamma.presentation.adapter.pager.ChannelsPagerAdapter
 
 class ChannelsFragment : BaseFragment() {
     private val adapter by lazy {
-        ChannelsPagerAdapter(context!!, childFragmentManager)
+        ChannelsPagerAdapter(requireContext(), childFragmentManager)
     }
 
     override fun onCreateView(

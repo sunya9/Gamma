@@ -18,6 +18,6 @@ abstract class BaseFragment : DaggerFragment() {
     }
 
     protected fun addFragment(fragment: Fragment, tag: String): Fragment? {
-        return FragmentHelper.addFragment(context!!, fragment, tag)
+        return FragmentHelper.addFragment(requireContext(), fragment, tag)
     }
 }

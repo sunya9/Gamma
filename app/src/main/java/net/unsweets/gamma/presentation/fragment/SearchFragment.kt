@@ -73,7 +73,7 @@ class SearchFragment : BaseFragment() {
     }
 
     private val adapter by lazy {
-        SearchPagerAdapter(context!!, childFragmentManager, pagerInfo)
+        SearchPagerAdapter(requireContext(), childFragmentManager, pagerInfo)
     }
     private lateinit var binding: FragmentSearchBinding
     private var showKeyboardFlag: Boolean = false

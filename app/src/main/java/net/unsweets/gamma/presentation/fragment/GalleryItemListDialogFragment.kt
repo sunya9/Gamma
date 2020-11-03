@@ -100,7 +100,7 @@ class GalleryItemListDialogFragment : BaseBottomSheetDialogFragment() {
                 val photoFile = createImageFile()
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
-                        context!!,
+                        requireContext(),
                         "com.example.android.fileprovider",
                         it
                     )

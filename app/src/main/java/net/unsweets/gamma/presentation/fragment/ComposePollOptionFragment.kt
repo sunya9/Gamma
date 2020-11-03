@@ -90,7 +90,7 @@ class ComposePollOptionFragment : DaggerDialogFragment(), DialogInterface.OnClic
         binding.viewModel = viewModel
         setupDurationViews()
         setupMaxOptionsView()
-        return MaterialAlertDialogBuilder(context)
+        return MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.poll_options)
             .setView(binding.root)
             .setPositiveButton(R.string.ok, this)

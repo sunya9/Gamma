@@ -110,7 +110,7 @@ class SpoilerDialogFragment : DialogFragment(), DialogInterface.OnClickListener 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        val builder = MaterialAlertDialogBuilder(context)
+        val builder = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.spoiler_alert)
             .setView(binding.root)
             .setNegativeButton(R.string.cancel, this)

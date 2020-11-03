@@ -46,7 +46,7 @@ class DeletePostDialogFragment : DialogFragment(), DialogInterface.OnClickListen
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return MaterialAlertDialogBuilder(context)
+        return MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.delete_post)
             .setMessage(R.string.this_operation_cannot_be_undone)
             .setPositiveButton(R.string.ok, this)

@@ -69,7 +69,7 @@ class ChoosePrimaryColorDialogFragment : DialogFragment(), DialogInterface.OnCli
             )
         view.colorList.adapter = ColorListAdapter(this, themeColor)
         view.colorList.setHasFixedSize(true)
-        return MaterialAlertDialogBuilder(context)
+        return MaterialAlertDialogBuilder(requireContext())
             .setView(view)
             .setPositiveButton(R.string.ok, this)
             .setNeutralButton(R.string.default_text, this)

@@ -207,7 +207,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     override fun onClick(path: String, position: Int, items: List<String>) {
         val newIntent = PhotoViewActivity.photoViewInstance(
-            context!!,
+            requireContext(),
             items.map { ThumbAndFull(it, it) },
             position
         )
@@ -217,7 +217,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     override val itemNameRes: Int = R.string.posts
 
     private val itemTouchHelper: ItemTouchHelper by lazy {
-        val postTouchHelperCallback = PostTouchHelperCallback(context!!, adapter)
+        val postTouchHelperCallback = PostTouchHelperCallback(requireContext(), adapter)
         ItemTouchHelper(postTouchHelperCallback)
     }
 
@@ -398,7 +398,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
             sharedElementReturnTransition = moveTransition
             fragment.sharedElementEnterTransition = moveTransition
             (fragment.exitTransition as? TransitionSet)?.excludeTarget(it.transitionName, true)
-            FragmentHelper.addFragment(context!!, fragment, id, transitionMap)
+            FragmentHelper.addFragment(requireContext(), fragment, id, transitionMap)
         }
 
         viewHolder.dateTextView.text =

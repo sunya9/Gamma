@@ -146,7 +146,7 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
         recyclerView.adapter = adapter
         val dividerItemDecoration =
             DividerIgnoreLastItem(context, DividerIgnoreLastItem.VERTICAL, reverse)
-        val divider = AppCompatResources.getDrawable(context!!, dividerDrawable)!!
+        val divider = AppCompatResources.getDrawable(requireContext(), dividerDrawable)!!
         dividerItemDecoration.setDrawable(divider)
         recyclerView.addItemDecoration(dividerItemDecoration)
         recyclerView.addOnScrollListener(infiniteScrollListener)
