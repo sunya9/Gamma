@@ -10,10 +10,7 @@ import android.os.Bundle
 import android.transition.Transition
 import android.transition.TransitionInflater
 import android.transition.TransitionSet
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -64,6 +61,7 @@ import net.unsweets.gamma.util.SingleLiveEvent
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.set
+import kotlin.math.abs
 
 
 abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostViewHolder>(),
@@ -240,12 +238,16 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     @Inject
     lateinit var getPostUseCase: GetPostUseCase
+
     @Inject
     lateinit var getCachedPostUseCase: GetCachedPostListUseCase
+
     @Inject
     lateinit var cachePostUseCase: CachePostUseCase
+
     @Inject
     lateinit var getPollUseCase: GetPollUseCase
+
     @Inject
     lateinit var voteUseCase: VoteUseCase
 
@@ -293,8 +295,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     ) {
         val clickedItemPosition = calcPosition(viewHolder.adapterPosition)
         LogUtil.e(
-            "clickedItemPosition: $clickedItemPosition, expandedViewHolderPos: ${previousViewHolderItem?.viewHolder?.oldPosition
-                ?: -1}"
+            "clickedItemPosition: $clickedItemPosition, expandedViewHolderPos: ${
+                previousViewHolderItem?.viewHolder?.oldPosition
+                    ?: -1
+            }"
         )
         adapter.notifyItemChanged(clickedItemPosition)
         val previousViewHolderItemLocal = previousViewHolderItem
@@ -508,7 +512,7 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
         val pollNotice = item.pollNotice
         val isPollNeedUpdate = item.isPollNeedUpdate
-        LogUtil.e("isPollNeedUpdate ${isPollNeedUpdate}")
+        LogUtil.e("isPollNeedUpdate $isPollNeedUpdate")
         if (pollNotice != null && isPollNeedUpdate) {
             viewModel.loadPoll(item.id, pollNotice)
         }
@@ -665,7 +669,10 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
 
     private fun getVisibility(b: Boolean): Int = if (b) View.VISIBLE else View.GONE
 
-    private enum class RepostButtonType(@StringRes val textRes: Int, @DrawableRes val iconRes: Int) {
+    private enum class RepostButtonType(
+        @StringRes val textRes: Int,
+        @DrawableRes val iconRes: Int
+    ) {
         DeleteRepost(R.string.delete_repost, R.drawable.ic_repeat_black_24dp),
         DeletePost(R.string.delete_post, R.drawable.ic_delete_black_24dp),
         Repost(R.string.repost, R.drawable.ic_repeat_border_black_24dp)
@@ -728,9 +735,18 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
         avatarSwipe: Boolean
     ) : RecyclerView.ViewHolder(mView) {
         val rootCardView: CardView = itemView.rootCardView
+        var startX = -1f
+        private val threshold = 10f
         val avatarView: ImageView = itemView.avatarImageView.also {
             it.setOnTouchListener { view, motionEvent ->
-                if (view.isEnabled && motionEvent.actionMasked == MotionEvent.ACTION_MOVE && avatarSwipe) {
+                if (!view.isEnabled) return@setOnTouchListener false
+                if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                    startX = motionEvent.x
+                }
+                if (motionEvent.actionMasked == MotionEvent.ACTION_MOVE && avatarSwipe && abs(
+                        startX - motionEvent.x
+                    ) > threshold
+                ) {
                     itemTouchHelper.startSwipe(this)
                 }
                 false
