@@ -280,6 +280,6 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-
     <string name="shared_element_compose">shared_element_compose</string>
+    <string name="shared_element_edit_profile">shared_element_edit_profile</string>
 </resources>

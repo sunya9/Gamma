@@ -3,6 +3,7 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.Application
 import android.content.Intent
 import android.graphics.Color
@@ -22,7 +23,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.transition.ChangeBounds
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -39,6 +39,7 @@ import net.unsweets.gamma.domain.model.io.GetProfileInputData
 import net.unsweets.gamma.domain.model.io.UpdateRelationshipInputData
 import net.unsweets.gamma.domain.usecases.GetProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateRelationshipUseCase
+import net.unsweets.gamma.presentation.activity.EditProfileActivity
 import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.ProfilePagerAdapter
 import net.unsweets.gamma.presentation.util.EntityOnTouchListener
@@ -62,8 +63,10 @@ class ProfileFragment : BaseFragment() {
     private val fetchingUserObserve = Observer<Boolean> {
         binding.swipeRefreshLayout.isRefreshing = it
     }
+
     @Inject
     lateinit var getProfileUseCase: GetProfileUseCase
+
     @Inject
     lateinit var updateRelationshipUseCase: UpdateRelationshipUseCase
 
@@ -232,7 +235,8 @@ class ProfileFragment : BaseFragment() {
             )
             viewModel.toolbarBgColor.postValue(ColorUtils.setAlphaComponent(bgColor, per.toInt()))
         })
-        viewModel.toolbarBgColor.value = ContextCompat.getColor(requireContext(), R.color.colorStatusBar)
+        viewModel.toolbarBgColor.value =
+            ContextCompat.getColor(requireContext(), R.color.colorStatusBar)
 
     }
 
@@ -285,25 +289,20 @@ class ProfileFragment : BaseFragment() {
         )
     }
 
-    private enum class DialogKey { EditProfile }
     private enum class RequestCode { UpdateProfile }
 
     private fun showEditProfileDialog() {
-        val fm = parentFragmentManager
-        val fragment = EditProfileFragment.newInstance(userId).also {
-            //            val transition =
-//                TransitionInflater.from(context).inflateTransition(R.transition.edit_profile)
-            sharedElementEnterTransition = ChangeBounds()
-        }
-        fragment.setTargetFragment(this, RequestCode.UpdateProfile.ordinal)
-        // TODO: fix fragment transition
-        val ft = fm.beginTransaction()
-            .addSharedElement(
-                binding.userMainActionButton,
-                binding.userMainActionButton.transitionName
-            )
-        fragment.show(ft, DialogKey.EditProfile.name)
-
+        val intent = EditProfileActivity.newIntent(requireContext(), userId)
+        val activityOptions = ActivityOptions.makeSceneTransitionAnimation(
+            requireActivity(),
+            binding.userMainActionButton,
+            getString(R.string.shared_element_edit_profile)
+        )
+        startActivityForResult(
+            intent,
+            RequestCode.UpdateProfile.ordinal,
+            activityOptions.toBundle()
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -35,4 +35,7 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector(modules = [FragmentModule::class])
     abstract fun contributeComposePostActivity(): ComposePostActivity
+
+    @ContributesAndroidInjector(modules = [FragmentModule::class])
+    abstract fun contributeEditProfileActivity(): EditProfileActivity
 }

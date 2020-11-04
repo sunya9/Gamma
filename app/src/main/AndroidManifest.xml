@@ -16,6 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".presentation.activity.EditProfileActivity"
+            android:theme="@style/FullScreenDialogStyle"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".presentation.activity.ComposePostActivity"
             android:theme="@style/FullScreenDialogStyle"
             android:windowSoftInputMode="adjustResize" />

@@ -15,7 +15,6 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:transitionName="@string/profile_transition"
         tools:context=".presentation.fragment.ProfileFragment">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -67,7 +66,6 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:clickable="true"
-                            android:transitionName="cover_image_transition"
                             android:focusable="true"
                             android:foreground="@drawable/fg_profile_cover_shadow"
                             android:onClick="@{() -> viewModel.showCover()}"
@@ -142,7 +140,6 @@
                             android:onClick="@{() -> viewModel.mainAction()}"
                             android:text="@{viewModel.mainActionButtonText}"
                             android:textColor="@{safeUnbox(viewModel.actionButtonTextColor)}"
-                            android:transitionName="@string/transition_edit_profile"
                             app:backgroundTint="@{safeUnbox(viewModel.actionButtonTintColor)}"
                             app:iconGravity="end"
                             app:iconPadding="@dimen/margin_regular"
@@ -294,7 +291,6 @@
                             android:focusable="true"
                             android:foreground="@drawable/fg_profile_avatar"
                             android:onClick="@{() -> viewModel.showAvatar()}"
-                            android:transitionName="avatar_image_transition"
                             app:glideAvatarSrc="@{viewModel.iconUrl}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
