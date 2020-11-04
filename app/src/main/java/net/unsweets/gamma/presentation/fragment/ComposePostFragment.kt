@@ -36,6 +36,7 @@ import net.unsweets.gamma.domain.entity.raw.PostRaw
 import net.unsweets.gamma.domain.entity.raw.Spoiler
 import net.unsweets.gamma.domain.model.Account
 import net.unsweets.gamma.domain.model.UriInfo
+import net.unsweets.gamma.domain.usecases.GetAccountListUseCase
 import net.unsweets.gamma.domain.usecases.GetCurrentAccountUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.AnimationCallback
@@ -67,6 +68,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
         viewModel.longPost = longPost
         parentFragmentManager.popBackStack()
     }
+
 
     override fun onUpdateSpoiler(spoiler: Spoiler?) {
         viewModel.spoiler = spoiler
@@ -214,6 +216,11 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
 
     private lateinit var adapter: ThumbnailAdapter
 
+    @Inject
+    lateinit var getAccountListUseCase: GetAccountListUseCase
+
+    private val hasAnotherAccounts by lazy { getAccountListUseCase.run(Unit).accounts.filterNot { it.id == currentUserId }.size > 1 }
+
     private val eventObserver = Observer<Event> {
         when (it) {
             is Event.ShowAccountList -> showAccountList()
@@ -221,6 +228,7 @@ class ComposePostFragment : BaseFragment(), GalleryItemListDialogFragment.Listen
     }
 
     private fun showAccountList() {
+        if (hasAnotherAccounts) return
         val fragment =
             ChangeAccountDialogFragment.newInstance(viewModel.currentUserIdLiveData.value.orEmpty())
         fragment.show(childFragmentManager, DialogKey.Accounts.name)
