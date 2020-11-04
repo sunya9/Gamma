@@ -42,7 +42,6 @@ class ComposeLongPostFragment : Fragment(), BackPressedHookable {
             null
         }
         listener?.onUpdateLongPost(longPost)
-        (parentFragment as? ComposePostDialogFragment)?.popBackStack()
     }
 
     private lateinit var binding: FragmentComposeLongPostBinding
