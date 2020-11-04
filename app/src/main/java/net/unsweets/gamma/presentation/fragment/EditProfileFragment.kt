@@ -147,7 +147,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
             is ErrorCollections.CommunicationError -> t.getMessage(context)
             else -> t.localizedMessage
         }
-        Snackbar.make(view!!, message, Snackbar.LENGTH_LONG).showAsError()
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).showAsError()
     }
 
     private enum class IntentKey { User }
@@ -335,7 +335,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
     }
 
     private fun save() {
-        Util.hideKeyboard(view!!)
+        Util.hideKeyboard(requireView())
         viewModel.save()
     }
 

@@ -27,7 +27,7 @@ sealed class ExploreFragment : PostItemFragment(), Util.DrawerContentFragment {
         toolbar.setNavigationOnClickListener { FragmentHelper.backFragment(parentFragmentManager) }
         toolbar.setOnClickListener {
             val ctx = context ?: return@setOnClickListener
-            getRecyclerView(view!!).layoutManager?.startSmoothScroll(SmoothScroller(ctx))
+            getRecyclerView(requireView()).layoutManager?.startSmoothScroll(SmoothScroller(ctx))
         }
         setTitleToToolbar(toolbar)
 

@@ -153,7 +153,7 @@ abstract class BaseListFragment<T : UniquePageable, V : RecyclerView.ViewHolder>
     }
 
     override fun onDestroyView() {
-        getRecyclerView(view!!).removeOnScrollListener(infiniteScrollListener)
+        getRecyclerView(requireView()).removeOnScrollListener(infiniteScrollListener)
         super.onDestroyView()
     }
 
