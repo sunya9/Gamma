@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:transitionName="transition">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -29,6 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_close_black_24dp"
+            android:theme="@style/AppTheme"
             tools:title="@string/compose_post">
 
             <TextView
@@ -41,7 +42,7 @@
                 android:gravity="end"
                 android:text="@{viewModel.counterStr}"
                 tools:text="256" />
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
