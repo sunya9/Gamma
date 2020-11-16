@@ -61,15 +61,13 @@ object ThemeColorUtil {
     }
 
     // TODO: Fix me
-    fun currentDarkThemeMode(context: Context?): String {
-        if (context == null) return "0"
+    fun currentDarkThemeMode(context: Context): String {
         val preference = PreferenceRepository(context)
         return preference.darkModeStr
     }
 
     // TODO: Fix me
-    fun getThemeColor(context: Context?): ThemeColor {
-        if (context == null) return ThemeColor.Default
+    fun getThemeColor(context: Context): ThemeColor {
         val preference = PreferenceRepository(context)
         return preference.themeColor
     }
@@ -83,8 +81,7 @@ object ThemeColorUtil {
 
 
     fun applyTheme(fragment: DialogFragment) {
-        val context = fragment.context ?: return
-        getThemeColor(context).let {
+        getThemeColor(fragment.requireContext()).let {
             fragment.setStyle(DialogFragment.STYLE_NORMAL, it.themeResource)
         }
     }
