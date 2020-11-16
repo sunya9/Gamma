@@ -15,6 +15,7 @@ import androidx.palette.graphics.Palette
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.fragment_photo_view_item.*
@@ -28,6 +29,9 @@ class PhotoViewItemFragment : Fragment() {
     private val path by lazy {
         arguments?.getParcelable<ThumbAndFull>(BundleKey.Path.name)
             ?: throw NullPointerException("Must set path")
+    }
+    private val isSharedElementTarget by lazy {
+        requireArguments().getBoolean(BundleKey.SharedElementTarget.name, false)
     }
 
     override fun onCreateView(
@@ -46,6 +50,7 @@ class PhotoViewItemFragment : Fragment() {
             centerRadius = 30f
         }
         GlideApp.with(view).load(path.full).placeholder(progress)
+            .transition(DrawableTransitionOptions.withCrossFade(0))
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
@@ -53,7 +58,8 @@ class PhotoViewItemFragment : Fragment() {
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    activity?.startPostponedEnterTransition()
+                    if (isSharedElementTarget)
+                        requireActivity().startPostponedEnterTransition()
                     return false
                 }
 
@@ -78,19 +84,22 @@ class PhotoViewItemFragment : Fragment() {
                     val palette = Palette.from(bmp).generate()
                     val color = palette.mutedSwatch?.rgb ?: Color.BLACK
                     photoViewWrapper.setBackgroundColor(color)
-                    activity?.startPostponedEnterTransition()
+                    if (isSharedElementTarget)
+                        requireActivity().startPostponedEnterTransition()
                     return false
                 }
             }).into(photoView)
     }
 
-    private enum class BundleKey { Path }
+    private enum class BundleKey { Path, SharedElementTarget }
 
     companion object {
-        fun newInstance(thumbAndFull: ThumbAndFull) = PhotoViewItemFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable(BundleKey.Path.name, thumbAndFull)
+        fun newInstance(thumbAndFull: ThumbAndFull, isSharedElementTarget: Boolean) =
+            PhotoViewItemFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(BundleKey.Path.name, thumbAndFull)
+                    putBoolean(BundleKey.SharedElementTarget.name, isSharedElementTarget)
+                }
             }
-        }
     }
 }

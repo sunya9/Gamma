@@ -3,7 +3,6 @@ package net.unsweets.gamma.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -11,13 +10,10 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
+import com.google.android.material.transition.MaterialContainerTransform
 import dagger.android.HasAndroidInjector
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.*
 import net.unsweets.gamma.R
 import net.unsweets.gamma.databinding.FragmentEditProfileBinding
@@ -25,13 +21,11 @@ import net.unsweets.gamma.domain.entity.User
 import net.unsweets.gamma.domain.model.io.GetProfileInputData
 import net.unsweets.gamma.domain.model.io.UpdateProfileInputData
 import net.unsweets.gamma.domain.model.io.UpdateUserImageInputData
-import net.unsweets.gamma.domain.repository.IPreferenceRepository
 import net.unsweets.gamma.domain.usecases.GetProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateProfileUseCase
 import net.unsweets.gamma.domain.usecases.UpdateUserImageUseCase
 import net.unsweets.gamma.presentation.activity.EditPhotoActivity
 import net.unsweets.gamma.presentation.util.ComputedLiveData
-import net.unsweets.gamma.presentation.util.ThemeColorUtil
 import net.unsweets.gamma.presentation.util.Util
 import net.unsweets.gamma.util.ErrorCollections
 import net.unsweets.gamma.util.SingleLiveEvent
@@ -40,20 +34,20 @@ import javax.inject.Inject
 
 class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
     GalleryItemListDialogFragment.Listener,
-    DialogFragment(), HasAndroidInjector {
+    BaseFragment(), HasAndroidInjector {
 
-    @Inject
-    internal lateinit var androidInjector: DispatchingAndroidInjector<Any>
-    @Inject
-    lateinit var preferenceRepository: IPreferenceRepository
-
-    override fun androidInjector(): AndroidInjector<Any> {
-        return androidInjector
+    interface Callback {
+        fun onRequestToFinish()
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        AndroidSupportInjection.inject(this)
+        listener = context as? Callback
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 
 
@@ -129,7 +123,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
     }
 
     private val loadingObserver = Observer<Boolean> {
-        binding.toolbar.menu?.let { menu ->
+        binding.toolbar.menu.let { menu ->
             val saveItem = menu.findItem(R.id.menuSave) ?: return@let
             saveItem.isVisible = it == false
         }
@@ -157,7 +151,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
             putExtra(IntentKey.User.name, user)
         }
         targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, data)
-        dismiss()
+        finish()
     }
 
     private fun showUpdatePhotoMenu(imageType: Event.ShowUpdatePhotoMenu.ImageType) {
@@ -204,15 +198,18 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
 
     @Inject
     lateinit var getProfileUseCase: GetProfileUseCase
+
     @Inject
     lateinit var updateProfileUseCase: UpdateProfileUseCase
+
     @Inject
     lateinit var updateUserImageUseCase: UpdateUserImageUseCase
 
+    private var listener: Callback? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        exitTransition= (MaterialContainerTransform())
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
-        ThemeColorUtil.applyTheme(this)
         viewModel.saving.observe(this, savingObserver)
         viewModel.event.observe(this, eventObserver)
         viewModel.loading.observe(this, loadingObserver)
@@ -237,7 +234,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
         setupLocaleView()
 
         binding.toolbar.setNavigationOnClickListener {
-            discard()
+            requestToFinish()
         }
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -251,7 +248,7 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
         when (requestCode) {
             RequestCode.Discard.ordinal -> {
                 if (resultCode != Activity.RESULT_OK) return
-                dismiss()
+                finish()
             }
             RequestCode.Avatar.ordinal -> {
                 if (resultCode != Activity.RESULT_OK || data == null) return
@@ -308,30 +305,23 @@ class EditProfileFragment : SimpleBottomSheetMenuFragment.Callback,
                     viewModel.newCoverUri.value !is ImageState.Keep
 
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setOnKeyListener { _, keyCode, _ ->
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                discard()
-                true
-            } else {
-                false
-            }
-        }
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        return dialog
-    }
 
-    private fun discard() {
-        if (changed) {
+    fun requestToFinish(): Boolean {
+        return if (changed) {
             val fragment = BasicDialogFragment.Builder()
                 .setMessage(R.string.discard_changes)
                 .setPositive(R.string.discard)
                 .build(RequestCode.Discard.ordinal)
             fragment.show(childFragmentManager, DialogKey.Discard.name)
+            true
         } else {
-            dismiss()
+            finish()
+            false
         }
+    }
+
+    private fun finish() {
+        listener?.onRequestToFinish()
     }
 
     private fun save() {

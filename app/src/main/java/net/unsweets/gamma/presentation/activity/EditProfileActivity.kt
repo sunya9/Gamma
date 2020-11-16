@@ -14,7 +14,11 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import net.unsweets.gamma.R
 import net.unsweets.gamma.presentation.fragment.EditProfileFragment
 
-class EditProfileActivity : BaseActivity() {
+class EditProfileActivity : BaseActivity(), EditProfileFragment.Callback {
+    override fun onRequestToFinish() {
+        supportFinishAfterTransition()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setupAnimation()
         super.onCreate(savedInstanceState)
@@ -26,8 +30,21 @@ class EditProfileActivity : BaseActivity() {
         intent.getStringExtra(BundleKey.UserId.name)
     }
 
+    override fun onBackPressed() {
+        if (editProfileFragment.requestToFinish()) return
+        super.onBackPressed()
+    }
+
     private fun setupAnimation() {
-        setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        setEnterSharedElementCallback(object : MaterialContainerTransformSharedElementCallback() {
+            override fun onMapSharedElements(
+                names: MutableList<String>,
+                sharedElements: MutableMap<String, View>
+            ) {
+                super.onMapSharedElements(names, sharedElements)
+                println("$names, $sharedElements")
+            }
+        })
         window.sharedElementsUseOverlay = false
         findViewById<View>(android.R.id.content).transitionName =
             getString(R.string.shared_element_edit_profile)
@@ -58,10 +75,12 @@ class EditProfileActivity : BaseActivity() {
         }
     }
 
+    private val editProfileFragment by lazy { EditProfileFragment.newInstance(userId) }
+
+
     private fun replaceFragment(firstTime: Boolean) {
         if (!firstTime) return
-        val fragment = EditProfileFragment.newInstance(userId)
-        supportFragmentManager.beginTransaction().replace(R.id.edit_profile_placeholder, fragment)
+        supportFragmentManager.beginTransaction().replace(R.id.edit_profile_placeholder, editProfileFragment)
             .commit()
     }
 

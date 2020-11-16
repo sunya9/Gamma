@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.transition.Fade
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -29,6 +30,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.launch
 import net.unsweets.gamma.R
@@ -116,8 +118,8 @@ class ProfileFragment : BaseFragment() {
                 fixTransition(iconUrl)
             }
             val user = bundle.getParcelable<User?>(BundleKey.User.name)
-            val iconTransitionName = bundle.getString(BundleKey.IconTransitionName.name)
-            binding.circleImageView.transitionName = iconTransitionName
+//            val iconTransitionName = bundle.getString(BundleKey.IconTransitionName.name)
+//            binding.circleImageView.transitionName = iconTransitionName
             viewModel.user.value = user
         }
         binding.viewModel = viewModel
@@ -135,15 +137,15 @@ class ProfileFragment : BaseFragment() {
         binding.profileViewPagerTab.setupWithViewPager(binding.profileViewPager)
 
         toolbarSetup(binding.appBar, binding.swipeRefreshLayout)
-        setEnterSharedElementCallback(object : SharedElementCallback() {
-            override fun onMapSharedElements(
-                names: List<String>,
-                sharedElements: MutableMap<String, View>
-            ) {
-                binding.circleImageView.clipToOutline = true
-                sharedElements[names[0]] = binding.circleImageView
-            }
-        })
+//        setEnterSharedElementCallback(object : SharedElementCallback() {
+//            override fun onMapSharedElements(
+//                names: List<String>,
+//                sharedElements: MutableMap<String, View>
+//            ) {
+//                binding.circleImageView.clipToOutline = true
+//                sharedElements[names[0]] = binding.circleImageView
+//            }
+//        })
 
         val coverUrl = User.getCoverUrl(userId)
         GlideApp.with(this).load(coverUrl)
@@ -268,25 +270,29 @@ class ProfileFragment : BaseFragment() {
     private enum class TransitionName { Avatar, Cover }
 
     private fun showCover(url: String) {
-        exitTransition = TransitionInflater.from(context)
-            .inflateTransition(R.transition.image_shared_element_transition)
         PhotoViewActivity.startActivity(
             activity,
             url,
-            binding.coverImageView,
-            TransitionName.Cover.name
+            binding.coverImageView
         )
+        initExitSharedElementCallback()
+
     }
 
+    private fun initExitSharedElementCallback() = requireActivity().setExitSharedElementCallback(
+        MaterialContainerTransformSharedElementCallback()
+    )
+
+
     private fun showAvatar(url: String) {
-        exitTransition = TransitionInflater.from(context)
-            .inflateTransition(R.transition.image_shared_element_transition)
+        binding.circleImageView.transitionName = TransitionName.Avatar.name
         PhotoViewActivity.startActivity(
-            activity,
+            requireActivity(),
             url,
             binding.circleImageView,
-            TransitionName.Avatar.name
+            transitionName = TransitionName.Avatar.name
         )
+        initExitSharedElementCallback()
     }
 
     private enum class RequestCode { UpdateProfile }
