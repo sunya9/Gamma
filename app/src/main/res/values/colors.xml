@@ -42,4 +42,5 @@
     <color name="colorPhotoViewBackground">#8000</color>
     <color name="textColor">#000</color>
     <color name="windowBackgroundGradient">#00f9f9f9</color>
+    <color name="colorOnSurface">@color/colorGrayDarker</color>
 </resources>
