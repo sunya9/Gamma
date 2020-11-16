@@ -26,6 +26,7 @@
             android:clipToPadding="false"
             android:paddingBottom="@dimen/margin_list_bottom"
             app:fastScrollEnabled="true"
+            android:layoutAnimation="@anim/layout_animation_stagger_recycler_view"
             app:fastScrollHorizontalThumbDrawable="@drawable/bg_fast_scroll_thumb"
             app:fastScrollHorizontalTrackDrawable="@drawable/bg_fast_scroll_track"
             app:fastScrollVerticalThumbDrawable="@drawable/bg_fast_scroll_thumb"
