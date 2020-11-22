@@ -11,6 +11,7 @@
             name="viewModel"
             type="net.unsweets.gamma.presentation.fragment.ProfileFragment.ProfileViewModel" />
     </data>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
@@ -24,16 +25,16 @@
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBar"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@android:color/transparent">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:id="@+id/toolbarLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:theme="@style/ProfileToolbar"
                     android:background="@android:color/transparent"
+                    android:theme="@style/ProfileToolbar"
                     app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed"
                     app:title="@{viewModel.user.name}"
                     app:titleEnabled="false">
@@ -71,10 +72,10 @@
                             android:onClick="@{() -> viewModel.showCover()}"
                             android:scaleType="centerCrop"
                             android:src="@drawable/bg_default_profile_cover"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
                             tools:ignore="ContentDescription"
                             tools:src="@tools:sample/backgrounds/scenic" />
 
@@ -129,7 +130,6 @@
                             app:layout_constraintTop_toBottomOf="@+id/circleImageView"
                             tools:text="HandleName" />
 
-
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/userMainActionButton"
                             style="@style/Button.Outlined"
@@ -158,19 +158,20 @@
                             android:layout_marginStart="@dimen/margin_activity_horizontal"
                             android:layout_marginEnd="@dimen/margin_activity_horizontal"
                             android:layout_marginBottom="16dp"
-                            android:background="@android:color/transparent"
+                            android:clickable="true"
                             android:clipChildren="false"
                             android:clipToPadding="false"
+                            android:focusable="true"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/negativePosition">
+                            app:layout_constraintTop_toTopOf="@+id/negativePosition"
+                            app:rippleColor="@android:color/transparent">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
-
 
                                 <TextView
                                     android:id="@+id/verifiedDomainTextView"
@@ -178,15 +179,15 @@
                                     android:layout_height="wrap_content"
                                     android:layout_margin="@dimen/margin_regular"
                                     android:clickable="true"
-                                    android:focusable="true"
-                                    android:textColor="?attr/colorPrimary"
-                                    android:text="@{viewModel.user.verified.domain}"
-                                    android:onClick="@{() -> viewModel.openVerifiedDomain()}"
-                                    android:visibility="@{safeUnbox(viewModel.verifiedDomainVisibility)}"
-                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                                    android:textAlignment="center"
-                                    android:singleLine="true"
                                     android:ellipsize="end"
+                                    android:focusable="true"
+                                    android:onClick="@{() -> viewModel.openVerifiedDomain()}"
+                                    android:singleLine="true"
+                                    android:text="@{viewModel.user.verified.domain}"
+                                    android:textAlignment="center"
+                                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                                    android:textColor="?attr/colorPrimary"
+                                    android:visibility="@{safeUnbox(viewModel.verifiedDomainVisibility)}"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/divider"
@@ -203,8 +204,8 @@
                                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_goneMarginTop="@dimen/margin_regular"
                                     app:layout_constraintTop_toBottomOf="@+id/verifiedDomainTextView"
+                                    app:layout_goneMarginTop="@dimen/margin_regular"
                                     tools:text="@tools:sample/lorem" />
 
                                 <TextView
@@ -237,9 +238,9 @@
                                     android:layout_width="1dp"
                                     android:layout_height="0dp"
                                     android:background="@drawable/divider_profile_card"
+                                    app:layout_constraintBottom_toBottomOf="@id/followerCountButton"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintBottom_toBottomOf="@id/followerCountButton"
                                     app:layout_constraintTop_toTopOf="@id/followerCountButton" />
 
                                 <View
@@ -270,8 +271,8 @@
                                     style="@style/BorderlessButton"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
                                     android:layout_marginTop="40dp"
+                                    android:layout_weight="1"
                                     android:onClick="@{() -> viewModel.openFollowerList()}"
                                     android:text="@{@plurals/follower(viewModel.user.counts.followers, viewModel.user.counts.followers)}"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -281,20 +282,21 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.google.android.material.card.MaterialCardView>
 
-                        <androidx.appcompat.widget.AppCompatImageView
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/circleImageView"
                             android:layout_width="@dimen/size_profile_avatar"
                             android:layout_height="@dimen/size_profile_avatar"
                             android:layout_marginTop="48dp"
                             android:clickable="true"
-                            android:scaleType="centerCrop"
                             android:focusable="true"
                             android:foreground="@drawable/fg_profile_avatar"
                             android:onClick="@{() -> viewModel.showAvatar()}"
+                            android:scaleType="centerCrop"
                             app:glideAvatarSrc="@{viewModel.iconUrl}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
+                            app:shapeAppearance="@style/RoundedShape"
                             tools:src="@tools:sample/avatars" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
