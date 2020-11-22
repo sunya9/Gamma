@@ -8,6 +8,5 @@
     <FrameLayout
         android:id="@+id/edit_profile_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorWindowBackground" />
+        android:layout_height="match_parent" />
 </FrameLayout>
