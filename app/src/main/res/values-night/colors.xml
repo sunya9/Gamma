@@ -11,6 +11,7 @@
     <color name="navigationBar">@android:color/black</color>
     <color name="navigationBarDivider">@android:color/transparent</color>
     <color name="colorSurface">@color/colorGrayDarker</color>
-    <color name="textColor">#000</color>
+    <color name="textColor">@color/colorGrayLightest</color>
     <color name="windowBackgroundGradient">#0222</color>
+    <color name="colorOnSurface">@color/colorGrayLightest</color>
 </resources>
