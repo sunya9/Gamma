@@ -26,6 +26,7 @@
         <activity
             android:name=".presentation.activity.ShareActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.Share">
             <intent-filter android:label="@string/compose_post">
                 <action android:name="android.intent.action.SEND" />

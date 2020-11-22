@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import dagger.android.support.DaggerAppCompatActivity
+import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.model.UriInfo
 import net.unsweets.gamma.presentation.fragment.ComposePostDialogFragment
 import net.unsweets.gamma.presentation.fragment.ComposePostFragment
@@ -23,11 +24,11 @@ class ShareActivity : DaggerAppCompatActivity(), ComposePostDialogFragment.Callb
         intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
     }
     private val intentExtraDataList by lazy {
-        when {
-            intent.action == Intent.ACTION_SEND -> {
+        when (intent.action) {
+            Intent.ACTION_SEND -> {
                 normalizeMediaFileUriList(arrayListOf(intent.getParcelableExtra(Intent.EXTRA_STREAM)))
             }
-            intent.action == Intent.ACTION_SEND_MULTIPLE -> {
+            Intent.ACTION_SEND_MULTIPLE -> {
                 normalizeMediaFileUriList(intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM))
             }
             else -> null
@@ -39,20 +40,22 @@ class ShareActivity : DaggerAppCompatActivity(), ComposePostDialogFragment.Callb
         return ArrayList(uriList.filterNotNull().map { UriInfo(it) })
     }
 
+    private val composePostFragment by lazy {
+        ComposePostFragment.newInstance(
+            ComposePostFragment.ComposePostFragmentOption(
+            initialText = text,
+            intentExtraDataList = intentExtraDataList
+        ))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeColorUtil.currentDarkThemeMode(this)
         ThemeColorUtil.applyTheme(this)
+        setContentView(R.layout.activity_compose_post)
         super.onCreate(savedInstanceState)
-        val dm = resources.displayMetrics
-        val cx = dm.widthPixels / 2
-        val cy = dm.heightPixels / 2
         if (savedInstanceState == null) {
-            val option = ComposePostFragment.ComposePostFragmentOption(
-                intentExtraDataList = intentExtraDataList,
-                initialText = text
-            )
-            val fragment = ComposePostDialogFragment.newInstance(cx, cy, option)
-            fragment.show(supportFragmentManager, ComposePostDialogFragment::class.simpleName)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.compose_post_placeholder, composePostFragment).commit()
         }
     }
 }
