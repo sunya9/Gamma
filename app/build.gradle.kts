@@ -129,18 +129,18 @@ dependencies {
   androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
 
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
-  implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta4")
+  implementation("androidx.constraintlayout:constraintlayout:2.1.0-alpha2")
   implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
-  implementation("com.google.android.material:material:1.3.0-alpha03")
-  implementation("androidx.appcompat:appcompat:1.1.0")
+  implementation("com.google.android.material:material:1.3.0")
+  implementation("androidx.appcompat:appcompat:1.2.0")
   implementation("androidx.recyclerview:recyclerview:1.1.0")
   implementation("com.squareup.retrofit2:retrofit:2.5.0")
   implementation("com.squareup.retrofit2:converter-moshi:2.5.0")
-  implementation("androidx.preference:preference:1.1.0")
+  implementation("androidx.preference:preference-ktx:1.1.1")
   implementation("com.otaliastudios:nestedscrollcoordinatorlayout:1.0.3")
   implementation("com.github.chrisbanes:PhotoView:2.3.0")
-  implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.61")
+  implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.30")
 
 
   val moshiVersion = "1.9.2"
@@ -185,8 +185,8 @@ dependencies {
   val firebaseVersion = "17.2.2"
   implementation("com.google.firebase:firebase-core:$firebaseVersion")
   implementation("com.google.firebase:firebase-analytics:$firebaseVersion")
-  implementation("com.google.firebase:firebase-crashlytics:17.2.2")
-  implementation("com.google.firebase:firebase-analytics:17.6.0")
+  implementation("com.google.firebase:firebase-crashlytics:17.3.1")
+  implementation("com.google.firebase:firebase-analytics:18.0.2")
 
   implementation("jp.wasabeef:glide-transformations:4.1.0")
   implementation("me.zhanghai.android.materialprogressbar:library:1.6.1")
@@ -194,16 +194,18 @@ dependencies {
   testImplementation("junit:junit:4.12")
   testImplementation("org.mockito:mockito-core:2.28.2")
   testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
   androidTestImplementation("org.mockito:mockito-core:2.28.2")
   androidTestImplementation("org.mockito:mockito-android:2.28.2")
   testImplementation("org.robolectric:robolectric:4.3")
-  androidTestImplementation("androidx.test:core:1.2.0")
-  androidTestImplementation("androidx.test.espresso:espresso-intents:3.2.0")
-  androidTestImplementation("androidx.test:rules:1.2.0")
-  androidTestImplementation("androidx.test.ext:junit:1.1.1")
-  androidTestImplementation("androidx.test.ext:truth:1.2.0")
-  androidTestImplementation("com.google.truth:truth:0.42")
+  val espressoVersion = "3.3.0"
+  androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
+  androidTestImplementation("androidx.test.espresso:espresso-intents:$espressoVersion")
+  val testVersion = "1.3.0"
+  androidTestImplementation("androidx.test:core:$testVersion")
+  androidTestImplementation("androidx.test:rules:$testVersion")
+  androidTestImplementation("androidx.test.ext:junit:1.1.2")
+  androidTestImplementation("androidx.test.ext:truth:1.3.0")
+  androidTestImplementation("com.google.truth:truth:1.0")
   testImplementation("org.powermock:powermock-module-junit4:2.0.2")
   testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
   androidTestImplementation("org.powermock:powermock-module-junit4:2.0.2")
