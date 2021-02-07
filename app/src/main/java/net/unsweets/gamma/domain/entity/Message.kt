@@ -14,10 +14,10 @@ import java.util.*
 data class Message(
     @Json(name = "created_at") val createdAt: Date,
     val id: String,
-    @Json(name = "is_deleted") val isDeleted: Boolean,
-    @Json(name = "is_sticky") val isSticky: Boolean,
+    @Json(name = "is_deleted") val isDeleted: Boolean? = null,
+    @Json(name = "is_sticky") val isSticky: Boolean? = null,
     val source: Client,
-    @Json(name = "reply_to") val replyTo: String,
+    @Json(name = "reply_to") val replyTo: String? = null,
     @Json(name = "thread_id") val threadId: String,
     val user: User?,
     val content: MessageContent?,

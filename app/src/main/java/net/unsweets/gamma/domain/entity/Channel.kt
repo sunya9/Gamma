@@ -6,6 +6,7 @@ import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import net.unsweets.gamma.domain.entity.raw.ChatSettings
+import net.unsweets.gamma.domain.entity.raw.Raw
 
 @Parcelize
 @JsonClass(generateAdapter = true)
@@ -17,11 +18,12 @@ data class Channel(
     @Json(name = "recent_message_id") val recentMessageId: String? = null,
     @Json(name = "recent_message") val recentMessage: Message? = null,
     val acl: Acl,
-    val counts: ChannelCount,
+    val counts: ChannelCount? = null,
     @Json(name = "you_subscribed") val youSubscribed: Boolean,
     @Json(name = "you_muted") val youMuted: Boolean,
     @Json(name = "has_unread") val hasUnread: Boolean,
-    @Json(name = "pagination_id") override var paginationId: String? = null
+    @Json(name = "pagination_id") override var paginationId: String? = null,
+    var raw: List<Raw<*>>? = null,
 ) : Parcelable, UniquePageable {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
@@ -80,13 +82,16 @@ data class Channel(
         val username: String,
         val id: String,
         val name: String?,
-        @Json(name ="avatar_image") val avatarImage: String,
-        val presence: Boolean
-    )
+        @Json(name ="avatar_image") val avatarImage: String
+    ): Parcelable
 
+    @IgnoredOnParcel
     val isPrivate = type === privateChannelType
+    @IgnoredOnParcel
     val isPublic = type === publicChannelType
-    val chatSettings: ChatSettings? = null
+
+    @IgnoredOnParcel
+    val chatSettings = raw?.let { ChatSettings.getChatSettingsRaw(it) }
 
 
     companion object {
