@@ -40,11 +40,11 @@ task("jacocoTestReport", JacocoReport::class) {
 
 android {
   ndkVersion = "18.1.5063045"
-  compileSdkVersion(28)
+  compileSdkVersion(29)
   defaultConfig {
     applicationId = "net.unsweets.gamma"
     minSdkVersion(23)
-    targetSdkVersion(28)
+    targetSdkVersion(29)
     versionCode = 6
     versionName = "0.4.0"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
