@@ -64,7 +64,7 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
     private val composePostFragment by lazy {
         val rt = replyTarget
         when {
-            rt != null -> ComposePostFragment.replyInstance(rt)
+//            rt != null -> ComposePostFragment.replyInstance(rt)
             else -> ComposePostFragment.newInstance(composePostFragmentOption)
         }
 
@@ -136,7 +136,7 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
             if (savedInstanceState == null) {
 //                revealAnimation(dialog.rootLayout)
                 view?.let {
-                    val anim = AnimatorInflater.loadAnimator(context, R.animator.bg_compose_window)
+//                    val anim = AnimatorInflater.loadAnimator(context, R.animator.bg_compose_window)
 //                    val animator = ViewAnimationUtils.createCircularReveal(
 //                        view,
 //                        centerX,
@@ -185,7 +185,7 @@ class ComposePostDialogFragment : DialogFragment(), ComposePostFragment.Callback
                 fragment?.onAnimationEnd(open)
             }
         })
-        val duration = resources.getInteger(R.integer.compose_duration)
+        val duration = resources.getInteger(R.integer.default_anim_duration)
         anim.duration = duration.toLong()
         return anim
     }
