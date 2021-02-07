@@ -9,9 +9,10 @@ import kotlinx.android.parcel.Parcelize
 @JsonClass(generateAdapter = true)
 data class ChatSettings(override val value: ChatSettingsValue) : Raw<ChatSettings.ChatSettingsValue>, Parcelable {
     @IgnoredOnParcel
-    override val type: String = "io.pnut.core.chat-settings"
+    override val type: String = ChatSettings.type
 
     @Parcelize
+    @JsonClass(generateAdapter = true)
     data class ChatSettingsValue(
         val name: String,
         val description: String,
@@ -27,5 +28,10 @@ data class ChatSettings(override val value: ChatSettingsValue) : Raw<ChatSetting
             EVENT("event"),
             GENERAL("general")
         }
+    }
+
+    companion object {
+        fun getChatSettingsRaw(rawList: List<Raw<*>>): ChatSettings? = rawList.find { it is ChatSettings } as? ChatSettings
+        const val type: String = "io.pnut.core.chat-settings"
     }
 }

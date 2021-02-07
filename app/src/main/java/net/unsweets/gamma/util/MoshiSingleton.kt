@@ -29,6 +29,7 @@ object MoshiSingleton {
                 .withSubtype(LongPost::class.java, LongPost.type)
                 .withSubtype(PollNotice::class.java, PollNotice.type)
                 .withSubtype(ChannelInvite::class.java, ChannelInvite.type)
+                .withSubtype(ChatSettings::class.java, ChatSettings.type)
                 .withSubtype(RawImpl::class.java, RawImpl.type)
                 .withDefaultValue(RawImpl())
         )
