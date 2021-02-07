@@ -22,10 +22,6 @@ abstract class FragmentModule {
 
     // compose post fragments
     @ContributesAndroidInjector
-    abstract fun contributeComposePostDialogFragment(): ComposePostDialogFragment
-
-    // compose post fragments
-    @ContributesAndroidInjector
     abstract fun contributeComposePostFragment(): ComposePostFragment
 
     // profile fragments

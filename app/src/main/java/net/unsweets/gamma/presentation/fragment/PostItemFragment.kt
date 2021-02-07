@@ -49,6 +49,7 @@ import net.unsweets.gamma.domain.model.params.composed.GetPostsParam
 import net.unsweets.gamma.domain.model.params.single.GeneralPostParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import net.unsweets.gamma.domain.usecases.*
+import net.unsweets.gamma.presentation.activity.ComposePostActivity
 import net.unsweets.gamma.presentation.activity.PhotoViewActivity
 import net.unsweets.gamma.presentation.adapter.BaseListRecyclerViewAdapter
 import net.unsweets.gamma.presentation.adapter.PollOptionsAdapter
@@ -639,9 +640,8 @@ abstract class PostItemFragment : BaseListFragment<Post, PostItemFragment.PostVi
     }
 
     private fun showReplyCompose(view: View, item: Post) {
-        val pos = Util.getViewPositionOnScreen(view)
-        val fragment = ComposePostDialogFragment.replyInstance(pos.first, pos.second, item.mainPost)
-        fragment.show(childFragmentManager, DialogKey.Compose.name)
+        val intent = ComposePostActivity.newIntent(requireContext(), ComposePostFragment.ComposePostFragmentOption(post = item))
+        startActivity(intent)
     }
 
     private fun toggleStar(item: Post, adapterPosition: Int) {
