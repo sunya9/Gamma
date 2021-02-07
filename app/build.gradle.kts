@@ -9,7 +9,6 @@ plugins {
   kotlin("kapt")
   kotlin("android.extensions")
   id("kotlin-android")
-  id("kotlin-android-extensions")
   id("kotlin-kapt")
   id("com.google.gms.oss.licenses.plugin")
   id("com.google.gms.google-services") apply false
@@ -61,8 +60,9 @@ android {
       isTestCoverageEnabled = true
     }
   }
-  dataBinding {
-    isEnabled = true
+  buildFeatures {
+    viewBinding = true
+    dataBinding = true
   }
   val keystorePropertiesFile = rootProject.file("keystore.properties")
   if (keystorePropertiesFile.exists()) {
