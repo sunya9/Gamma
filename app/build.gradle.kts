@@ -91,7 +91,7 @@ android {
     isAbortOnError = false
   }
   testOptions {
-    unitTests.isIncludeAndroidResources = false
+    unitTests.isIncludeAndroidResources = true
     unitTests.isReturnDefaultValues = true
   }
   packagingOptions {
@@ -215,6 +215,8 @@ dependencies {
   val navVersion = "2.3.1"
   implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
   implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+  testImplementation("org.robolectric:robolectric:4.5.1")
+
 }
 
 androidExtensions {
