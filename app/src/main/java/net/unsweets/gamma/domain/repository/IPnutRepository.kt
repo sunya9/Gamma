@@ -3,8 +3,10 @@ package net.unsweets.gamma.domain.repository
 import android.net.Uri
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.composed.*
+import net.unsweets.gamma.domain.model.params.single.GeneralChannelParam
 import net.unsweets.gamma.domain.model.params.single.PaginationParam
 import okhttp3.RequestBody
+import retrofit2.Call
 
 interface IPnutRepository {
     // posts
@@ -57,7 +59,8 @@ interface IPnutRepository {
 
     // channel and messages
     suspend fun getChannels(getChannelsParam: GetChannelsParam): PnutResponse<List<Channel>>
-    suspend fun getMessages(channelId: String, paginationParam: PaginationParam): PnutResponse<List<Message>>
+    fun getChannel(channelId: String, getChannelParam: GeneralChannelParam): Call<PnutResponse<Channel>>
+    fun getMessages(channelId: String, paginationParam: GetMessagesParam): Call<PnutResponse<List<Message>>>
 
     // others
     suspend fun getInteractions(getInteractionsParam: GetInteractionsParam): PnutResponse<List<Interaction>>

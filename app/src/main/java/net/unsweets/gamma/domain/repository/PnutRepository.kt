@@ -6,13 +6,14 @@ import net.unsweets.gamma.BuildConfig
 import net.unsweets.gamma.data.PnutService
 import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.params.composed.*
-import net.unsweets.gamma.domain.model.params.single.PaginationParam
+import net.unsweets.gamma.domain.model.params.single.GeneralChannelParam
 import net.unsweets.gamma.util.Constants
 import net.unsweets.gamma.util.MoshiSingleton
 import net.unsweets.gamma.util.await
 import net.unsweets.gamma.util.bodyOrThrow
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.net.URLConnection
@@ -20,6 +21,10 @@ import java.util.*
 
 class PnutRepository(private val context: Context, defaultAccountToken: String? = null) :
     IPnutRepository {
+    override fun getChannel(channelId: String, getChannelParam: GeneralChannelParam): Call<PnutResponse<Channel>> {
+        return defaultPnutService.getChannel(channelId, getChannelParam.toMap())
+    }
+
     override suspend fun deleteCover(): PnutResponse<User> {
         return defaultPnutService.deleteCover().await()
     }
@@ -229,14 +234,14 @@ class PnutRepository(private val context: Context, defaultAccountToken: String? 
     }
 
     override suspend fun getChannels(getChannelsParam: GetChannelsParam): PnutResponse<List<Channel>> {
-        return defaultPnutService.getChannelsCreatedByMe(getChannelsParam.toMap()).await()
+        return defaultPnutService.getSubscribedChannels(getChannelsParam.toMap()).await()
     }
 
-    override suspend fun getMessages(
+    override fun getMessages(
         channelId: String,
-        paginationParam: PaginationParam
-    ): PnutResponse<List<Message>> {
-        return defaultPnutService.getChannelMessages(channelId, paginationParam.toMap()).await()
+        getMessagesParam: GetMessagesParam
+    ): Call<PnutResponse<List<Message>>> {
+        return defaultPnutService.getChannelMessages(channelId, getMessagesParam.toMap())
     }
 
     override suspend fun getInteractions(getInteractionsParam: GetInteractionsParam): PnutResponse<List<Interaction>> {
