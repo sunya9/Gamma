@@ -68,6 +68,7 @@ suspend fun <T> Call<PnutResponse<T>>.await(): PnutResponse<T> =
     }
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
+fun Boolean.toStringInt(): String = if (this) "1" else "0"
 
 fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
     observe(lifecycleOwner, object : Observer<T> {
