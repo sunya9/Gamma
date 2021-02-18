@@ -1,10 +1,12 @@
 package net.unsweets.gamma.domain.entity
 
+import android.content.Context
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import net.unsweets.gamma.R
 import net.unsweets.gamma.domain.entity.raw.ChatSettings
 import net.unsweets.gamma.domain.entity.raw.Raw
 
@@ -14,7 +16,7 @@ data class Channel(
     val id: String,
     @Json(name = "is_active") val isActive: Boolean? = null,
     val type: String,
-    val owner: User,
+    val owner: User? = null,
     @Json(name = "recent_message_id") val recentMessageId: String? = null,
     @Json(name = "recent_message") val recentMessage: Message? = null,
     val acl: Acl,
@@ -27,11 +29,12 @@ data class Channel(
 ) : Parcelable, UniquePageable {
     @IgnoredOnParcel
     override val uniqueKey: String by lazy { id }
+
     @Parcelize
     @JsonClass(generateAdapter = true)
     data class ChannelCount(
         val messages: Int,
-        val subscribers: Int
+        val subscribers: Int? = null
     ) : Parcelable
 
     @Parcelize
@@ -71,6 +74,7 @@ data class Channel(
         private interface IAuthority {
             val immutable: Boolean
             val you: Boolean
+
             @Json(name = "user_ids")
             val userIds: List<LimitedUser>
         }
@@ -82,17 +86,31 @@ data class Channel(
         val username: String,
         val id: String,
         val name: String?,
-        @Json(name ="avatar_image") val avatarImage: String
-    ): Parcelable
+        @Json(name = "avatar_image") val avatarImage: String
+    ) : Parcelable
 
     @IgnoredOnParcel
-    val isPrivate = type === privateChannelType
+    val isPrivate = type == privateChannelType
+
     @IgnoredOnParcel
-    val isPublic = type === publicChannelType
+    val isPublic = type == publicChannelType
 
     @IgnoredOnParcel
     val chatSettings = raw?.let { ChatSettings.getChatSettingsRaw(it) }
 
+    val hasFullPermission = acl.full.you
+    fun isOwner(id: String): Boolean = owner?.id === id
+
+    fun title(context: Context): String {
+        return when {
+            isPublic -> chatSettings?.value?.name.orEmpty()
+            isPrivate -> context.getString(
+                R.string.private_channel_title_template,
+                id
+            )
+            else -> ""
+        }
+    }
 
     companion object {
         const val privateChannelType = "io.pnut.core.pm"
