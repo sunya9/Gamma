@@ -20,7 +20,8 @@
         <item name="colorSurface">@color/colorSurface</item>
         <item name="android:windowBackground">@color/colorWindowBackground</item>
         <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
-        <item name="extendedFloatingActionButtonStyle">@style/ExtendedFloatingActionButtonStyle
+        <item name="extendedFloatingActionButtonStyle">
+            @style/ExtendedFloatingActionButtonStyle
         </item>
         <item name="toolbarStyle">@style/Toolbar</item>
         <item name="materialButtonStyle">@style/Button</item>
@@ -98,6 +99,7 @@
     <style name="ExtendedFloatingActionButtonStyle" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
         <item name="android:textColor">@android:color/white</item>
         <item name="iconTint">@android:color/white</item>
+        <item name="backgroundTint">?colorPrimary</item>
     </style>
 
     <style name="TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
