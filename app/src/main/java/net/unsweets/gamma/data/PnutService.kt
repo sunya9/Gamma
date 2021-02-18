@@ -158,7 +158,7 @@ interface PnutService {
 
     // Channel resources
     @GET("channels/{channelId}")
-    fun getChannel(@Path("channelId") channelId: String): Call<PnutResponse<Channel>>
+    fun getChannel(@Path("channelId") channelId: String, @QueryMap params: Map<String, String>): Call<PnutResponse<Channel>>
 
     @GET("channels/{channelId}/messages")
     fun getChannelMessages(@Path("channelId") channelId: String, @QueryMap paging: Map<String, String>): Call<PnutResponse<List<Message>>>
@@ -174,7 +174,7 @@ interface PnutService {
     fun getUnreadPmCount(): Call<PnutResponse<Int>>
 
     @GET("users/me/channels/subscribed")
-    fun getSubscribedChannels(): Call<PnutResponse<List<Channel>>>
+    fun getSubscribedChannels(@QueryMap paging: Map<String, String>): Call<PnutResponse<List<Channel>>>
 
     @GET("users/me/files")
     fun getFiles(@QueryMap paging: Map<String, String>): Call<PnutResponse<List<File>>>
