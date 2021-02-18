@@ -4,7 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".presentation.activity.ManageChannelMembersActivity">
 
-    <data></data>
+    <data>
+
+        <variable
+            name="viewModel"
+            type="net.unsweets.gamma.presentation.viewmodel.ManageChannelMembersViewModel" />
+    </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -15,14 +20,33 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/manageChannelMembersToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="enterAlways|scroll" />
+                app:layout_scrollFlags="enterAlways|scroll"
+                app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+                app:title="@{viewModel.title(context)}"
+                tools:title="Room 0's members" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/channelMembersRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:paddingBottom="60dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="10"
+            tools:listitem="@layout/manage_channel_members_item" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:visibility="@{viewModel.fabVisibility}"
+            android:layout_margin="@dimen/margin_regular"
+            android:contentDescription="@string/add_member_desc"
+            android:text="@string/add_member"
+            app:icon="@drawable/ic_person_add_black_24dp" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
