@@ -53,6 +53,7 @@ object MoshiSingleton {
         .add(PageableItemWrapperConverter.storableUserAdapterFactory)
         .add(PageableItemWrapperConverter.storableInteractionAdapterFactory)
         .add(PageableItemWrapperConverter.storablePostAdapterFactory)
+        .add(PageableItemWrapperConverter.storableMessageFactory)
         .add(KotlinJsonAdapterFactory())
         .build()
 

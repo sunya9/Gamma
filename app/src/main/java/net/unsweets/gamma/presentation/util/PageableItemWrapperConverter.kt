@@ -2,10 +2,7 @@ package net.unsweets.gamma.presentation.util
 
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
-import net.unsweets.gamma.domain.entity.Interaction
-import net.unsweets.gamma.domain.entity.Post
-import net.unsweets.gamma.domain.entity.UniquePageable
-import net.unsweets.gamma.domain.entity.User
+import net.unsweets.gamma.domain.entity.*
 import net.unsweets.gamma.domain.model.CachedList
 import net.unsweets.gamma.domain.model.PageableItemWrapper
 
@@ -95,6 +92,33 @@ sealed class PageableItemWrapperConverter {
         }
     }
 
+    @JsonClass(generateAdapter = true)
+    data class CachedMessageList(
+        val messages: List<StorableMessage>
+    ) : PageableItemWrapperConverter() {
+        override fun toCachedList(): CachedList<Message> {
+            val res = messages.map {
+                when (it) {
+                    is StorableMessage.Item -> it.pageableItemWrapper
+                    is StorableMessage.Pager -> it.pager
+                }
+            }
+            return CachedList(res)
+        }
+
+        companion object {
+            fun createFromCachedList(postCachedList: List<PageableItemWrapper<Message>>): CachedMessageList {
+                val list = postCachedList.map {
+                    when (it) {
+                        is PageableItemWrapper.Pager<Message> -> StorableMessage.Pager(it)
+                        is PageableItemWrapper.Item<Message> -> StorableMessage.Item(it)
+                    }
+                }
+                return CachedMessageList(list)
+            }
+        }
+    }
+
     sealed class StorablePost {
         abstract val type: Type
 
@@ -138,6 +162,15 @@ sealed class PageableItemWrapperConverter {
         }
     }
 
+    sealed class StorableMessage(val type: Type) {
+        data class Item(val pageableItemWrapper: PageableItemWrapper.Item<Message>) :
+            StorableMessage(Type.Item)
+
+        data class Pager(val pager: PageableItemWrapper.Pager<Message>) :
+            StorableMessage(Type.Pager)
+    }
+
+
     companion object {
         val storablePostAdapterFactory: PolymorphicJsonAdapterFactory<StorablePost> =
             PolymorphicJsonAdapterFactory.of(StorablePost::class.java, "type")
@@ -153,5 +186,10 @@ sealed class PageableItemWrapperConverter {
             PolymorphicJsonAdapterFactory.of(StorableInteraction::class.java, "type")
                 .withSubtype(StorableInteraction.Item::class.java, Type.Item.name)
                 .withSubtype(StorableInteraction.Pager::class.java, Type.Pager.name)
+
+        val storableMessageFactory: PolymorphicJsonAdapterFactory<StorableMessage> =
+            PolymorphicJsonAdapterFactory.of(StorableMessage::class.java, "type")
+                .withSubtype(StorableMessage.Item::class.java, Type.Item.name)
+                .withSubtype(StorableMessage.Pager::class.java, Type.Pager.name)
     }
 }
