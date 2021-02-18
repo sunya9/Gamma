@@ -1,6 +1,7 @@
 package net.unsweets.gamma.domain.entity.raw
 
 import android.os.Parcelable
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
@@ -19,13 +20,21 @@ data class ChatSettings(override val value: ChatSettingsValue) : Raw<ChatSetting
         val categories: List<Categories>?
     ) : Raw.RawValue, Parcelable {
         enum class Categories(val value: String) {
+            @Json(name = "fun")
             FUN("fun"),
+            @Json(name = "lifestyle")
             LIFESTYLE("lifestyle"),
+            @Json(name = "profession")
             PROFESSION("profession"),
+            @Json(name = "language")
             LANGUAGE("language"),
+            @Json(name = "community")
             COMMUNITY("community"),
+            @Json(name = "tech")
             TECH("tech"),
+            @Json(name = "event")
             EVENT("event"),
+            @Json(name = "general")
             GENERAL("general")
         }
     }
