@@ -1,6 +1,7 @@
 package net.unsweets.gamma.domain.repository
 
 import net.unsweets.gamma.domain.entity.Interaction
+import net.unsweets.gamma.domain.entity.Message
 import net.unsweets.gamma.domain.entity.Post
 import net.unsweets.gamma.domain.entity.Token
 import net.unsweets.gamma.domain.entity.User
@@ -18,15 +19,24 @@ interface IPnutCacheRepository {
         streamType: StreamType,
         cacheSize: Int
     )
+
     suspend fun getInteractions(): CachedList<Interaction>
     suspend fun storeInteractions(
         interactions: List<PageableItemWrapper<Interaction>>,
         cacheSize: Int
     )
+
     suspend fun getUsers(userListType: UserListType): CachedList<User>
     suspend fun storeUsers(
         users: List<PageableItemWrapper<User>>,
         userListType: UserListType,
+        cacheSize: Int
+    )
+
+    fun getMessages(channelId: String): CachedList<Message>
+    fun storeMessages(
+        channelId: String,
+        messages: List<PageableItemWrapper<Message>>,
         cacheSize: Int
     )
 

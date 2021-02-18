@@ -46,6 +46,8 @@ class PnutCacheRepository(currentUserId: String?, context: Context) : IPnutCache
             override val name = "${userListType::class.java.simpleName}/$userId"
         }
 
+        data class Message(val channelId: String) : CachePath()
+
         object Interaction : CachePath()
     }
 
@@ -190,6 +192,27 @@ class PnutCacheRepository(currentUserId: String?, context: Context) : IPnutCache
         )
         return getList(CachePath.User(userListType)) {
             res.fromJson(it)?.toCachedList()
+        }
+    }
+
+    override fun getMessages(channelId: String): CachedList<Message> {
+        val res = MoshiSingleton.moshi.adapter(
+            PageableItemWrapperConverter.CachedMessageList::class.java
+        )
+        return getList(CachePath.Message(channelId)) {
+            res.fromJson(it)?.toCachedList()
+        }
+    }
+
+    override fun storeMessages(
+        channelId: String,
+        messages: List<PageableItemWrapper<Message>>,
+        cacheSize: Int
+    ) {
+        storeList(CachePath.Message(channelId), messages, cacheSize) {
+            val cachedList = PageableItemWrapperConverter.CachedMessageList.createFromCachedList(it)
+            MoshiSingleton.moshi.adapter(PageableItemWrapperConverter.CachedMessageList::class.java)
+                .toJson(cachedList)
         }
     }
 
