@@ -25,4 +25,5 @@ sealed class ErrorCollections(val displayErrorMessageRes: Int) : Exception() {
             return errorResponse.meta.getResourceMessage(context)
         }
     }
+    object Unknown: ErrorCollections(R.string.unknown_error)
 }
