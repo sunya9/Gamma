@@ -32,7 +32,7 @@
                 android:padding="@dimen/margin_regular"
                 android:scaleType="center"
                 android:src="@drawable/ic_reply_black_24dp"
-                android:tint="@android:color/white"
+                app:tint="@android:color/white"
                 android:visibility="gone"
                 tools:ignore="ContentDescription"
                 tools:visibility="visible" />
@@ -46,7 +46,7 @@
                 android:padding="@dimen/margin_regular"
                 android:scaleType="center"
                 android:src="@drawable/ic_star_black_24dp"
-                android:tint="@android:color/white"
+                app:tint="@android:color/white"
                 android:visibility="gone"
                 tools:ignore="ContentDescription" />
 
@@ -59,7 +59,7 @@
                 android:padding="@dimen/margin_regular"
                 android:scaleType="center"
                 android:src="@drawable/ic_repeat_black_24dp"
-                android:tint="@android:color/white"
+                app:tint="@android:color/white"
                 android:visibility="gone"
                 tools:ignore="ContentDescription" />
 
@@ -72,7 +72,7 @@
                 android:padding="@dimen/margin_regular"
                 android:scaleType="center"
                 android:src="@drawable/ic_forum_black_24dp"
-                android:tint="@android:color/white"
+                app:tint="@android:color/white"
                 android:visibility="gone"
                 tools:ignore="ContentDescription" />
 
@@ -85,7 +85,7 @@
                 android:padding="@dimen/margin_regular"
                 android:scaleType="center"
                 android:src="@drawable/ic_more_horiz_black_24dp"
-                android:tint="@android:color/white"
+                app:tint="@android:color/white"
                 android:visibility="gone"
                 tools:ignore="ContentDescription" />
 
@@ -152,7 +152,7 @@
                     android:layout_marginEnd="@dimen/margin_half"
                     android:contentDescription="@string/revised"
                     android:scaleType="centerInside"
-                    android:tint="@color/colorGrayLight"
+                    app:tint="@color/colorGrayLight"
                     app:layout_constraintBottom_toBottomOf="@id/relativeTimeTextView"
                     app:layout_constraintEnd_toStartOf="@id/chatIconImageView"
                     app:layout_constraintTop_toTopOf="@id/relativeTimeTextView"
@@ -165,7 +165,7 @@
                     android:layout_marginEnd="@dimen/margin_half"
                     android:contentDescription="@string/conversation_mark"
                     android:scaleType="centerInside"
-                    android:tint="@color/colorGrayLight"
+                    app:tint="@color/colorGrayLight"
                     app:layout_constraintBottom_toBottomOf="@id/relativeTimeTextView"
                     app:layout_constraintEnd_toStartOf="@id/relativeTimeTextView"
                     app:layout_constraintTop_toTopOf="@id/relativeTimeTextView"
@@ -267,8 +267,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/margin_half"
                                 android:layout_marginBottom="@dimen/margin_half"
-                                android:drawableStart="@drawable/ic_access_time_black_12dp"
-                                android:drawablePadding="@dimen/margin_half" />
+                                android:drawablePadding="@dimen/margin_half"
+                                app:drawableStartCompat="@drawable/ic_access_time_black_12dp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
@@ -298,26 +298,26 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/margin_half"
                             android:clickable="true"
-                            android:drawableStart="@drawable/ic_via_12dp"
                             android:drawablePadding="@dimen/margin_quoter"
                             android:focusable="true"
                             android:gravity="start|center_vertical"
                             app:layout_constraintStart_toEndOf="@id/absoluteDateTextView"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:text="via Gamma" />
+                            tools:text="via Gamma"
+                            app:drawableStartCompat="@drawable/ic_via_12dp" />
 
                         <TextView
                             android:id="@+id/absoluteDateTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:clickable="true"
-                            android:drawableStart="@drawable/ic_access_time_black_12dp"
                             android:drawablePadding="@dimen/margin_quoter"
                             android:focusable="true"
                             android:gravity="start|center_vertical"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:text="18 Aug 19" />
+                            tools:text="18 Aug 19"
+                            app:drawableStartCompat="@drawable/ic_access_time_black_12dp" />
 
                         <TextView
                             android:id="@+id/replyCountTextView"
