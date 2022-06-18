@@ -129,7 +129,7 @@ dependencies {
   androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
 
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
-  implementation("androidx.constraintlayout:constraintlayout:2.1.0-alpha2")
+  implementation("androidx.constraintlayout:constraintlayout:2.1.4")
   implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
   implementation("com.google.android.material:material:1.3.0")
