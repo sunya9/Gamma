@@ -203,7 +203,7 @@ dependencies {
   val testVersion = "1.3.0"
   androidTestImplementation("androidx.test:core:$testVersion")
   androidTestImplementation("androidx.test:rules:$testVersion")
-  androidTestImplementation("androidx.test.ext:junit:1.1.2")
+  androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.ext:truth:1.3.0")
   androidTestImplementation("com.google.truth:truth:1.0")
   testImplementation("org.powermock:powermock-module-junit4:2.0.2")
