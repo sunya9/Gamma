@@ -182,11 +182,11 @@ dependencies {
 
   implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
 
-  val firebaseVersion = "17.2.2"
+  val firebaseVersion = "17.5.1"
   implementation("com.google.firebase:firebase-core:$firebaseVersion")
   implementation("com.google.firebase:firebase-analytics:$firebaseVersion")
-  implementation("com.google.firebase:firebase-crashlytics:17.3.1")
-  implementation("com.google.firebase:firebase-analytics:18.0.2")
+  implementation("com.google.firebase:firebase-crashlytics:17.4.1")
+  implementation("com.google.firebase:firebase-analytics:18.0.3")
 
   implementation("jp.wasabeef:glide-transformations:4.1.0")
   implementation("me.zhanghai.android.materialprogressbar:library:1.6.1")
