@@ -207,9 +207,9 @@ dependencies {
   androidTestImplementation("androidx.test.ext:truth:1.3.0")
   androidTestImplementation("com.google.truth:truth:1.0")
   testImplementation("org.powermock:powermock-module-junit4:2.0.2")
-  testImplementation("org.powermock:powermock-api-mockito2:2.0.2")
+  testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
   androidTestImplementation("org.powermock:powermock-module-junit4:2.0.2")
-  androidTestImplementation("org.powermock:powermock-api-mockito2:2.0.2")
+  androidTestImplementation("org.powermock:powermock-api-mockito2:2.0.9")
   implementation("com.github.Chrisvin:EasyReveal:1.2")
   // Kotlin
   val navVersion = "2.3.1"
