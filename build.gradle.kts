@@ -14,7 +14,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:4.1.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("com.google.gms:oss-licenses:0.9.2")
-        classpath("com.google.gms:google-services:4.3.5")
+        classpath("com.google.gms:google-services:4.4.0")
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.4.1")
         val navVersion = "2.3.1"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion")
